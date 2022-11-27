@@ -43,7 +43,7 @@ def optimization():
 
     return render_template("optimization.html")
     
-@app.route('reload_webapp')
+@app.route('/reload_webapp')
 def reload():
     subprocess.call('./update_files.sh')
     return render_template("home.html")
