@@ -10,6 +10,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import datetime
 from datetime import datetime
+import subprocess
 
 # Create the Webserver
 app = Flask(__name__)
@@ -42,6 +43,10 @@ def optimization():
 
     return render_template("optimization.html")
     
+@app.route('reload_webapp')
+def reload():
+    subprocess.call('./update_files.sh')
+    return render_template("home.html")
 
 # take input of start & end date of optimization 
 @app.route('/optimization', methods=['POST'])
