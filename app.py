@@ -45,7 +45,7 @@ def optimization():
     
 @app.route('/reload_webapp')
 def reload():
-    subprocess.call('./update_files.sh')
+    subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     return redirect('/')
 
 # take input of start & end date of optimization 
