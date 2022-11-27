@@ -59,54 +59,24 @@ def get_date():
 # optimization route
 @app.route('/optimization_table', methods=('GET', 'POST'))
 def optimization_table(start_date, end_date):
-    # input: Start & End DateTime (Zeitraum der Planung)
+    # input date range
+    start_date = pd.to_datetime(start_date, format="%d.%m.%Y")
+    end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
     
-
-    # input: Daten dieses Zeitraums aus MySQL DB
-
-    # read data 
+    # db query
     db_connection = sql.connect(host='127.0.0.1', database='energy', user='root', password='root', port=8889)
     query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
     df = pd.read_sql(query,db_connection)
     db_connection.close()
+    df['dateTime'] = pd.to_datetime(df.dateTime)  
 
-    # parse dates  
-    df['dateTime'] = pd.to_datetime(df.dateTime)  # parse timestamps
-
-    start_datetime = datetime.strptime(start_date, '%d.%m.%Y')
-    end_datetime = datetime.strptime(end_date, '%d.%m.%Y')
-    
-    print(start_datetime)
-    print(end_datetime)
-
-    #df['dateTime'] = df['dateTime'].dt.strftime('%d.%m.%Y %H:%M:%S') # use later for better output
-    #start_date = start_date.dt.strftime('%Y.%m.%d %H:%M:%S')
-    #end_date = end_date.dt.strftime('%Y.%m.%d %H:%M:%S')
-    
-    #end_date = pd.to_datetime(end_date, format="%Y-%m-%d %H:%M")
-    #print(start_date)
-    #print(end_date)
-
-
-    # select planing period of 2 weeks, starting with monday 
+    # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
-    
-    print(df)
 
     # calculate netzbezug
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
-    df = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
+    netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
-    # reformat day and hour 
-    df['hour'] = df['dateTime'].dt.hour
-    n=24
-    df['day'] = [int(i/n) for i,x in enumerate(df.index)]
-    netzbezug = df
-
-    # set planning times of 2 weeks 
-    days = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
-    hours = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
-                            
     # read appointment data
     termine_df = pd.read_csv('streaming_data_platform/termine.csv', sep=";")
     termine_energy = dict(termine_df[['Termin','Energieverbrauch']].values) 
@@ -117,7 +87,7 @@ def optimization_table(start_date, end_date):
 
     # create variables 
     # energy consumption per appointment
-    consumption = model.addVars(days,hours,termine_energy,vtype=GRB.CONTINUOUS,name="consumption")
+    consumption = model.addVars(df['dateTime'],termine_energy,vtype=GRB.CONTINUOUS,name="consumption")
 
     # planned start of appointment 
     start = model.addVars(consumption, vtype=GRB.BINARY, name="start")
@@ -130,20 +100,16 @@ def optimization_table(start_date, end_date):
     # save end hour as numerical value 
     end_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="end_hour")
 
-    # hilfsvariable
-    p = model.addVars(days,hours,termine_energy,vtype=GRB.BINARY,name="p")
-
     # calculate netzbezug while appointment
-    # calculate netzbezug of appointment
     for termin in termine_energy:
-        for day in days: 
-            for hour in range(0,18):
-                for i in range(0,termine_length[termin]):
-                    consumption[day,hour,termin] = consumption[day,hour,termin]+netzbezug['balance'][(netzbezug['day'] == day) & (netzbezug['hour'] == hour+i)]+(termine_energy[termin]/termine_length[termin])              
+        for datetime in df['dateTime']:
+            if datetime.hour < 18:
+                consumption[datetime,termin] = gp.quicksum(netzbezug['balance'][netzbezug['dateTime'] == datetime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin]) 
+                                                      for i in range(0,termine_length[termin]))
 
     # minimize netzbezug
-    obj = gp.quicksum((consumption[day,hour,termin]*start[day,hour,termin])
-                 for day in days for hour in hours for termin in termine_energy)
+    obj = sum((consumption[datetime,termin]*start[datetime,termin])
+                 for datetime in df['dateTime'] for termin in termine_energy)
 
     # objective 
     model.setObjective(obj, GRB.MINIMIZE)
@@ -151,36 +117,32 @@ def optimization_table(start_date, end_date):
     # constraints 
     # weekend constraint
     for termin in termine_energy:
-        for hour in hours:
-            for day in days:
-                if day in [5,6,12,13]: 
-                    model.addConstr((start[day,hour,termin])==0)
+        for datetime in df['dateTime']:
+            if datetime.weekday() in [5,6]:
+                model.addConstr((start[datetime,termin])==0)
                     
     # only 1 start time per appointment
     for termin in termine_energy: 
-        model.addConstr(gp.quicksum(start[day,hour,termin] 
-                        for day in days for hour in hours) == 1)
+        model.addConstr(gp.quicksum(start[datetime,termin] 
+                        for datetime in df['dateTime']) == 1)
 
     # no overlap constraint                
-    for day in days: 
-        for hour in hours:
-            if hour < 18:
+    for datetime in df['dateTime']:
+        if datetime.hour < 18:
                 for t1 in termine_length: 
-                    model.addConstr((start[day,hour,t1] == 1) >> (gp.quicksum(start[day,hour+i,t2] 
+                    model.addConstr((start[datetime,t1] == 1) >> (gp.quicksum(start[datetime + pd.Timedelta(hours=i),t2] 
                                                                     for i in range(1,termine_length[t1])
-                                                                    for t2 in termine_length)==0))
-                    
+                                                                    for t2 in termine_length)==0))                
+
     # no overlap of start times 
-    for day in days:
-        for hour in hours:
-            model.addConstr(start[day,hour,0]+start[day,hour,1]+start[day,hour,2]<=1)
+    for datetime in df['dateTime']:
+        model.addConstr(gp.quicksum(start[datetime,termin] for termin in termine_energy) <= 1)
                 
     # save start hour and day of appointment 
     for termin in termine_energy: 
-        for day in days: 
-            for hour in hours:
-                model.addConstr((start[day,hour,termin]==1) >> (start_day[termin]==day))
-                model.addConstr((start[day,hour,termin]==1) >> (start_hour[termin]==hour))
+        for datetime in df['dateTime']:
+            model.addConstr((start[datetime,termin]==1) >> (start_day[termin]==datetime.day))
+            model.addConstr((start[datetime,termin]==1) >> (start_hour[termin]==datetime.hour))
 
     # set end time of appointment 
     for termin in termine_length:            
@@ -199,31 +161,32 @@ def optimization_table(start_date, end_date):
 
     # generate output
     # save planned appointments
-    appointments = pd.DataFrame(columns=['Termin', 'Start_Day', 'Start_Hour'])
+    appointments = pd.DataFrame(columns=['Termin'])
     for v in model.getVars():
-        if v.VarName.startswith("start_day"): 
-            appointments = appointments.append({'Termin':v.VarName, 'Start_Day':int(v.X)}, ignore_index=True)                
-        if v.VarName.startswith("start_hour"):
-            appointments = appointments.append({'Termin':v.VarName, 'Start_Hour':int(v.X)}, ignore_index=True)
-
+        if v.X >= 1:
+            if v.VarName.startswith("start["): 
+                appointments = appointments.append({'Termin':v.VarName}, ignore_index=True)                
+        
     # reformat dataframe
     appointments['Termin'] = appointments['Termin'].map(lambda x: x.lstrip('start_hourday[').rstrip(']'))
     appointments = appointments.groupby(by="Termin").sum().reset_index()
-
-    # merge with dataframe with timestamps
-    start_times = pd.merge(netzbezug, appointments,  how='left', left_on=['hour','day'], right_on = ['Start_Hour','Start_Day']).dropna()
-    start_times = start_times.drop(['balance', 'Start_Day', 'Start_Hour', 'hour', 'day'], axis=1)
-    start_times = start_times.rename(columns={'dateTime': 'Start_DateTime'}) # rename column
-    start_times = start_times.sort_values(by="Termin")
-    #start_times.to_csv('optimized.csv')
-    start_times['Start_Date'] = start_times['Start_DateTime'].dt.date
-    start_times['Start_Time'] = start_times['Start_DateTime'].dt.time
-
-
+    appointments[['DateTime', 'TerminID']] = appointments['Termin'].str.split(',', 1, expand=True)
+    appointments[['Date', 'Time']] = appointments['DateTime'].str.split(' ', 1, expand=True)
+    appointments = appointments.drop('Termin', axis=1)
+    appointments = appointments.drop('DateTime', axis=1)
+    appointments = appointments.sort_values(by="TerminID")
     
-    # output: csv/anderes Format mit optimierten Terminen --> render_template in Tabelle 
+    # to do: die optimierten Termine in DB speichern
 
-    return render_template("optimization_table.html", termin=start_times['Termin'].tolist(), start_date=start_times['Start_Date'].tolist(), start_time=start_times['Start_Time'].tolist())
+    # parse to datetime format
+    appointments['Date'] = pd.to_datetime(appointments['Date'], format="%Y.%m.%d")
+    appointments['Time'] = pd.to_datetime(appointments['Time'], format="%H:%M:%S")
+
+    # change format of date and time 
+    appointments['Date'] = appointments.Date.dt.strftime('%d.%m.%Y')
+    appointments['Time'] = appointments.Time.dt.strftime('%H:%M')
+
+    return render_template("optimization_table.html", termin=appointments['TerminID'].tolist(), start_date=appointments['Date'].tolist(), start_time=appointments['Time'].tolist())
     
 if __name__ == "__main__":
     app.run(debug=True)
