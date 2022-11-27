@@ -46,7 +46,7 @@ def optimization():
 @app.route('/reload_webapp')
 def reload():
     subprocess.call('./update_files.sh')
-    return '<h1>Reloading</h1>'
+    return redirect('/')
 
 # take input of start & end date of optimization 
 @app.route('/optimization', methods=['POST'])
