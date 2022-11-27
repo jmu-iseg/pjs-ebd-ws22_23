@@ -221,4 +221,4 @@ def optimization_table(start_date, end_date):
     return render_template("optimization_table.html", termin=start_times['Termin'].tolist(), start_date=start_times['Start_Date'].tolist(), start_time=start_times['Start_Time'].tolist())
     
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
