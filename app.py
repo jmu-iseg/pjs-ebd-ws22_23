@@ -24,7 +24,7 @@ def home():
 @app.route('/dashboard')
 def dashboard():
     #Executing SQL Statements
-    db_connection = sql.connect(host='127.0.0.1', database='energy', user='root', password='root', port=8889)
+    db_connection = sql.connect(host='127.0.0.1', database='energy', user='root', password='PJS2022', port=3306)
     query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
     df = pd.read_sql(query,db_connection)
     db_connection.close()
