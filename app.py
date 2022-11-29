@@ -78,7 +78,7 @@ def optimization_table(start_date, end_date):
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
     # read appointment data
-    termine_df = pd.read_csv('termine.csv', sep=";")
+    termine_df = pd.read_csv('/var/www/PJS/termine.csv', sep=";")
     termine_energy = dict(termine_df[['Termin','Energieverbrauch']].values) 
     termine_length = dict(termine_df[['Termin','Dauer']].values)
     
