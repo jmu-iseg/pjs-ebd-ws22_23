@@ -72,7 +72,7 @@ def optimization_table(start_date, end_date):
 
     # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
-    df.to_csv('/var/www/PJS/test.csv')
+    print(df)
 
     # calculate netzbezug
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
