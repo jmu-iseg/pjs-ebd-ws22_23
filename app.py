@@ -218,7 +218,10 @@ def optimization_table(start_date, end_date):
             
             # to do: die optimierten Termine in DB speichern
 
-            return render_template("optimization_table.html", termin=appointments_output['TerminID'].tolist(), start_date=appointments_output['Date'].tolist(), start_time=appointments_output['Time'].tolist(), bezeichnung=appointments_output['bezeichnung'].tolist(), dauer=appointments_output['dauer'].tolist())
+            # df to dict as output for render template 
+            appointments_dict = appointments_output.to_dict('records')
 
+            return render_template("optimization_table.html", my_list=appointments_dict)
+            
 if __name__ == "__main__":
     app.run(debug=True)
