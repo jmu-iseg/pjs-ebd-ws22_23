@@ -101,143 +101,151 @@
             </div>
         </div>
     </div>
- <!-- HTML Form (wrapped in a .bootstrap-iso div) -->
- <div class="bootstrap-iso">
-  <div class="container-fluid">
-   <div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-12">
-     <form class="form-horizontal" method="post">
-      <div class="form-group ">
+ 
+    <div class="bootstrap-iso">
+      <div class="container-fluid">
+       <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-12">  
+        <table class="table"> 
+          <thead>
+            <tr>
+              <th scope="col">Termin ID</th>
+              <th scope="col">Bezeichnung</th>
+              <th scope="col">Datum</th>
+              <th scope="col">Uhrzeit</th>
+              <th scope="col">Dauer (h)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{termin[0]}}</td>
+              <td>{{bezeichnung[0]}}</td>
+              <td>{{start_date[0]}}</td>
+              <td>{{start_time[0]}}</td>
+              <td>{{dauer[0]}}</td>
+            </tr>
+            <tr>
+              <td>{{termin[1]}}</td>
+              <td>{{bezeichnung[1]}}</td>
+              <td>{{start_date[1]}}</td>
+              <td>{{start_time[1]}}</td>
+              <td>{{dauer[1]}}</td>
+            </tr>
+            <tr>
+              <td>{{termin[2]}}</td>
+              <td>{{bezeichnung[2]}}</td>
+              <td>{{start_date[2]}}</td>
+              <td>{{start_time[2]}}</td>
+              <td>{{dauer[2]}}</td>
+            </tr>
+          </tbody>  
+        </table>
         <p></p>
-       <label class="control-label col-sm-2 requiredField" for="start_date">
-        Beginn
-        <span class="asteriskField">
-         *
-        </span>
-       </label>
-       <div class="col-sm-10">
-        <div class="input-group">
-         <div class="input-group-addon">
-          <i class="fa fa-calendar">
-          </i>
-         </div>
-         <input class="form-control" id="start_date" name="start_date" placeholder="DD.MM.YYYY" type="text"/>
         </div>
        </div>
       </div>
-      <div class="form-group ">
-       <label class="control-label col-sm-2 requiredField" for="end_date">
-        Ende
-        <span class="asteriskField">
-         *
-        </span>
-       </label>
-       <div class="col-sm-10">
-        <div class="input-group">
-         <div class="input-group-addon">
-          <i class="fa fa-calendar">
-          </i>
-         </div>
-         <input class="form-control" id="end_date" name="end_date" placeholder="DD.MM.YYYY" type="text"/>
-        </div>
-       </div>
-      </div>
-      <div class="form-group">
-       <div class="col-sm-10 col-sm-offset-2">
-        <button class="btn btn-primary " name="submit" type="submit">
-         Submit
-        </button>
-        <p></p>
-       </div>
-      </div>
-     </form>
     </div>
-   </div>
-  </div>
- </div>
- 
- 
- <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
- <!-- Include jQuery -->
- <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
- 
- <!-- Include Date Range Picker -->
- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
- 
- <script>
-   $(document).ready(function(){
-     var start_date_input=$('input[name="start_date"]'); //our date input has the name "date"
-     var end_date_input=$('input[name="end_date"]'); //our date input has the name "date"
-     var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-     var options={
-        format: 'dd.mm.yyyy',
-        container: container,
-        todayHighlight: true,
-        autoclose: true,
-      };
-      start_date_input.datepicker(options);
-      end_date_input.datepicker(options);
-    })
-   </script>
-
-<div class="bootstrap-iso">
-  <div class="container-fluid">
-   <div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-12">  
-    <table class="table">
-      <thead class="thead-dark"> 
-        <tr>
-          <th scope="col">Termin ID</th>
-          <th scope="col">Datum</th>
-          <th scope="col">Uhrzeit</th>
-        </tr>
-      </thead>
-
-        <tr>               
-            <td scope="row">{{ termin[0] }}</td>
-            <td>{{ start_date[0] }}</td>
-            <td>{{ start_time[0] }}</td>
-        </tr>
-        <tr>
-            <td scope="row">{{ termin[1] }}</td>
-            <td>{{ start_date[1] }}</td>
-            <td>{{ start_time[1] }}</td>
-        </tr>
-        <tr>
-          <td scope="row">{{ termin[2] }}</td>
-          <td>{{ start_date[2] }}</td>
-          <td>{{ start_time[2] }}</td>
-      </tr>
-    </table>
-    <p></p>
-    </div>
-   </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
-
+    
+    
     <style>
-    body {
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-      background: rgba(0,0,0,.1);
-    }
+      body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+        background: rgba(0,0,0,.1);
+      }
+      
+      header {
+        background: #fff;
+      }
+      
+      .inner {
+        position: absolute;
+        left: 280px;
+        width: calc(100% - 280px);
+      }
     
-    header {
+    .table-wrapper {
+      width: 700px;
+      margin: 30px auto;
       background: #fff;
+      padding: 20px;	
+      box-shadow: 0 1px 1px rgba(0,0,0,.05);
     }
+    .table-title {
+      padding-bottom: 10px;
+      margin: 0 0 10px;
+    }
+    .table-title h2 {
+      margin: 6px 0 0;
+      font-size: 22px;
+    }
+    .table-title .add-new {
+      float: right;
+      height: 30px;
+      font-weight: bold;
+      font-size: 12px;
+      text-shadow: none;
+      min-width: 100px;
+      border-radius: 50px;
+      line-height: 13px;
+    }
+    .table-title .add-new i {
+      margin-right: 4px;
+    }
+    table.table {
+      table-layout: fixed;
+    }
+    table.table tr th, table.table tr td {
+      border-color: #e9e9e9;
+    }
+    table.table th i {
+      font-size: 13px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    table.table th:last-child {
+      width: 100px;
+    }
+    table.table td a {
+      cursor: pointer;
+      display: inline-block;
+      margin: 0 5px;
+      min-width: 24px;
+    }    
+    table.table td a.add {
+      color: #27C46B;
+    }
+    table.table td a.edit {
+      color: #FFC107;
+    }
+    table.table td a.delete {
+      color: #E34724;
+    }
+    table.table td i {
+      font-size: 19px;
+    }
+    table.table td a.add i {
+      font-size: 24px;
+      margin-right: -1px;
+      position: relative;
+      top: 3px;
+    }    
+    table.table .form-control {
+      height: 32px;
+      line-height: 32px;
+      box-shadow: none;
+      border-radius: 2px;
+    }
+    table.table .form-control.error {
+      border-color: #f50000;
+    }
+    table.table td .add {
+      display: none;
+    }
+        
+       
     
-    .inner {
-      position: absolute;
-      left: 280px;
-      width: calc(100% - 280px);
-    }
-
-    </style>
+        </style>
   </div>
   
   </body>

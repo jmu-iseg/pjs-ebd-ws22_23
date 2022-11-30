@@ -56,6 +56,27 @@ def get_date():
     return optimization_table(start_date, end_date)
 
 
+termine = {}
+@app.route('/add_termin', methods=['GET', 'POST'])
+def add_termin():
+    id = request.form['id']
+    bezeichnung = request.form['bezeichnung']
+    dauer = request.form['dauer']
+    termine[id] = {'bezeichnung': bezeichnung, 'dauer': int(dauer)}
+    return print("")
+    
+
+@app.route('/delete_termin', methods=['GET', 'POST'])
+def delete_termin():
+    #id = request.form['id']
+    
+    termine.pop(id, None)
+    
+    return print("")
+    
+
+
+
 # optimization route
 @app.route('/optimization_table', methods=('GET', 'POST'))
 def optimization_table(start_date, end_date):
@@ -64,7 +85,7 @@ def optimization_table(start_date, end_date):
     end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
     
     # db query
-    db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
+    db_connection = sql.connect(host='127.0.0.1', database='energy', user='root', password='root', port=8889)
     query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
     df = pd.read_sql(query,db_connection)
     db_connection.close()
@@ -77,15 +98,17 @@ def optimization_table(start_date, end_date):
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
-    # read appointment data
-    termine_df = pd.read_csv('/var/www/PJS/termine.csv', sep=";")
-    termine_energy = dict(termine_df[['Termin','Energieverbrauch']].values) 
-    termine_length = dict(termine_df[['Termin','Dauer']].values)
+    # take termin input data 
+    termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer'])
+    termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
+    termine_df_neu['energieverbrauch'] = termine_df_neu['dauer'] * 20
     
+    # generate dicts of termin data 
+    termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
+    termine_length = dict(termine_df_neu[['termin_id','dauer']].values)
+    
+    # gurobi model
     with gp.Env(empty=True) as env:
-        env.setParam('WLSACCESSID', '9b407e02-8567-441b-aaab-53e6d5e7bff6')
-        env.setParam('WLSSECRET', '35167c90-8a1b-41e4-b736-46a476c67d3d')
-        env.setParam('LICENSEID', 905984)
         env.start()
         
         with gp.Model(env=env) as model:
@@ -183,18 +206,22 @@ def optimization_table(start_date, end_date):
             appointments = appointments.drop('Termin', axis=1)
             appointments = appointments.drop('DateTime', axis=1)
             appointments = appointments.sort_values(by="TerminID")
+
+            # join appointments with termine_df_neu
+            appointments_output = pd.merge(appointments, termine_df_neu, how='left', left_on=['TerminID'], right_on=['termin_id'])
+            appointments_output.drop(['termin_id','energieverbrauch'], axis=1)
+
+            # parse to datetime format
+            appointments_output['Date'] = pd.to_datetime(appointments_output['Date'], format="%Y.%m.%d")
+            appointments_output['Time'] = pd.to_datetime(appointments_output['Time'], format="%H:%M:%S")
+
+            # change format of date and time 
+            appointments_output['Date'] = appointments_output.Date.dt.strftime('%d.%m.%Y')
+            appointments_output['Time'] = appointments_output.Time.dt.strftime('%H:%M')
             
             # to do: die optimierten Termine in DB speichern
 
-            # parse to datetime format
-            appointments['Date'] = pd.to_datetime(appointments['Date'], format="%Y.%m.%d")
-            appointments['Time'] = pd.to_datetime(appointments['Time'], format="%H:%M:%S")
+            return render_template("optimization_table.html", termin=appointments_output['TerminID'].tolist(), start_date=appointments_output['Date'].tolist(), start_time=appointments_output['Time'].tolist(), bezeichnung=appointments_output['bezeichnung'].tolist(), dauer=appointments_output['dauer'].tolist())
 
-            # change format of date and time 
-            appointments['Date'] = appointments.Date.dt.strftime('%d.%m.%Y')
-            appointments['Time'] = appointments.Time.dt.strftime('%H:%M')
-
-            return render_template("optimization_table.html", termin=appointments['TerminID'].tolist(), start_date=appointments['Date'].tolist(), start_time=appointments['Time'].tolist())
-    
 if __name__ == "__main__":
     app.run(debug=True)

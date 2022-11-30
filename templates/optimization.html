@@ -104,8 +104,9 @@
 <div class="bootstrap-iso">
   <div class="container-fluid">
    <div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="col-md-8 col-sm-8 col-xs-12">
      <form class="form-horizontal" method="post">
+      <div class="col-sm-15"><h4>Planungshorizont festlegen</h4></div>
       <div class="form-group ">
         <p></p>
        <label class="control-label col-sm-2 requiredField" for="start_date">
@@ -114,7 +115,7 @@
          *
         </span>
        </label>
-       <div class="col-sm-10">
+       <div class="col-sm-4">
         <div class="input-group">
          <div class="input-group-addon">
           <i class="fa fa-calendar">
@@ -131,7 +132,7 @@
          *
         </span>
        </label>
-       <div class="col-sm-10">
+       <div class="col-sm-4">
         <div class="input-group">
          <div class="input-group-addon">
           <i class="fa fa-calendar">
@@ -141,20 +142,47 @@
         </div>
        </div>
       </div>
-      <div class="form-group">
-       <div class="col-sm-10 col-sm-offset-2">
-        <button class="btn btn-primary " name="submit" type="submit">
-         Submit
-        </button>
-       </div>
-      </div>
-     </form>
+      <p></p>
+      <div class="col-sm-15"><h4>Termine definieren</h4></div>
+      <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8"><h2></h2></div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Neuer Termin</button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Termin ID</th>
+                        <th>Bezeichnung</th>
+                        <th>Dauer (in Stunden)</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+        </div>
+            <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-1">
+              <button class="btn btn-info" name="submit" type="submit">
+                Optimieren
+              </button>
+            </div>
+            </div>
+      </form>
     </div>
    </div>
   </div>
  </div>
- 
- 
+
+
  <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
  <!-- Include jQuery -->
  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
@@ -162,11 +190,83 @@
  <!-- Include Date Range Picker -->
  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
- 
+
  <script>
-   $(document).ready(function(){
-     var start_date_input=$('input[name="start_date"]'); //our date input has the name "date"
-     var end_date_input=$('input[name="end_date"]'); //our date input has the name "date"
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+    //var actions = $("table td:last-child").html();
+    var actions = 
+                  '<a class="add" title="Termin hinzufügen" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>' +
+                  '<a class="delete" title="Termin löschen" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>' 
+                  
+
+    // Append table with add row form on add new button click
+      $(".add-new").click(function(){
+      $(this).attr("disabled", "disabled");
+      var index = $("table tbody tr:last-child").index();
+          var row = '<tr>' +
+              '<td><input type="text" class="form-control" name="id" id="id"></td>' +
+              '<td><input type="text" class="form-control" name="bezeichnung" id="bezeichnung"></td>' +
+              '<td><input type="text" class="form-control" name="dauer" id="dauer"></td>' +
+        '<td>' + actions + '</td>' +
+          '</tr>';
+        $("table").append(row);		
+      $("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+          $('[data-toggle="tooltip"]').tooltip();
+      });
+
+    // Add row on add button click
+    $(document).on("click", ".add", function(){
+      var empty = false;
+      var input = $(this).parents("tr").find('input[type="text"]');
+          input.each(function(){
+        if(!$(this).val()){
+          $(this).addClass("error");
+          empty = true;
+        } else{
+                  $(this).removeClass("error");
+              }
+      });
+      var id = $("#id").val();
+      var bezeichnung = $("#bezeichnung").val();
+      var dauer = $("#dauer").val();
+      $.post("/add_termin", {id: id, bezeichnung: bezeichnung, dauer: dauer}, function(add_termin) {}) 
+
+      $(this).parents("tr").find(".error").first().focus();
+      if(!empty){
+        input.each(function(){
+          $(this).parent("td").html($(this).val());
+        });			
+        $(this).parents("tr").find(".add, .edit").toggle();
+        $(".add-new").removeAttr("disabled");
+      }		
+      });
+
+    // Delete row on delete button click
+    $(document).on("click", ".delete", function(){
+      var tr = $(this).parents("tr");
+      var td = tr.find("td").eq(0);
+      var id = td.find('id').val();
+      //var id = $("#id").val();
+      
+      $(this).parents("tr").find("td:not(:last-child)")
+      $(this).parents("tr").remove();
+      $(".add-new").removeAttr("disabled"); 
+
+      //var id = test.find("id").val()
+      //var id = $("#id").val();
+      $.post("/delete_termin", function(delete_termin) {})
+
+    
+    });
+  });
+  </script>
+
+
+<script>
+  $(document).ready(function(){
+     var start_date_input=$('input[name="start_date"]'); 
+     var end_date_input=$('input[name="end_date"]'); 
      var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
      var options={
         format: 'dd.mm.yyyy',
@@ -174,15 +274,10 @@
         todayHighlight: true,
         autoclose: true,
       };
-      start_date_input.datepicker(options);
-      end_date_input.datepicker(options);
-    })
-   </script>
-    
-
- 
- 
- 
+    start_date_input.datepicker(options);
+    end_date_input.datepicker(options);
+  });
+</script>
 
 
 
@@ -202,6 +297,87 @@
       left: 280px;
       width: calc(100% - 280px);
     }
+
+.table-wrapper {
+    width: 700px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 20px;	
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+.table-title {
+    padding-bottom: 10px;
+    margin: 0 0 10px;
+}
+.table-title h2 {
+    margin: 6px 0 0;
+    font-size: 22px;
+}
+.table-title .add-new {
+    float: right;
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    min-width: 100px;
+    border-radius: 50px;
+    line-height: 13px;
+}
+.table-title .add-new i {
+    margin-right: 4px;
+}
+table.table {
+    table-layout: fixed;
+}
+table.table tr th, table.table tr td {
+    border-color: #e9e9e9;
+}
+table.table th i {
+    font-size: 13px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+table.table th:last-child {
+    width: 100px;
+}
+table.table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 24px;
+}    
+table.table td a.add {
+    color: #27C46B;
+}
+table.table td a.edit {
+    color: #FFC107;
+}
+table.table td a.delete {
+    color: #E34724;
+}
+table.table td i {
+    font-size: 19px;
+}
+table.table td a.add i {
+    font-size: 24px;
+    margin-right: -1px;
+    position: relative;
+    top: 3px;
+}    
+table.table .form-control {
+    height: 32px;
+    line-height: 32px;
+    box-shadow: none;
+    border-radius: 2px;
+}
+table.table .form-control.error {
+    border-color: #f50000;
+}
+table.table td .add {
+    display: none;
+}
+    
+
 
 
     </style>
