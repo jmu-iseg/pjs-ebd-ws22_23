@@ -85,7 +85,7 @@ def optimization_table(start_date, end_date):
     end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
     
     # db query
-    db_connection = sql.connect(host='127.0.0.1', database='energy', user='root', password='root', port=8889)
+    db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
     query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
     df = pd.read_sql(query,db_connection)
     db_connection.close()
