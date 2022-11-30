@@ -68,13 +68,9 @@ def add_termin():
 
 @app.route('/delete_termin', methods=['GET', 'POST'])
 def delete_termin():
-    #id = request.form['id']
-    
+    id = request.form['id']
     termine.pop(id, None)
-    
-    return print("")
-    
-
+    return print('termin_deleted')
 
 
 # optimization route
