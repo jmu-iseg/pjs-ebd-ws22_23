@@ -84,9 +84,9 @@ def optimization_table(start_date, end_date):
     termine_length = dict(termine_df[['Termin','Dauer']].values)
     
     with gp.Env(empty=True) as env:
-        env.setParam('WLSACCESSID', '9b407e02-8567-441b-aaab-53e6d5e7bff6')
-        env.setParam('WLSSECRET', '35167c90-8a1b-41e4-b736-46a476c67d3d')
-        env.setParam('LICENSEID', 905984)
+        #env.setParam('WLSACCESSID', '9b407e02-8567-441b-aaab-53e6d5e7bff6')
+        #env.setParam('WLSSECRET', '35167c90-8a1b-41e4-b736-46a476c67d3d')
+        #env.setParam('LICENSEID', 905984)
         env.start()
         
         with gp.Model(env=env) as model:
