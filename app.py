@@ -18,8 +18,6 @@ app = Flask(__name__)
 # home route 
 @app.route('/')
 def home():
-    subprocess.run('export HTTP_PROXY=http://www-cache.uni-wuerzburg.de:3128/', shell=True, check=True, text=True)
-    subprocess.run('export HTTPS_PROXY=http://www-cache.uni-wuerzburg.de:3128/', shell=True, check=True, text=True)
     return render_template("home.html")
 
 # dashboard route   
@@ -74,6 +72,7 @@ def optimization_table(start_date, end_date):
 
     # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
+    df.to_csv('/var/www/PJS/test.csv')
 
     # calculate netzbezug
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
