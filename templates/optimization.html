@@ -251,20 +251,13 @@
 
     // Delete row on delete button click
     $(document).on("click", ".delete", function(){
-      var tr = $(this).parents("tr");
-      var td = tr.find("td").eq(0);
-      var id = td.find('id').val();
-      //var id = $("#id").val();
-      
+      var $row = $(this).closest("tr"); // Finds the closest row <tr> 
+      var id = $row.find("td:nth-child(1)").text(); // Finds the 1st <td> element
+      $.post("/delete_termin",{id: id}, function(delete_termin) {})
+
       $(this).parents("tr").find("td:not(:last-child)")
       $(this).parents("tr").remove();
       $(".add-new").removeAttr("disabled"); 
-
-      //var id = test.find("id").val()
-      //var id = $("#id").val();
-      $.post("/delete_termin", function(delete_termin) {})
-
-    
     });
   });
   </script>

@@ -104,6 +104,17 @@
  
     <div class="bootstrap-iso">
       <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6 col-sm-6 col-xs-12">  
+            <h3>Hier sind die optimalen Zeitpunkte für Ihre Termine:</h3>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bootstrap-iso">
+      <div class="container-fluid">
        <div class="row">
         <div class="col-md-6 col-sm-6 col-xs-12">  
         <table class="table"> 
@@ -118,27 +129,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{{termin[0]}}</td>
-              <td>{{bezeichnung[0]}}</td>
-              <td>{{start_date[0]}}</td>
-              <td>{{start_time[0]}}</td>
-              <td>{{dauer[0]}}</td>
+            {% for item in my_list %}    
+            <tr>               
+                <td>{{ item.TerminID }}</td>
+                <td>{{ item.bezeichnung }}</td>
+                <td>{{ item.Date }}</td>
+                <td>{{ item.Time }}</td>                            
+                <td>{{ item.dauer }}</td>                            
             </tr>
-            <tr>
-              <td>{{termin[1]}}</td>
-              <td>{{bezeichnung[1]}}</td>
-              <td>{{start_date[1]}}</td>
-              <td>{{start_time[1]}}</td>
-              <td>{{dauer[1]}}</td>
-            </tr>
-            <tr>
-              <td>{{termin[2]}}</td>
-              <td>{{bezeichnung[2]}}</td>
-              <td>{{start_date[2]}}</td>
-              <td>{{start_time[2]}}</td>
-              <td>{{dauer[2]}}</td>
-            </tr>
+            {% endfor %}
           </tbody>  
         </table>
         <p>Kalendereintrag herunterladen:</p>
@@ -148,7 +147,7 @@
       </div>
     </div>
     
-    
+
     <style>
       body {
         min-height: 100vh;
