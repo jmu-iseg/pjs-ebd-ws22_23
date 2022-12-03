@@ -1,6 +1,6 @@
 #from crypt import methods
 from lib2to3.pgen2.pgen import DFAState
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect
+from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file
 import pandas as pd
 import numpy as np
 import mysql.connector as sql
@@ -11,6 +11,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import datetime
 from datetime import datetime
 import subprocess
+from icalendar import Calendar, Event, vCalAddress, vText
+import pytz
+import io
 
 # Create the Webserver
 app = Flask(__name__)
@@ -223,6 +226,27 @@ def optimization_table(start_date, end_date):
             # to do: die optimierten Termine in DB speichern
 
             return render_template("optimization_table.html", termin=appointments_output['TerminID'].tolist(), start_date=appointments_output['Date'].tolist(), start_time=appointments_output['Time'].tolist(), bezeichnung=appointments_output['bezeichnung'].tolist(), dauer=appointments_output['dauer'].tolist())
+
+@app.route('/return-files/')
+def return_files_calendar():
+    cal = Calendar()
+    cal.add('attendee', 'MAILTO:axel.winkelmann@uni-wuerzburg.de')
+    event = Event()
+    event.add('summary', 'Geschäftskritisches Businessmeeting')
+    event.add('dtstart', datetime(2022, 10, 24, 8, 0, 0, tzinfo=pytz.utc))
+    event.add('dtend', datetime(2022, 10, 24, 10, 0, 0, tzinfo=pytz.utc))
+    event.add('dtstamp', datetime(2022, 10, 24, 0, 10, 0, tzinfo=pytz.utc))
+    organizer = vCalAddress('MAILTO:hannes.metz@stud-mail.uni-wuerzburg.de')
+    organizer.params['cn'] = vText('Hannes Metz')
+    organizer.params['role'] = vText('CEO of Uni Wuerzburg')
+    event['organizer'] = organizer
+    event['location'] = vText('Würzburg, DE')
+    # Adding events to calendar
+    cal.add_component(event)
+    buf = io.BytesIO()
+    buf.write(cal.to_ical())
+    buf.seek(0)
+    return send_file(buf, download_name='Kalendereintrag.ics')
 
 if __name__ == "__main__":
     app.run(debug=True)
