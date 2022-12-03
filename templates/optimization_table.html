@@ -135,13 +135,15 @@
                 <td>{{ item.bezeichnung }}</td>
                 <td>{{ item.Date }}</td>
                 <td>{{ item.Time }}</td>                            
-                <td>{{ item.dauer }}</td>                            
+                <td>{{ item.dauer }}</td>   
+                <td>
+                  <a href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}" target="blank"><button class='btn btn-primary'>Kalendereintrag</button></a>
+                </td>                         
             </tr>
             {% endfor %}
           </tbody>  
         </table>
-        <p>Kalendereintrag herunterladen:</p>
-        <a href="/return-files/" target="blank"><button class='btn btn-default'>Download!</button></a>
+        <p></p>
         </div>
        </div>
       </div>

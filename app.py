@@ -8,11 +8,9 @@ import gurobipy as gp
 from gurobipy import GRB
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-import datetime
-from datetime import datetime
+from datetime import datetime, timedelta
 import subprocess
 from icalendar import Calendar, Event, vCalAddress, vText
-import pytz
 import io
 
 # Create the Webserver
@@ -226,26 +224,27 @@ def optimization_table(start_date, end_date):
 
             return render_template("optimization_table.html", my_list=appointments_dict)
 
-@app.route('/return-files/')
+@app.route('/return-files')
 def return_files_calendar():
+    starttime = "{} {}".format(request.args.get('datum'), request.args.get('uhrzeit'))
+    starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
+    endtime_formatted = starttime_formatted + timedelta(hours=float(request.args.get('dauer')))
+    filename = "Termineinladung {}.ics".format(request.args.get('id'))
     cal = Calendar()
-    cal.add('attendee', 'MAILTO:axel.winkelmann@uni-wuerzburg.de')
     event = Event()
-    event.add('summary', 'Geschäftskritisches Businessmeeting')
-    event.add('dtstart', datetime(2022, 10, 24, 8, 0, 0, tzinfo=pytz.utc))
-    event.add('dtend', datetime(2022, 10, 24, 10, 0, 0, tzinfo=pytz.utc))
-    event.add('dtstamp', datetime(2022, 10, 24, 0, 10, 0, tzinfo=pytz.utc))
+    event.add('summary', request.args.get('bezeichnung'))
+    event.add('dtstart', starttime_formatted)
+    event.add('dtend', endtime_formatted)
     organizer = vCalAddress('MAILTO:hannes.metz@stud-mail.uni-wuerzburg.de')
     organizer.params['cn'] = vText('Hannes Metz')
     organizer.params['role'] = vText('CEO of Uni Wuerzburg')
     event['organizer'] = organizer
     event['location'] = vText('Würzburg, DE')
-    # Adding events to calendar
     cal.add_component(event)
     buf = io.BytesIO()
     buf.write(cal.to_ical())
     buf.seek(0)
-    return send_file(buf, download_name='Kalendereintrag.ics')
+    return send_file(buf, download_name=filename)
             
 if __name__ == "__main__":
     app.run(debug=True)
