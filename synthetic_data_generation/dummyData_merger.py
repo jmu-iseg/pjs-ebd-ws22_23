@@ -18,4 +18,4 @@ frames = [pvOutput, basicConsumption, managementConsumption, productionConsumpti
 
 df_merged = reduce(lambda  left,right: pd.merge(left,right,on=['dateTime'],how='outer'), frames)
 
-df_merged.to_csv('sensor.csv')
+df_merged.to_csv('../sensor.csv')
