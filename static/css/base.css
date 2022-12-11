@@ -51,6 +51,7 @@ body {
 
 header {
     background: #fff;
+    box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
 }
 
 .inner {
@@ -77,6 +78,7 @@ main {
 
 .card {
     box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
+    border: 0;
 }
 
 @media (min-width: 1200px) {
