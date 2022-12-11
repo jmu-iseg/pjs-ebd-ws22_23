@@ -8,19 +8,19 @@
 <ul class="nav nav-pills flex-column mb-auto">
     <li class="nav-item">
         <a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
-            <img height="20" width="20" class="bi pe-none me-2"src="{{ url_for('static', filename='img/house.svg') }}">
+            <img height="20" width="20" class="bi pe-none"src="{{ url_for('static', filename='img/house.svg') }}">
             <span class="nav-text">Home</span>
         </a>
     </li>
     <li>
         <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.path == '/dashboard' %}active{% endif %} text-white">
-            <img height="20" width="20" class="bi pe-none me-2"src="{{ url_for('static', filename='img/dashboard.svg') }}">
+            <img height="20" width="20" class="bi pe-none"src="{{ url_for('static', filename='img/dashboard.svg') }}">
             <span class="nav-text">Dashboard</span>
         </a>
     </li>
     <li>
         <a href="{{ url_for('optimization') }}" class="nav-link {% if request.path == '/optimization' %}active{% endif %} text-white">
-            <img height="20" width="20" class="bi pe-none me-2"src="{{ url_for('static', filename='img/flask.svg') }}">
+            <img height="20" width="20" class="bi pe-none"src="{{ url_for('static', filename='img/flask.svg') }}">
             <span class="nav-text">Optimization</span>
         </a>
     </li>
