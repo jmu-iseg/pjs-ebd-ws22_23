@@ -24,6 +24,10 @@
   margin-left: .5rem;
 }
 
+.nav-link:active {
+  background: rgb(53, 60, 66);
+}
+
 .sidebarmin .inner {
   position: absolute;
   left: 60px;

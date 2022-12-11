@@ -47,6 +47,22 @@
         </a>
     </li>
 </ul>
+
+<div class="nav-item">
+    <a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
+        <script src="{{ url_for('static', filename='js/icons/home.js') }}"></script>
+        <lord-icon
+            class="bi pe-none"
+            src="{{ url_for('static', filename='js/icons/home.json') }}"
+            trigger="hover"
+            target=".nav-item"
+            colors="primary:#ffffff"
+            style="width:26px;height:26px;vertical-align: middle;">
+        </lord-icon>
+        <span class="nav-text">Home</span>
+    </a>
+</div>
+
 <hr>
 <div class="dropdown">
     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
