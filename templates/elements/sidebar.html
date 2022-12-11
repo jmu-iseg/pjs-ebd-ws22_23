@@ -9,19 +9,19 @@
     <li class="nav-item">
         <a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
             <img height="20" width="20" class="bi pe-none me-2"src="{{ url_for('static', filename='img/house.svg') }}">
-            Home
+            <span class="nav-text">Home</span>
         </a>
     </li>
     <li>
         <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.path == '/dashboard' %}active{% endif %} text-white">
             <img height="20" width="20" class="bi pe-none me-2"src="{{ url_for('static', filename='img/dashboard.svg') }}">
-            Dashboard
+            <span class="nav-text">Dashboard</span>
         </a>
     </li>
     <li>
         <a href="{{ url_for('optimization') }}" class="nav-link {% if request.path == '/optimization' %}active{% endif %} text-white">
             <img height="20" width="20" class="bi pe-none me-2"src="{{ url_for('static', filename='img/flask.svg') }}">
-            Optimization
+            <span class="nav-text">Optimization</span>
         </a>
     </li>
 </ul>
@@ -30,7 +30,7 @@
     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
         data-bs-toggle="dropdown" aria-expanded="false">
         <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong>User</strong>
+        <span class="nav-text"><strong>User</strong></span>
     </a>
     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
         <li><a class="dropdown-item" href="#">Settings</a></li>

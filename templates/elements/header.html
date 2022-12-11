@@ -4,13 +4,10 @@
             <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
                 <use xlink:href="#bootstrap"></use>
             </svg>
-        </a>
 
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
-            <li><a href="{{ url_for('dashboard') }}" class="nav-link px-2 link-dark">Dashboard</a></li>
-            <li><a href="{{ url_for('optimization') }}" class="nav-link px-2 link-dark">Optimization</a></li>
-        </ul>
+        <button class="navbar-toggler" type="button" data-bs-toggle="sidebar" data-bs-target="#offcanvasNavbar2" aria-controls="offcanvasNavbar2">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
         <div class="dropdown text-end">
             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
