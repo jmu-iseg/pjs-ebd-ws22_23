@@ -1,255 +1,59 @@
-<!DOCTYPE html>
-<html lang="de">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energieoptimierung</title>
-    <script   src="https://code.jquery.com/jquery-3.6.1.js"   integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="   crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-  
-
-    <!-- Special version of Bootstrap that only affects content wrapped in .bootstrap-iso -->
-    <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" /> 
-
-    <!--Font Awesome (added because you use icons in your prepend/append)-->
-    <link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
- 
-    <!-- Inline CSS based on choices in "Settings" tab -->
-    <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
- 
-  </head>
-  <body>
-  <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;position: absolute;height: 100%;">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-      <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-      <span class="fs-4">Energieoptimierung</span>
-    </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="{{ url_for("home") }}" class="nav-link text-white" aria-current="page">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-          Home
-        </a>
-      </li>
-      <li>
-        <a href="{{ url_for("dashboard") }}" class="nav-link text-white">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link active">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-          Optimization
-        </a>
-      </li>
-    </ul>
-    <hr>
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong>User</strong>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-        <li><a class="dropdown-item" href="#">Settings</a></li>
-        <li><a class="dropdown-item" href="#">Profile</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#">Sign out</a></li>
-      </ul>
-    </div>
-  </div>
-  
-  <div class="inner">
-      <header class="p-3 mb-3 border-bottom">
-        <div class="container">
-          <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
-              <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
-            </a>
-    
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="{{ url_for("home") }}" class="nav-link px-2 link-dark">Home</a></li>
-              <li><a href="{{ url_for("dashboard") }}" class="nav-link px-2 link-dark">Dashboard</a></li>
-              <li><a href="#" class="nav-link px-2 link-secondary">Optimization</a></li>
-            </ul>
-    
-            <div class="dropdown text-end">
-              <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-              </a>
-              <ul class="dropdown-menu text-small">
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
-              </ul>
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col">
+    <h2>Optimization</h2>
+    <div class="card">
+      <div class="card-body">
+        <div class="bootstrap-iso">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <h3>Hier sind die optimalen Zeitpunkte für Ihre Termine:</h3>
+                <p></p>
+              </div>
             </div>
           </div>
         </div>
-      </header>
-      <div class="container text-center">
-          <div class="row">
-            <div class="col">
-              <h2>Optimization</h2>
+
+        <div class="bootstrap-iso">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Termin ID</th>
+                      <th scope="col">Bezeichnung</th>
+                      <th scope="col">Datum</th>
+                      <th scope="col">Uhrzeit</th>
+                      <th scope="col">Dauer (h)</th>
+                      <th scope="col">Kalendereinladung</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in my_list %}
+                    <tr>
+                      <td>{{ item.TerminID }}</td>
+                      <td>{{ item.bezeichnung }}</td>
+                      <td>{{ item.Date }}</td>
+                      <td>{{ item.Time }}</td>
+                      <td>{{ item.dauer }}</td>
+                      <td>
+                        <a href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
+                          target="blank"><button class='btn btn-primary'>Kalendereintrag</button></a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <p></p>
+              </div>
             </div>
-        </div>
-    </div>
- 
-    <div class="bootstrap-iso">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-6 col-sm-6 col-xs-12">  
-            <h3>Hier sind die optimalen Zeitpunkte für Ihre Termine:</h3>
-            <p></p>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="bootstrap-iso">
-      <div class="container-fluid">
-       <div class="row">
-        <div class="col-md-6 col-sm-6 col-xs-12">  
-        <table class="table"> 
-          <thead>
-            <tr>
-              <th scope="col">Termin ID</th>
-              <th scope="col">Bezeichnung</th>
-              <th scope="col">Datum</th>
-              <th scope="col">Uhrzeit</th>
-              <th scope="col">Dauer (h)</th>
-              <th scope="col">Kalendereinladung</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in my_list %}    
-            <tr>               
-                <td>{{ item.TerminID }}</td>
-                <td>{{ item.bezeichnung }}</td>
-                <td>{{ item.Date }}</td>
-                <td>{{ item.Time }}</td>                            
-                <td>{{ item.dauer }}</td>   
-                <td>
-                  <a href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}" target="blank"><button class='btn btn-primary'>Kalendereintrag</button></a>
-                </td>                         
-            </tr>
-            {% endfor %}
-          </tbody>  
-        </table>
-        <p></p>
-        </div>
-       </div>
-      </div>
-    </div>
-    
-
-    <style>
-      body {
-        min-height: 100vh;
-        min-height: -webkit-fill-available;
-        background: rgba(0,0,0,.1);
-      }
-      
-      header {
-        background: #fff;
-      }
-      
-      .inner {
-        position: absolute;
-        left: 280px;
-        width: calc(100% - 280px);
-      }
-    
-    .table-wrapper {
-      width: 700px;
-      margin: 30px auto;
-      background: #fff;
-      padding: 20px;	
-      box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    }
-    .table-title {
-      padding-bottom: 10px;
-      margin: 0 0 10px;
-    }
-    .table-title h2 {
-      margin: 6px 0 0;
-      font-size: 22px;
-    }
-    .table-title .add-new {
-      float: right;
-      height: 30px;
-      font-weight: bold;
-      font-size: 12px;
-      text-shadow: none;
-      min-width: 100px;
-      border-radius: 50px;
-      line-height: 13px;
-    }
-    .table-title .add-new i {
-      margin-right: 4px;
-    }
-    table.table {
-      table-layout: fixed;
-    }
-    table.table tr th, table.table tr td {
-      border-color: #e9e9e9;
-    }
-    table.table th i {
-      font-size: 13px;
-      margin: 0 5px;
-      cursor: pointer;
-    }
-    table.table th:last-child {
-      width: 100px;
-    }
-    table.table td a {
-      cursor: pointer;
-      display: inline-block;
-      margin: 0 5px;
-      min-width: 24px;
-    }    
-    table.table td a.add {
-      color: #27C46B;
-    }
-    table.table td a.edit {
-      color: #FFC107;
-    }
-    table.table td a.delete {
-      color: #E34724;
-    }
-    table.table td i {
-      font-size: 19px;
-    }
-    table.table td a.add i {
-      font-size: 24px;
-      margin-right: -1px;
-      position: relative;
-      top: 3px;
-    }    
-    table.table .form-control {
-      height: 32px;
-      line-height: 32px;
-      box-shadow: none;
-      border-radius: 2px;
-    }
-    table.table .form-control.error {
-      border-color: #f50000;
-    }
-    table.table td .add {
-      display: none;
-    }
-        
-       
-    
-        </style>
   </div>
-  
-  </body>
-</html>
+</div>
+{% endblock %}
