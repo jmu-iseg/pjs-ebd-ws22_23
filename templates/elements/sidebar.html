@@ -50,16 +50,16 @@
 
 <div class="nav-item">
     <a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
-        <script src="{{ url_for('static', filename='js/icons/home.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/icons/arrow.js') }}"></script>
         <lord-icon
             class="bi pe-none"
-            src="{{ url_for('static', filename='js/icons/home.json') }}"
+            src="{{ url_for('static', filename='js/icons/arrow.json') }}"
             trigger="hover"
             target=".nav-item"
             colors="primary:#ffffff"
-            style="width:26px;height:26px;vertical-align: middle;">
+            style="width:26px;height:26px;vertical-align: middle;transform: rotate(90deg);">
         </lord-icon>
-        <span class="nav-text">Home</span>
+        <span class="nav-text">Menü einklappen</span>
     </a>
 </div>
 
