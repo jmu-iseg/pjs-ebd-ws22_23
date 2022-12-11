@@ -8,25 +8,19 @@
 <ul class="nav nav-pills flex-column mb-auto">
     <li class="nav-item">
         <a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
-            <svg class="bi pe-none me-2" width="16" height="16">
-                <use xlink:href="#home"></use>
-            </svg>
+            <img class="bi pe-none me-2"src="{{ url_for('static', filename='img/home.svg') }}">
             Home
         </a>
     </li>
     <li>
         <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.path == '/dashboard' %}active{% endif %} text-white">
-            <svg class="bi pe-none me-2" width="16" height="16">
-                <use xlink:href="#speedometer2"></use>
-            </svg>
+            <img class="bi pe-none me-2"src="{{ url_for('static', filename='img/dashboard.svg') }}">
             Dashboard
         </a>
     </li>
     <li>
         <a href="{{ url_for('optimization') }}" class="nav-link {% if request.path == '/optimization' %}active{% endif %} text-white">
-            <svg class="bi pe-none me-2" width="16" height="16">
-                <use xlink:href="#table"></use>
-            </svg>
+            <img class="bi pe-none me-2"src="{{ url_for('static', filename='img/flask.svg') }}">
             Optimization
         </a>
     </li>
