@@ -35,7 +35,7 @@ def dashboard():
     # filter time (todo: dynamic with user input)
     df = df[(df['dateTime'] >= '2022-07-04 00:00:00') & (df['dateTime'] <= '2022-07-06 23:00:00')]
 
-    return render_template("templates/pages/dashboard.html", labels=df['dateTime'].tolist(), output=df['output'].tolist(), bConsum=df['basicConsumption'].tolist(), mConsum=df['managementConsumption'].tolist(), pConsum=df['productionConsumption'].tolist())
+    return render_template("/pages/dashboard.html", labels=df['dateTime'].tolist(), output=df['output'].tolist(), bConsum=df['basicConsumption'].tolist(), mConsum=df['managementConsumption'].tolist(), pConsum=df['productionConsumption'].tolist())
 
 # optimization route
 @app.route('/optimization')
@@ -43,7 +43,7 @@ def optimization():
     # input: Start & End DateTime (Zeitraum der Planung)
     
 
-    return render_template("templates/pages/optimization.html")
+    return render_template("/pages/optimization.html")
     
 @app.route('/reload_webapp')
 def reload():
@@ -223,7 +223,7 @@ def optimization_table(start_date, end_date):
             # df to dict as output for render template 
             appointments_dict = appointments_output.to_dict('records')
 
-            return render_template("templates/pages/optimization_table.html", my_list=appointments_dict)
+            return render_template("/pages/optimization_table.html", my_list=appointments_dict)
 
 @app.route('/return-files')
 def return_files_calendar():
