@@ -20,7 +20,7 @@
             <span class="nav-text">Home</span>
         </a>
     </li>
-    <li>
+    <li class="nav-item">
         <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.path == '/dashboard' %}active{% endif %} text-white">
             <script src="https://cdn.lordicon.com/fudrjiwc.js"></script>
             <lord-icon
@@ -33,7 +33,7 @@
             <span class="nav-text">Dashboard</span>
         </a>
     </li>
-    <li>
+    <li class="nav-item">
         <a href="{{ url_for('optimization') }}" class="nav-link {% if request.path == '/optimization' %}active{% endif %} text-white">
             <script src="https://cdn.lordicon.com/fudrjiwc.js"></script>
             <lord-icon
