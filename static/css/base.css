@@ -45,7 +45,7 @@ Vars
 body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    background: rgba(11, 15, 31, 0.1);
+    background: rgb(250, 251, 254);;
     font-family: Nunito, sans-serif;
 }
 
