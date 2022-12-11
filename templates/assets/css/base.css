@@ -1,0 +1,27 @@
+body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    background: rgba(0, 0, 0, .1);
+}
+
+header {
+    background: #fff;
+}
+
+.inner {
+    position: absolute;
+    left: 280px;
+    width: calc(100% - 280px);
+}
+
+html {
+    height: -webkit-fill-available;
+}
+
+main {
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
