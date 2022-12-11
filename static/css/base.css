@@ -2,7 +2,9 @@
 Vars
 */
 :root {
---bs-border-radius: 0;
+    --bs-border-radius: 0;
+    --bs-nav-pills-border-radius: 0;
+    --bs-card-border-radius: 0;
 }
 
 body {
