@@ -57,6 +57,7 @@ header {
     position: absolute;
     left: 280px;
     width: calc(100% - 280px);
+    transition: width .2s ease;
 }
 
 html {

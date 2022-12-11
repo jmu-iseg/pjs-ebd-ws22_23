@@ -2,6 +2,7 @@
   width: 280px;
   position: absolute;
   height: 100%;
+  transition: width .2s ease;
 }
 
 .sidebarmin .sidebar {
