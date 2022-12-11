@@ -103,9 +103,9 @@
       $(this).attr("disabled", "disabled");
       var index = $("table tbody tr:last-child").index();
       var row = '<tr>' +
-        '<td><input type="text" class="form-control" name="id" id="id"></td>' +
-        '<td><input type="text" class="form-control" name="bezeichnung" id="bezeichnung"></td>' +
-        '<td><input type="text" class="form-control" name="dauer" id="dauer"></td>' +
+        '<td><input type="text" class="form-control" required name="id" id="id"></td>' +
+        '<td><input type="text" class="form-control" required name="bezeichnung" id="bezeichnung"></td>' +
+        '<td><input type="text" class="form-control" required name="dauer" id="dauer"></td>' +
         '<td>' + actions + '</td>' +
         '</tr>';
       $("table").append(row);
