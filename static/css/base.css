@@ -45,7 +45,7 @@ Vars
 body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    background: rgba(0, 0, 0, .1);
+    background: rgba(11, 15, 31, 0.1);
     font-family: Nunito, sans-serif;
 }
 
@@ -77,4 +77,10 @@ main {
 
 .card {
     box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
+}
+
+@media (min-width: 1200px) {
+    .fs-4 {
+        font-size: 1.2rem!important;
+    }
 }
