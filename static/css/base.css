@@ -2,7 +2,7 @@
 Vars
 */
 :root {
---bs-border-radius: 0.375rem;
+--bs-border-radius: 0;
 }
 
 body {
