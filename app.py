@@ -14,7 +14,8 @@ from icalendar import Calendar, Event, vCalAddress, vText
 import io
 
 # Create the Webserver
-app = Flask(__name__)
+template_dir = os.path.abspath('templates')
+app = Flask(__name__, template_folder=template_dir)
    
 # home route 
 @app.route('/')
