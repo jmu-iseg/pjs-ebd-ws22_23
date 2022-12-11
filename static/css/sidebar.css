@@ -23,11 +23,11 @@
   margin-left: .5rem;
 }
 
-.nav-link {
+.nav-link.´.text-white {
   color: #c8c8c8;
 }
 
-.nav-link:hover {
+.nav-link.text-white:hover {
   color: #fff;
 }
 
