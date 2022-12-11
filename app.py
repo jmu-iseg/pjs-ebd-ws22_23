@@ -15,8 +15,7 @@ import io
 import os
 
 # Create the Webserver
-template_dir = os.path.abspath('templates')
-app = Flask(__name__, template_folder=template_dir)
+app = Flask(__name__)
    
 # home route 
 @app.route('/')
