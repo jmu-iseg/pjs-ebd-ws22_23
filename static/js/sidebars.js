@@ -8,4 +8,4 @@ $(document).ready(function () {
   if (sessionStorage.getItem("sidebar") == "min") {
     $("body").addClass("sidebarmin");
   }
-}
+});
