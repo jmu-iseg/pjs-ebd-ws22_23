@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 import subprocess
 from icalendar import Calendar, Event, vCalAddress, vText
 import io
+import os
 
 # Create the Webserver
 template_dir = os.path.abspath('templates')
