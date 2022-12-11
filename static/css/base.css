@@ -2,9 +2,7 @@
 Vars
 */
 :root {
-    --bs-border-radius: 0;
-    --bs-nav-pills-border-radius: 0;
-    --bs-card-border-radius: 0;
+    --border-radius: 0;
 }
 
 body {
@@ -33,4 +31,8 @@ main {
     max-height: 100vh;
     overflow-x: auto;
     overflow-y: hidden;
+}
+
+.nav-pills .nav-link {
+    border-radius: var(--border-radius);
 }
