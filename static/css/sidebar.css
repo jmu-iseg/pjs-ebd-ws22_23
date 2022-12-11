@@ -2,7 +2,6 @@
   width: 280px;
   position: absolute;
   height: 100%;
-  transition: width .2s ease;
 }
 
 .sidebarmin .sidebar {
@@ -32,6 +31,10 @@
   position: absolute;
   left: 60px;
   width: calc(100% - 60px);
+}
+
+.sidebarmin .sidebar-toggle-icon {
+  transform: rotate(90deg);
 }
 
 .dropdown-toggle {
