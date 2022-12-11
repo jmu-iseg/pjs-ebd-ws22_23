@@ -12,23 +12,37 @@
             <lord-icon
                 class="bi pe-none"
                 src="https://cdn.lordicon.com/osuxyevn.json"
-                trigger="click"
+                trigger="hover"
                 target=".nav-item"
-                colors="primary:#121331"
-                style="width:32px;height:32px">
+                colors="primary:#ffffff"
+                style="width:32px;height:32px;vertical-align: middle;">
             </lord-icon>
             <span class="nav-text">Home</span>
         </a>
     </li>
     <li>
         <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.path == '/dashboard' %}active{% endif %} text-white">
-            <img height="20" width="20" class="bi pe-none" src="{{ url_for('static', filename='img/dashboard.svg') }}">
+            <script src="https://cdn.lordicon.com/fudrjiwc.js"></script>
+            <lord-icon
+                src="https://cdn.lordicon.com/ofwpzftr.json"
+                trigger="hover"
+                target=".nav-item"
+                colors="primary:#ffffff"
+                style="width:32px;height:32px;vertical-align: middle;">
+            </lord-icon>
             <span class="nav-text">Dashboard</span>
         </a>
     </li>
     <li>
         <a href="{{ url_for('optimization') }}" class="nav-link {% if request.path == '/optimization' %}active{% endif %} text-white">
-            <img height="20" width="20" class="bi pe-none" src="{{ url_for('static', filename='img/flask.svg') }}">
+            <script src="https://cdn.lordicon.com/fudrjiwc.js"></script>
+            <lord-icon
+                src="https://cdn.lordicon.com/qjuahhae.json"
+                trigger="hover"
+                target=".nav-item"
+                colors="primary:#ffffff"
+                style="width:32px;height:32px;vertical-align: middle;">
+            </lord-icon>
             <span class="nav-text">Optimization</span>
         </a>
     </li>
