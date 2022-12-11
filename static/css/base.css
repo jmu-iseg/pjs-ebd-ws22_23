@@ -1,3 +1,10 @@
+/*
+Vars
+*/
+:root {
+--bs-border-radius: 0.375rem;
+}
+
 body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
