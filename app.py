@@ -19,7 +19,7 @@ app = Flask(__name__)
 # home route 
 @app.route('/')
 def home():
-    return render_template("/templates/pages/home.html")
+    return render_template("/pages/home.html")
 
 # dashboard route   
 @app.route('/dashboard')
