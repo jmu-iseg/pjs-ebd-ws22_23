@@ -5,7 +5,7 @@
 }
 
 .sidebarmin .sidebar {
-    width: 60px;
+  width: 60px;
 }
 
 .sidebarmin .nav-link {
@@ -15,6 +15,12 @@
 .sidebarmin .nav-text {
   opacity: 0;
   visibility: hidden;
+}
+
+.sidebarmin .inner {
+  position: absolute;
+  left: 60px;
+  width: calc(100% - 60px);
 }
 
 .dropdown-toggle {
