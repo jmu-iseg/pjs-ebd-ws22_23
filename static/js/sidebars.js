@@ -1,7 +1,7 @@
 $(document).ready(function () {
   /* gebe body eine Klasse, wenn der Menü-Button gedrückt wird */
 
-  if ($(window).width() < 960{
+  if ($(window).width() < 960){
     $(".sidebar-toggle").on("click", function () {
       $("body").toggleClass("sidebarmax");
       console.log("Wechsel");
