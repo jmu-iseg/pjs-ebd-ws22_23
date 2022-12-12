@@ -23,7 +23,11 @@
   margin-left: .5rem;
 }
 
-.nav-link.´.text-white {
+.sidebar-toggle {
+  cursor: pointer;
+}
+
+.nav-link.text-white {
   color: #c8c8c8;
 }
 
@@ -46,7 +50,7 @@
 }
 
 .sidebarmin .sidebar-toggle-icon {
-  transform: rotate(90deg);
+  transform: rotate(90deg) !important;
 }
 
 .dropdown-toggle {
