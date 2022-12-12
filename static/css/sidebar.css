@@ -2,7 +2,7 @@
   width: 60px;
   position: absolute;
   height: 100%;
-  padding: 0 .6rem;
+  padding: 1rem .6rem;
 }
 
 .inner {
@@ -45,8 +45,6 @@
 
   .sidebar {
     width: 280px;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
   }
 
   .inner {
