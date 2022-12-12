@@ -6,7 +6,7 @@
 
 .inner {
   position: absolute;
-  left: 280px;
+  left: 60px;
   width: calc(100% - 60px);
 }
 
@@ -18,12 +18,30 @@
   transform: rotate(90deg) !important;
 }
 
+.sidebarmin .inner {
+  position: absolute;
+  left: 60px;
+  width: calc(100% - 60px);
+}
+
+.nav-link {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.nav-text {
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+}
+
 @media (min-width: 960px) {
   .sidebar {
     width: 280px;
   }
 
   .inner {
+    left: 280px;
     width: calc(100% - 280px);
   }
 
@@ -34,22 +52,24 @@
   .sidebarmin .sidebar-toggle-icon {
     transform: rotate(90deg) !important;
   }
+
+  .sidebarmin .sidebar {
+    width: 60px;
+  }
+  
+  .sidebarmin .nav-link {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .sidebarmin .nav-text {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+  }
 }
 
-.sidebarmin .sidebar {
-  width: 60px;
-}
 
-.sidebarmin .nav-link {
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-.sidebarmin .nav-text {
-  opacity: 0;
-  visibility: hidden;
-  display: none;
-}
 
 .nav-text {
   margin-left: .5rem;
@@ -73,12 +93,6 @@
 
 .nav-pills .nav-link.active {
   background-color: #5263b4;
-}
-
-.sidebarmin .inner {
-  position: absolute;
-  left: 60px;
-  width: calc(100% - 60px);
 }
 
 .dropdown-toggle {
