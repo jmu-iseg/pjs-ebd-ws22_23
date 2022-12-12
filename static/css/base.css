@@ -54,12 +54,6 @@ header {
     box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
 }
 
-.inner {
-    position: absolute;
-    left: 280px;
-    width: calc(100% - 280px);
-}
-
 html {
     height: -webkit-fill-available;
 }
