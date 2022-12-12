@@ -2,6 +2,7 @@
   width: 60px;
   position: absolute;
   height: 100%;
+  padding: 0 .6rem;
 }
 
 .inner {
@@ -25,8 +26,8 @@
 }
 
 .nav-link {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
 .nav-text {
@@ -36,6 +37,12 @@
 }
 
 @media (min-width: 960px) {
+  .nav-text {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+  }
+
   .sidebar {
     width: 280px;
   }
@@ -55,11 +62,6 @@
 
   .sidebarmin .sidebar {
     width: 60px;
-  }
-  
-  .sidebarmin .nav-link {
-    padding-left: 5px;
-    padding-right: 5px;
   }
   
   .sidebarmin .nav-text {
