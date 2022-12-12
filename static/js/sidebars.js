@@ -5,14 +5,13 @@ $(document).ready(function () {
     console.log("Wechsel");
     if(sessionStorage.getItem("key") != "min") {
       sessionStorage.setItem("sidebar", "min");
+    } else {
+      sessionStorage.setItem("sidebar", "max");
     };
+
   });
 
-  if (sessionStorage.getItem("sidebar") == "min") {
-    $("body").addClass("sidebarmin");
-  }
-
-  if ($(window).width() < 960) {
-    alert('Less than 960');
+  if ($(window).width() < 960 && sessionStorage.getItem("sidebar") != "min") {
+    $("body").toggleClass("sidebarmin");
  }
 });
