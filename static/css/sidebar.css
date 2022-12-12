@@ -40,11 +40,13 @@
   .nav-text {
     opacity: 1;
     visibility: visible;
-    display: block;
+    display: inline-block;
   }
 
   .sidebar {
     width: 280px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   .inner {
