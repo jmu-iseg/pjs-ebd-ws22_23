@@ -3,6 +3,7 @@
   position: absolute;
   height: 100%;
   padding: 1rem .6rem;
+  z-index: 1;
 }
 
 .inner {
@@ -39,6 +40,16 @@
 .sidebarmax .sidebar {
   width: 280px;
   transition: width .2s ease;
+}
+
+.sidebarmax .sidebar-toggle-icon {
+  transform: rotate(270deg) !important;
+}
+
+.sidebarmax .nav-text {
+  opacity: 1;
+  visibility: visible;
+  display: inline-block;
 }
 
 @media (min-width: 960px) {
