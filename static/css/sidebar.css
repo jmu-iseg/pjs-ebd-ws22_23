@@ -36,6 +36,11 @@
   display: none;
 }
 
+.sidebarmax .sidebar {
+  width: 280px;
+  transition: width .2s ease;
+}
+
 @media (min-width: 960px) {
   .nav-text {
     opacity: 1;
