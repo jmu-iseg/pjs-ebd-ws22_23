@@ -4,6 +4,8 @@
   height: 100%;
   padding: 1rem .6rem;
   z-index: 1;
+  transition: width .2s ease;
+  overflow: hidden;
 }
 
 .inner {
@@ -39,7 +41,6 @@
 
 .sidebarmax .sidebar {
   width: 280px;
-  transition: width .2s ease;
 }
 
 .sidebarmax .sidebar-toggle-icon {
@@ -86,8 +87,6 @@
     display: none;
   }
 }
-
-
 
 .nav-text {
   margin-left: .5rem;
