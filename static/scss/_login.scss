@@ -24,10 +24,23 @@
 }
 
 .form-signin-div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
+    position: relative;
     float: left;
     width: 50%;
     text-align: center;
-    }
+}
+
+#username,
+#password {
+    display: block;
+    margin: 0 auto 10px auto;
+}
+
+#submit {
+    background-color: #5263b4;
+    border: none;
+    color: #fff;
+    padding: 6px 30px;
+    margin-top: 5px;
+}
