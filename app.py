@@ -71,8 +71,8 @@ class LoginForm(FlaskForm):
 @login_required
 def home():
     # get user name and push to home.html
-    #username = session["username"]
-    return render_template("/pages/home.html", username="Nils Heilemann")
+    username = flask_login.current_user.username
+    return render_template("/pages/home.html", username=username)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -124,14 +124,7 @@ def dashboard():
 @app.route('/optimization')
 @login_required
 def optimization():
-    # get user 
-    #username = "dummy"
-    user = flask_login.current_user
-    user_id = user.get_id()
-    username = user.username
-    print(username)
-
-    return render_template("/pages/optimization.html", username=username)
+    return render_template("/pages/optimization.html")
     
 @app.route('/reload_webapp')
 def reload():
