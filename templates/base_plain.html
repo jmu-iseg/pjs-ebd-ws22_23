@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="de">
 
-  <head>
-    {% include 'elements/head.html' %}
-  </head>
+<head>
+  {% include 'elements/head.html' %}
+</head>
 
-  <body class="body-plain">
-
-    <div class="inner">
-      <div class="container text-center">
-        {% block content %} {% endblock %}
-      </div>
-    </div>
-
-  </body>
+<body class="body-plain">
+  {% block content %} {% endblock %}
+</body>
 
 </html>
