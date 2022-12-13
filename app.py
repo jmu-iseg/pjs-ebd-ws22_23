@@ -125,8 +125,6 @@ def dashboard():
 def optimization():
     # get user 
     username = "dummy"
-    if current_user.is_authenticated:
-        username = current_user.username
     return render_template("/pages/optimization.html", username=username)
     
 @app.route('/reload_webapp')
