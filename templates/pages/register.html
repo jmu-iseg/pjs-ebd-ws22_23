@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="form-signin w-100 m-auto">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        {{ form.username }}
+        {{ form.password }}
+        {{ form.submit }}
+    </form>
+
+    <a href="{{ url_for('login') }}">Already have an account? Log In</a>
+</main>
+{% endblock %}
