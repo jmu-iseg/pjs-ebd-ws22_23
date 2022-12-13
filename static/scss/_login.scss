@@ -6,9 +6,31 @@
 }
 
 .form-image-div {
-    width: 50%;
-    float: left;
+    display: none;
+}
+
+.form-signin-div {
     height: 100%;
+    position: relative;
+    float: left;
+    width: 100%;
+    text-align: center;
+    padding: 0 40px;
+}
+
+@media (min-width: 960px) {
+
+    .form-image-div {
+        width: 50%;
+        display: block;
+        height: 100%;
+        float: left;
+    }
+
+    .form-signin-div {
+        width: 50%;
+    }
+
 }
 
 .form-signin {
@@ -23,20 +45,12 @@
     width: 100%;
 }
 
-.form-signin-div {
-    height: 100%;
-    position: relative;
-    float: left;
-    width: 50%;
-    text-align: center;
-}
-
 .form-signin-inner-div {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
 }
-‚
+
 #username,
 #password {
     display: block;

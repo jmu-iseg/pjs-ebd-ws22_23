@@ -1,13 +1,24 @@
-{% extends 'base.html' %}
+{% extends 'base_plain.html' %}
 {% block content %}
-<main class="form-signin w-100 m-auto">
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        {{ form.username }}
-        {{ form.password }}
-        {{ form.submit }}
-    </form>
-
-    <a href="{{ url_for('login') }}">Already have an account? Log In</a>
+<main class="form-signin shadow m-auto">
+    <div class="form-image-div">
+        <img src="{{ url_for('static', filename='img/solar-energy.jpg') }}" class="form-image" alt="Solaroptimierung">
+    </div>
+    <div class="form-signin-div">
+        <div class="form-signin-inner-div">
+        <form method="POST" action="">
+            <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72"
+                height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
+            <label for="inputEmail" class="sr-only">Nutzername</label>
+            {{ form.hidden_tag() }}
+            {{ form.username }}
+            <label for="inputPassword" class="sr-only">Passwort</label>
+            {{ form.password }}
+            {{ form.submit }}
+        </form>
+        <a class="mt-2 text-muted" href="{{ url_for('login') }}">Haben Sie schon einen Account? Login</a>
+    </div>
+    </div>
 </main>
 {% endblock %}
