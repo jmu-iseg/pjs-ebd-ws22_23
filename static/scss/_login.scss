@@ -14,6 +14,7 @@
 .form-signin {
     max-width: 900px;
     height: 400px;
+    background: #fff;
 }
 
 .form-image {
@@ -21,3 +22,12 @@
     height: 100%;
     width: 100%;
 }
+
+.form-signin-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: left;
+    width: 50%;
+    text-align: center;
+    }
