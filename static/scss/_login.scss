@@ -1,0 +1,23 @@
+.body-plain {
+    background: rgb(33, 37, 41);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-image-div {
+    width: 50%;
+    float: left;
+    height: 100%;
+}
+
+.form-signin {
+    max-width: 900px;
+    height: 400px;
+}
+
+.form-image {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
