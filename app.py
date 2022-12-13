@@ -1,6 +1,6 @@
 #from crypt import methods
 from lib2to3.pgen2.pgen import DFAState
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, current_user
+from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape
 import pandas as pd
 import numpy as np
 import mysql.connector as sql
@@ -14,7 +14,8 @@ from icalendar import Calendar, Event, vCalAddress, vText
 import io
 import os
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
+import flask_login
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
@@ -124,9 +125,12 @@ def dashboard():
 @login_required
 def optimization():
     # get user 
-    username = "dummy"
-    if current_user.is_authenticated:
-        username = current_user.username
+    #username = "dummy"
+    user = flask_login.current_user
+    user_id = user.get_id()
+    username = user.username
+    print(username)
+
     return render_template("/pages/optimization.html", username=username)
     
 @app.route('/reload_webapp')
