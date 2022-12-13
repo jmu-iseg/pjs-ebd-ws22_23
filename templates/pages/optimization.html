@@ -67,7 +67,7 @@
                     <th>Termin ID</th>
                     <th>Bezeichnung</th>
                     <th>Maschinen</th>
-                    <th>Dauer (in Stunden)</th>
+                    <th>Dauer (h)</th>
                     <th>Aktionen</th>
                   </tr>
                 </thead>
@@ -110,7 +110,7 @@
           '<td>' + actions + '</td>' +
           '</tr>';
         $("table").append(row);		
-        $("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+        //$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
         $('[data-toggle="tooltip"]').tooltip();
       });
 
