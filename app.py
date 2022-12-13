@@ -131,8 +131,7 @@ def optimization():
     username = user.username
     print(username)
 
-
-    return render_template("/pages/optimization.html", username=user_id)
+    return render_template("/pages/optimization.html", username=username)
     
 @app.route('/reload_webapp')
 def reload():
