@@ -1,6 +1,6 @@
 #from crypt import methods
 from lib2to3.pgen2.pgen import DFAState
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session
+from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, current_user
 import pandas as pd
 import numpy as np
 import mysql.connector as sql
@@ -123,7 +123,11 @@ def dashboard():
 @app.route('/optimization')
 @login_required
 def optimization():
-    return render_template("/pages/optimization.html")
+    # get user 
+    username = "dummy"
+    if current_user.is_authenticated:
+        username = current_user.username
+    return render_template("/pages/optimization.html", username=username)
     
 @app.route('/reload_webapp')
 def reload():
