@@ -126,8 +126,13 @@ def dashboard():
 def optimization():
     # get user 
     #username = "dummy"
-    username = flask_login.current_user
-    return render_template("/pages/optimization.html", username=username)
+    user = flask_login.current_user
+    user_id = user.get_id()
+    username = user.username
+    print(username)
+
+
+    return render_template("/pages/optimization.html", username=user_id)
     
 @app.route('/reload_webapp')
 def reload():
