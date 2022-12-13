@@ -47,6 +47,7 @@ def optimization():
     
 @app.route('/reload_webapp')
 def reload():
+    subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     return redirect('/')
 
