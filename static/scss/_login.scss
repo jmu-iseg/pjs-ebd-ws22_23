@@ -31,6 +31,12 @@
     text-align: center;
 }
 
+.form-signin-inner-div {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+‚
 #username,
 #password {
     display: block;
