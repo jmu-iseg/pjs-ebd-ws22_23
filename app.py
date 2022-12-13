@@ -120,9 +120,6 @@ def dashboard():
 @app.route('/optimization')
 @login_required
 def optimization():
-    # input: Start & End DateTime (Zeitraum der Planung)
-    
-
     return render_template("/pages/optimization.html")
     
 @app.route('/reload_webapp')
@@ -147,7 +144,12 @@ def add_termin():
     id = request.form['id']
     bezeichnung = request.form['bezeichnung']
     dauer = request.form['dauer']
-    termine[id] = {'bezeichnung': bezeichnung, 'dauer': int(dauer)}
+    maschinen_string = request.form['maschinen']
+    maschinen = maschinen_string.split(",") # split string maschinen into list 
+
+    # new termin with user inputs
+    termine[id] = {'bezeichnung': bezeichnung, 'dauer': int(dauer), 'maschinen': maschinen}
+
     return print("")
     
 
@@ -183,9 +185,33 @@ def optimization_table(start_date, end_date):
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
     # take termin input data 
-    termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer'])
+    termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
-    termine_df_neu['energieverbrauch'] = termine_df_neu['dauer'] * 20
+
+    # energy consumption based on machines 
+
+    # transform strings of machines 
+    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].astype('str') 
+    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("[","")
+    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("]","")
+    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("'","")
+    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace(" ","")
+
+    # transform machines columns into binary column 
+    termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('Maschine1')] = 1
+    termine_df_neu['maschine2'].loc[termine_df_neu['maschinen'].str.contains('Maschine2')] = 1
+    termine_df_neu['maschine3'].loc[termine_df_neu['maschinen'].str.contains('Maschine3')] = 1
+    termine_df_neu['maschine1'].loc[(termine_df_neu['maschine1'].isnull())] = 0
+    termine_df_neu['maschine2'].loc[(termine_df_neu['maschine2'].isnull())] = 0
+    termine_df_neu['maschine3'].loc[(termine_df_neu['maschine3'].isnull())] = 0
+
+    # define energy consumption per machine (TODO: Later via user input data )    
+    consumption_m1 = 50
+    consumption_m2 = 30
+    consumption_m3 = 20
+
+    # calculate energy consumption for each termin
+    termine_df_neu['energieverbrauch'] = ((termine_df_neu['maschine1'] * consumption_m1) + (termine_df_neu['maschine2'] * consumption_m2) + (termine_df_neu['maschine3'] * consumption_m3)) * termine_df_neu['dauer'] 
     
     # generate dicts of termin data 
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
@@ -302,11 +328,15 @@ def optimization_table(start_date, end_date):
             # change format of date and time 
             appointments_output['Date'] = appointments_output.Date.dt.strftime('%d.%m.%Y')
             appointments_output['Time'] = appointments_output.Time.dt.strftime('%H:%M')
-            
-            # to do: die optimierten Termine in DB speichern
 
+            # transform maschinen for better output 
+            appointments_output['maschinen'] = appointments_output['maschinen'].str.replace(",",", ")
+            
             # df to dict as output for render template 
             appointments_dict = appointments_output.to_dict('records')
+
+            # TODO: die optimierten Termine in DB speichern
+
 
             return render_template("/pages/optimization_table.html", my_list=appointments_dict)
 

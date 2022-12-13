@@ -99,53 +99,71 @@
 
 
     // Append table with add row form on add new button click
-    $(".add-new").click(function () {
+    $(".add-new").click(function(){
       $(this).attr("disabled", "disabled");
       var index = $("table tbody tr:last-child").index();
-      var row = '<tr>' +
-        '<td><input type="text" class="form-control" required name="id" id="id"></td>' +
-        '<td><input type="text" class="form-control" required name="bezeichnung" id="bezeichnung"></td>' +
-        '<td><input type="text" class="form-control" required name="dauer" id="dauer"></td>' +
+          var row = '<tr>' +
+              '<td><input type="text" class="form-control" name="id" id="id"></td>' +
+              '<td><input type="text" class="form-control" name="bezeichnung" id="bezeichnung"></td>' +
+              '<td><select id="maschinen" name="maschinen" multiple><option value="null" selected>Bitte wählen ...</option><option value="Wellenlöt">Wellenlöt</option><option value="Lötbad3/4">Lötbad 3/4</option><option value="Lötbad5">Lötbad 5</option></td>' +
+              '<td><input type="text" class="form-control" name="dauer" id="dauer"></td>' +
         '<td>' + actions + '</td>' +
-        '</tr>';
-      $("table").append(row);
-      $("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
-      $('[data-toggle="tooltip"]').tooltip();
-    });
+          '</tr>';
+        $("table").append(row);		
+        $("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+        $('[data-toggle="tooltip"]').tooltip();
+      });
 
     // Add row on add button click
-    $(document).on("click", ".add", function () {
+    $(document).on("click", ".add", function(){
       var empty = false;
-      var input = $(this).parents("tr").find('input[type="text"]');
-      input.each(function () {
-        if (!$(this).val()) {
+      var input = $(this).parents("tr").find('input');
+      var input_maschinen = $(this).parents("tr").find('select');
+      
+      // error if input is not complete
+      input.each(function(){
+        if(!$(this).val()){
           $(this).addClass("error");
           empty = true;
-        } else {
-          $(this).removeClass("error");
-        }
+        } else{
+                  $(this).removeClass("error");
+              }
       });
+
+      // get variable for adding to dictionary
       var id = $("#id").val();
       var bezeichnung = $("#bezeichnung").val();
       var dauer = $("#dauer").val();
-      $.post("/add_termin", { id: id, bezeichnung: bezeichnung, dauer: dauer }, function (add_termin) { })
+      var maschinen = $("#maschinen :selected").map((_, e) => e.value).get();
+      
+      $.post("/add_termin", {id: id, bezeichnung: bezeichnung, dauer: dauer, maschinen: maschinen.toString()}, function(add_termin) {}) 
 
+      // add data in frontend table
       $(this).parents("tr").find(".error").first().focus();
-      if (!empty) {
-        input.each(function () {
-          $(this).parent("td").html($(this).val());
-        });
+      if(!empty){
+        // adds type input to table
+        input.each(function(){
+            $(this).parent("td").html($(this).val());
+        });	
+        // adds type select to table
+        input_maschinen.each(function(){
+            $(this).parent("td").html($(this).val());
+        });			
         $(this).parents("tr").find(".add, .edit").toggle();
         $(".add-new").removeAttr("disabled");
-      }
+      }		  
     });
+
 
     // Delete row on delete button click
     $(document).on("click", ".delete", function () {
       var $row = $(this).closest("tr"); // Finds the closest row <tr> 
       var id = $row.find("td:nth-child(1)").text(); // Finds the 1st <td> element
+      
+      // delete in dictionary
       $.post("/delete_termin", { id: id }, function (delete_termin) { })
 
+      // delete in frotend table
       $(this).parents("tr").find("td:not(:last-child)")
       $(this).parents("tr").remove();
       $(".add-new").removeAttr("disabled");
