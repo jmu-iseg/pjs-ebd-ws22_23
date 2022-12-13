@@ -147,7 +147,8 @@
         });	
         // adds type select to table
         input_maschinen.each(function(){
-            $(this).parent("td").html($(this).val());
+          machines = maschinen.toString().replaceAll(',', ', ');
+          $(this).parent("td").html(machines);
         });			
         $(this).parents("tr").find(".add, .edit").toggle();
         $(".add-new").removeAttr("disabled");
