@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_plain.html' %}
 {% block content %}
 <main class="form-signin w-100 m-auto">
     <form method="POST" action="">
@@ -7,6 +7,6 @@
         {{ form.password }}
         {{ form.submit }}
     </form>
-    <a href="{{ url_for('register') }}">Don't have an account? Sign Up</a>
+    <a href="{{ url_for('register') }}">Registrieren</a>
 </main>
 {% endblock %}
