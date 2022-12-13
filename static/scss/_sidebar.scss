@@ -14,43 +14,69 @@
   width: calc(100% - 60px);
 }
 
-.sidebarmin .sidebar-toggle-icon {
-  transform: rotate(90deg) !important;
-}
+.sidebarmin {
+  .sidebar-toggle-icon {
+    transform: rotate(90deg) !important;
+  }
 
-.sidebar-toggle-icon {
-  transform: rotate(90deg) !important;
-}
-
-.sidebarmin .inner {
-  position: absolute;
-  left: 60px;
-  width: calc(100% - 60px);
+  .inner {
+    position: absolute;
+    left: 60px;
+    width: calc(100% - 60px);
+  }
 }
 
 .nav-link {
   padding-left: 7px;
   padding-right: 7px;
+
+  &.text-white {
+    color: #c8c8c8;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  &:active {
+    background: rgb(53, 60, 66);
+  }
+
+  img {
+    height: 20px;
+  }
 }
+
 
 .nav-text {
   opacity: 0;
   visibility: hidden;
   display: none;
+  margin-left: .5rem;
 }
 
-.sidebarmax .sidebar {
-  width: 280px;
+.sidebar-toggle {
+  cursor: pointer;
 }
 
-.sidebarmax .sidebar-toggle-icon {
-  transform: rotate(270deg) !important;
+.nav-pills .nav-link.active {
+  background-color: #5263b4;
 }
 
-.sidebarmax .nav-text {
-  opacity: 1;
-  visibility: visible;
-  display: inline-block;
+.sidebarmax {
+  .sidebar {
+    width: 280px;
+  }
+
+  .sidebar-toggle-icon {
+    transform: rotate(270deg) !important;
+  }
+
+  .nav-text {
+    opacity: 1;
+    visibility: visible;
+    display: inline-block;
+  }
 }
 
 @media (min-width: 960px) {
@@ -80,36 +106,12 @@
   .sidebarmin .sidebar {
     width: 60px;
   }
-  
+
   .sidebarmin .nav-text {
     opacity: 0;
     visibility: hidden;
     display: none;
   }
-}
-
-.nav-text {
-  margin-left: .5rem;
-}
-
-.sidebar-toggle {
-  cursor: pointer;
-}
-
-.nav-link.text-white {
-  color: #c8c8c8;
-}
-
-.nav-link.text-white:hover {
-  color: #fff;
-}
-
-.nav-link:active {
-  background: rgb(53, 60, 66);
-}
-
-.nav-pills .nav-link.active {
-  background-color: #5263b4;
 }
 
 .dropdown-toggle {
@@ -121,10 +123,6 @@
   font-weight: 600;
   color: rgba(0, 0, 0, .65);
   background-color: transparent;
-}
-
-.nav-link img {
-  height: 20px;
 }
 
 .btn-toggle:hover,

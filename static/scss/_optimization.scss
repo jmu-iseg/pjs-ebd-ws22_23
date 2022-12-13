@@ -1,0 +1,98 @@
+.table-wrapper {
+  width: 700px;
+  margin: 30px auto;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.table-title {
+  padding-bottom: 10px;
+  margin: 0 0 10px;
+
+  h2 {
+    margin: 6px 0 0;
+    font-size: 22px;
+  }
+
+  .add-new {
+    float: right;
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    min-width: 100px;
+    border-radius: 50px;
+    line-height: 13px;
+
+    i {
+      margin-right: 4px;
+    }
+  }
+}
+
+table.table {
+
+  tr th,
+  tr td {
+    border-color: #e9e9e9;
+  }
+
+
+  th i {
+    font-size: 13px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+
+  td i {
+    font-size: 19px;
+  }
+
+
+  th:last-child {
+    width: 100px;
+  }
+
+  td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 24px;
+
+    &.add {
+      color: #27C46B;
+
+      i {
+        font-size: 24px;
+        margin-right: -1px;
+        position: relative;
+        top: 3px;
+      }
+    }
+
+    &.edit {
+      color: #FFC107;
+    }
+
+    &.delete {
+      color: #E34724;
+    }
+  }
+
+  .form-control {
+    height: 32px;
+    line-height: 32px;
+    box-shadow: none;
+    border-radius: 2px;
+
+    &.error {
+      border-color: #f50000;
+    }
+  }
+
+  table.table td .add {
+    display: none;
+  }
+
+}
