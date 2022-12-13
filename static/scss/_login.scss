@@ -6,9 +6,34 @@
 }
 
 .form-image-div {
+    display: none;
+}
+
+@media (min-width: 960px) {
+
+    .form-image-div {
+        width: 50%;
+        float: left;
+        height: 100%;
+    }
+
+    .form-signin-div {
+        height: 100%;
+        position: relative;
+        float: left;
+        width: 50%;
+        text-align: center;
+    }
+
+}
+
+.form-image-div {
     width: 50%;
-    float: left;
-    height: 100%;
+    display: block;
+}
+
+.form-signin-div {
+    width: 50%;
 }
 
 .form-signin {
@@ -21,14 +46,6 @@
     object-fit: cover;
     height: 100%;
     width: 100%;
-}
-
-.form-signin-div {
-    height: 100%;
-    position: relative;
-    float: left;
-    width: 50%;
-    text-align: center;
 }
 
 .form-signin-inner-div {
