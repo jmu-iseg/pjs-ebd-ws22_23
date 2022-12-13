@@ -124,7 +124,8 @@ def dashboard():
 @login_required
 def optimization():
     # get user 
-    username = "dummy"
+    #username = "dummy"
+    username = session["username"]
     return render_template("/pages/optimization.html", username=username)
     
 @app.route('/reload_webapp')
