@@ -70,8 +70,8 @@ class LoginForm(FlaskForm):
 @login_required
 def home():
     # get user name and push to home.html
-    username = session["username"]
-    return render_template("/pages/home.html", username=username)
+    #username = session["username"]
+    return render_template("/pages/home.html", username="Nils Heilemann")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
