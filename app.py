@@ -1,6 +1,6 @@
 #from crypt import methods
 from lib2to3.pgen2.pgen import DFAState
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file
+from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session
 import pandas as pd
 import numpy as np
 import mysql.connector as sql
@@ -69,7 +69,9 @@ class LoginForm(FlaskForm):
 @app.route('/')
 @login_required
 def home():
-    return render_template("/pages/home.html")
+    # get user name and push to home.html
+    username = session["username"]
+    return render_template("/pages/home.html", username=username)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
