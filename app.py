@@ -15,6 +15,7 @@ import io
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
+import flask_login
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
@@ -125,7 +126,7 @@ def dashboard():
 def optimization():
     # get user 
     #username = "dummy"
-    username = session["username"]
+    username = flask_login.current_user
     return render_template("/pages/optimization.html", username=username)
     
 @app.route('/reload_webapp')
