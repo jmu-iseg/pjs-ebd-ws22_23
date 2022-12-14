@@ -120,10 +120,12 @@ def dashboard():
 
     return render_template("/pages/dashboard.html", labels=df['dateTime'].tolist(), output=df['output'].tolist(), bConsum=df['basicConsumption'].tolist(), mConsum=df['managementConsumption'].tolist(), pConsum=df['productionConsumption'].tolist())
 
+termine = {}
 # optimization route
 @app.route('/optimization')
 @login_required
 def optimization():
+    termine = {}
     return render_template("/pages/optimization.html")
     
 @app.route('/reload_webapp')
@@ -132,7 +134,6 @@ def reload():
     subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     return redirect('/')
 
-termine = {}
 @app.route('/add_termin', methods=['GET', 'POST'])
 @login_required
 def add_termin():
@@ -182,8 +183,6 @@ def get_date():
     else:    
         return optimization_table(start_date, end_date)
     
-
-
 # optimization route
 @app.route('/optimization_table', methods=('GET', 'POST'))
 @login_required
