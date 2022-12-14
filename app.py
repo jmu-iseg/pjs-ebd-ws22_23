@@ -159,7 +159,14 @@ def delete_termin():
 @login_required
 def get_date():
     errors = {}
-    if len(termine) < 1: errors['Terminerror'] = 'Bitte mindestens einen Termin definieren.'
+    if len(termine) < 1: 
+        errors['Terminerror'] = 'Bitte mindestens einen Termin definieren.'
+    else:
+        for termin in termine:
+            d = termine[termin]['maschinen']
+            if "null" in d: 
+                errors['Terminerror'] = 'In jedem Termin müssen Maschinen gewählt werden.'
+                break
     start_date = request.form['start_date']
     end_date = request.form['end_date']
     try:
