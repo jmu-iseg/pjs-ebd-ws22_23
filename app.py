@@ -1,6 +1,6 @@
 #from crypt import methods
 from lib2to3.pgen2.pgen import DFAState
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape
+from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, Response
 import pandas as pd
 import numpy as np
 import mysql.connector as sql
@@ -145,14 +145,14 @@ def add_termin():
     # new termin with user inputs
     termine[id] = {'bezeichnung': bezeichnung, 'dauer': int(dauer), 'maschinen': maschinen}
 
-    return print("")
+    return Response(status=204)
     
 @app.route('/delete_termin', methods=['GET', 'POST'])
 @login_required
 def delete_termin():
     id = request.form['id']
     termine.pop(id, None)
-    return print('termin_deleted')
+    return Response(status=204)
 
 # take input of start & end date of optimization 
 @app.route('/optimization', methods=['POST'])
