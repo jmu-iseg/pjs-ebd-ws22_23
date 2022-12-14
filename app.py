@@ -142,7 +142,7 @@ def add_termin():
     dauer = request.form['dauer']
     maschinen_string = request.form['maschinen']
     maschinen = maschinen_string.split(",") # split string maschinen into list 
-
+    
     # new termin with user inputs
     termine[id] = {'bezeichnung': bezeichnung, 'dauer': int(dauer), 'maschinen': maschinen}
 
@@ -180,6 +180,7 @@ def get_date():
         errors['Endzeiterror'] = 'Bitte das Enddatum angeben.'
     if len(errors) > 0:
         #termine = {}
+        termine.clear()
         return render_template("pages/optimization.html", errors=errors)
     else:    
         return optimization_table(start_date, end_date)
