@@ -82,6 +82,9 @@
               <button class="btn btn-info" name="submit" type="submit">
                 Optimieren
               </button>
+              {% for error in errors %}
+                     <p class=error><strong>{{ error }}:</strong> {{ errors[error] }}
+              {% endfor %}
             </div>
           </div>
         </form>

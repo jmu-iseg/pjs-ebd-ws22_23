@@ -132,15 +132,6 @@ def reload():
     subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     return redirect('/')
 
-# take input of start & end date of optimization 
-@app.route('/optimization', methods=['POST'])
-@login_required
-def get_date():
-    start_date = request.form['start_date']
-    end_date = request.form['end_date']
-    return optimization_table(start_date, end_date)
-
-
 termine = {}
 @app.route('/add_termin', methods=['GET', 'POST'])
 @login_required
@@ -156,13 +147,34 @@ def add_termin():
 
     return print("")
     
-
 @app.route('/delete_termin', methods=['GET', 'POST'])
 @login_required
 def delete_termin():
     id = request.form['id']
     termine.pop(id, None)
     return print('termin_deleted')
+
+# take input of start & end date of optimization 
+@app.route('/optimization', methods=['POST'])
+@login_required
+def get_date():
+    errors = {}
+    if len(termine) < 1: errors['Terminerror'] = 'Bitte mindestens einen Termin definieren.'
+    start_date = request.form['start_date']
+    end_date = request.form['end_date']
+    try:
+        d = datetime.strptime(start_date, "%d.%m.%Y")
+    except ValueError:
+        errors['Startzeiterror'] = 'Bitte das Startdatum angeben.'
+    try:
+        d = datetime.strptime(end_date, "%d.%m.%Y")
+    except ValueError:
+        errors['Endzeiterror'] = 'Bitte das Enddatum angeben.'
+    if len(errors) > 0:
+        return render_template('optimization.html', errors=errors)
+    else:    
+        return optimization_table(start_date, end_date)
+    
 
 
 # optimization route
