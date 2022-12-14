@@ -179,7 +179,6 @@ def get_date():
     except ValueError:
         errors['Endzeiterror'] = 'Bitte das Enddatum angeben.'
     if len(errors) > 0:
-        #termine = {}
         termine.clear()
         return render_template("pages/optimization.html", errors=errors)
     else:    
