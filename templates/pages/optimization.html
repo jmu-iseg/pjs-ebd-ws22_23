@@ -101,18 +101,20 @@
       '<a class="add" title="Termin hinzufügen" data-toggle="tooltip">+</a>' +
       '<a class="delete" title="Termin löschen" data-toggle="tooltip">-</a>'
 
+      var count = 1;
     // Append table with add row form on add new button click
     $(".add-new").click(function(){
       $(this).attr("disabled", "disabled");
       var index = $("table tbody tr:last-child").index();
       var row = '<tr>' +
-            '<td><input type="text" class="form-control" name="id" id="id"></td>' +
+            '<td><span id=' + id + '></span></td>' +
             '<td><input type="text" class="form-control" name="bezeichnung" id="bezeichnung"></td>' +
             '<td><select id="maschinen" name="maschinen" multiple><option value="null" selected>Bitte wählen ...</option><option value="Wellenlöt">Wellenlöt</option><option value="Lötbad3/4">Lötbad 3/4</option><option value="Lötbad5">Lötbad 5</option></td>' +
             '<td><input type="text" class="form-control" name="dauer" id="dauer"></td>' +
           '<td>' + actions + '</td>' +
           '</tr>';
         $("table").append(row);		
+        document.getElementById(id).innerHTML = count;	
         //$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
         $('[data-toggle="tooltip"]').tooltip();
       });
@@ -134,7 +136,7 @@
       });
 
       // get variable for adding to dictionary
-      var id = $("#id").val();
+      var id = count;
       var bezeichnung = $("#bezeichnung").val();
       var dauer = $("#dauer").val();
       var maschinen = $("#maschinen :selected").map((_, e) => e.value).get();
@@ -155,7 +157,8 @@
         });			
         $(this).parents("tr").find(".add, .edit").toggle();
         $(".add-new").removeAttr("disabled");
-      }		  
+      }
+      count = count+1;
     });
 
 
