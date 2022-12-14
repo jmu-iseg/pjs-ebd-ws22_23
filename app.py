@@ -179,7 +179,7 @@ def get_date():
     except ValueError:
         errors['Endzeiterror'] = 'Bitte das Enddatum angeben.'
     if len(errors) > 0:
-        termine = {}
+        #termine = {}
         return render_template("pages/optimization.html", errors=errors)
     else:    
         return optimization_table(start_date, end_date)
