@@ -221,9 +221,9 @@ def optimization_table(start_date, end_date):
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace(" ","")
 
     # transform machines columns into binary column 
-    termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('Maschine1')] = 1
-    termine_df_neu['maschine2'].loc[termine_df_neu['maschinen'].str.contains('Maschine2')] = 1
-    termine_df_neu['maschine3'].loc[termine_df_neu['maschinen'].str.contains('Maschine3')] = 1
+    termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('Wellenlöt')] = 1
+    termine_df_neu['maschine2'].loc[termine_df_neu['maschinen'].str.contains('Lötbad3/4')] = 1
+    termine_df_neu['maschine3'].loc[termine_df_neu['maschinen'].str.contains('Lötbad5')] = 1
     termine_df_neu['maschine1'].loc[(termine_df_neu['maschine1'].isnull())] = 0
     termine_df_neu['maschine2'].loc[(termine_df_neu['maschine2'].isnull())] = 0
     termine_df_neu['maschine3'].loc[(termine_df_neu['maschine3'].isnull())] = 0
@@ -264,12 +264,15 @@ def optimization_table(start_date, end_date):
             # save end hour as numerical value 
             end_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="end_hour")
 
-            # calculate netzbezug while appointment
+            # calculate netzbezug of appointment
             for termin in termine_energy:
                 for datetime in df['dateTime']:
                     if datetime.hour < 18:
-                        consumption[datetime,termin] = gp.quicksum(netzbezug['balance'][netzbezug['dateTime'] == datetime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin]) 
-                                                            for i in range(0,termine_length[termin]))
+                        for i in range(0,termine_length[termin]):
+                            if float(netzbezug['balance'][netzbezug['dateTime'] == datetime + pd.Timedelta(hours=i)]) < 0:
+                                consumption[datetime,termin] = consumption[datetime,termin] + netzbezug['balance'][netzbezug['dateTime'] == datetime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
+                            else: 
+                                consumption[datetime,termin] = consumption[datetime,termin] + termine_energy[termin]/termine_length[termin]
 
             # minimize netzbezug
             obj = sum((consumption[datetime,termin]*start[datetime,termin])
@@ -361,7 +364,10 @@ def optimization_table(start_date, end_date):
             # TODO: die optimierten Termine in DB speichern
 
 
-            return render_template("/pages/optimization_table.html", my_list=appointments_dict)
+            # save objective value of model
+            obj_value = model.getAttr("ObjVal")
+
+            return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value)
 
 @app.route('/return-files')
 @login_required
