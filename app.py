@@ -367,7 +367,18 @@ def optimization_table(start_date, end_date):
             # save objective value of model
             obj_value = model.getAttr("ObjVal")
 
-            return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value)
+            # get sum of energy consumption of all appointments 
+            energy_consumption = termine_df_neu['energieverbrauch'].sum()
+
+            # percent of renewable energy for appointments
+            renewable_percent = (1-(obj_value/energy_consumption)) * 100
+
+            # round output data
+            renewable_percent = round(renewable_percent, 2)
+            energy_consumption = round(energy_consumption, 2)
+            obj_value = round(obj_value, 2)
+
+            return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent)
 
 @app.route('/return-files')
 @login_required
