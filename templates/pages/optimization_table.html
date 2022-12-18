@@ -50,8 +50,6 @@
                   </tbody>
                 </table>
                 <p></p>
-                <p>Die optimierte Planung der Termine führt zu einem Netzbezug in Höhe von <b>{{obj_value}} kWh</b>.</p>
-                <p>Somit kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die Photovoltaikanlage gedeckt werden.</p>
               </div>
             </div>
           </div>
@@ -71,8 +69,8 @@
             <h5 class="card-title">Stromverbrauch der Termine</h5>
             <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von <b>{{energy_consumption}} kWh</b>.</p> 
             <p></p>
-            <div class="chart-container" style="position: relative; height:100vh; width:100vw">
-              <canvas id="netzbezug" width="100" height="100"></canvas>  
+            <div class="chart-container" style="position: relative; height:175vh; width:175vw">
+              <canvas id="netzbezug" width="175" height="175"></canvas>  
             </div>
         </div>
       </div>
@@ -83,8 +81,8 @@
             <h5 class="card-title">Anteil PV-Strom</h5>
             <p class="card-text">Es kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die Photovoltaikanlage gedeckt werden.</p>  
             <p></p>
-            <div class="chart-container" style="position: relative; height:100vh; width:100vw">
-              <canvas id="pv_percentage" width="100" height="100"></canvas>  
+            <div class="chart-container" style="position: relative; height:175vh; width:175vw">
+              <canvas id="pv_percentage" width="175" height="175"></canvas>  
             </div>
           </div>
       </div>
