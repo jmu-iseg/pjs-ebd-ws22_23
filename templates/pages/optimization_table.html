@@ -64,7 +64,7 @@
 <div class="container-fluid">
   <div class="row">
    <div class="col-md-3 col-sm-3 col-xs-8">  
-      <div class="card" style="width: 17rem; height: 20rem;">
+      <div class="card" style="width: 17rem; height: 22rem;">
         <div class="card-body">
             <h5 class="card-title">Stromverbrauch der Termine</h5>
             <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von <b>{{energy_consumption}} kWh</b>.</p> 
@@ -76,7 +76,7 @@
       </div>
    </div>
    <div class="col-md-3 col-sm-3 col-xs-8">  
-      <div class="card" style="width: 17rem; height: 20rem;">
+      <div class="card" style="width: 17rem; height: 22rem;">
         <div class="card-body">
             <h5 class="card-title">Anteil PV-Strom</h5>
             <p class="card-text">Es kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die Photovoltaikanlage gedeckt werden.</p>  
@@ -208,6 +208,16 @@
   });
 </script>
 
+
+<style>
+  canvas {
+    margin: 0 auto;
+  }
+
+  .chart-container {
+    margin: 0 auto;
+  }
+</style>
 
 
 {% endblock %}
