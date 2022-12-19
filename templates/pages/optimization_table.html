@@ -188,6 +188,61 @@
 </script>
 
 <script>
+  var ctx3 = document.getElementById('netzbezug_pro_termin').getContext('2d');
+  var netzbezug_termine = {{netzbezug_termine}};
+  var termin_list = {{ termin_list }};
+  var termin_list_new = termin_list.map(String);
+  
+  var netzbezug_chart = new Chart(ctx3, {
+    plugins: [ChartDataLabels],
+    type: 'doughnut',
+    data: {
+      labels: termin_list_new,
+      datasets: [{
+        label: 'Netzbezug',
+        data: netzbezug_termine, 
+        backgroundColor: [
+          'rgba(15, 120, 120, 0.6)',
+          'rgba(15, 90, 150, 0.6)',
+          'rgba(15, 90, 250, 0.6)'
+        ]
+      }]
+    },
+    options: {
+      cutoutPercentage: 50,
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: true,
+        callbacks: {
+          label: function(tooltipItem, data) {
+            var label = data.labels[tooltipItem.index] || '';
+            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+            return '#' + label + ': ' + value + ' kWh';
+           }
+         }
+      },
+      datalabels: {
+            display: 'auto',
+            align: 'bottom',
+            backgroundColor: '#ccc',
+            borderRadius: 3,
+            font: {
+              size: 18,
+            },
+            formatter: function (value, context) { return value || null;  },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        }
+      }
+    }
+  });
+</script>
+
+<script>
   var ctx2 = document.getElementById('pv_percentage').getContext('2d');
   var energy_consumption = {{ energy_consumption }}
   var netzbezug = {{ obj_value }}
