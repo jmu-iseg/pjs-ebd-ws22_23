@@ -394,7 +394,8 @@ def optimization_table(start_date, end_date):
             # netzbezug für jeden einzelnen termin 
             netzbezug_termine = appointments['netzbezug'].to_list()
             appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
-            appointments['percent'] = float(appointments['percent'] * 100)
+            appointments['percent'] = appointments['percent'] * 100
+            appointments['percent'] = appointments['percent'].astype(float)
             appointments['percent'] = appointments['percent'].round(2) 
             netzbezug_termine_percent = appointments.to_dict('records')
 
