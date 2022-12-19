@@ -72,6 +72,41 @@
       </div>
     </div>
   </div>
+
+  <div class="col-md-5 col-sm-5 col-xs-6">  
+    <div class="card mb-4" style="height: 20rem;">
+     <div class="card-header">Netzbezug der Termine</div>
+     <div class="row">
+       <div class="col-md-7">
+        <table class="table"> 
+          <thead>
+            <tr>
+              <th scope="col">Termin ID</th>
+              <th scope="col">Strom durch PV</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in netzbezug_termine_percent %}    
+            <tr>               
+                <td style="width: 1px; white-space: nowrap;">{{ item.TerminID }}</td>
+                <td style="width: 1px; white-space: nowrap;">{{ item.percent }} %</td>
+            </tr>
+            {% endfor %}
+          </tbody>  
+        </table>
+      </div>
+      <div class="col-md-5">
+        <div class="card-body">
+          <p class="card-text">Es werden <b>{{obj_value}} kWh</b> aus dem Stromnetz bezogen.</p>
+          <p></p>
+          <div class="chart-container" style="position: relative; height:10vh; width:10vw">
+            <canvas id="netzbezug_pro_termin" width="10" height="10"></canvas>    
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-3">
     <div class="card" style="width: 17rem; height: 20rem;">
       <div class="card-header">Anteil PV-Strom</div>

@@ -382,7 +382,14 @@ def optimization_table(start_date, end_date):
             energy_consumption = round(energy_consumption, 2)
             obj_value = round(obj_value, 2)
 
-            return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list)
+            # netzbezug für jeden einzelnen termin 
+            netzbezug_termine = appointments['netzbezug'].to_list()
+            appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
+            appointments['percent'] = float(appointments['percent'] * 100)
+            appointments['percent'] = appointments['percent'].round(2) 
+            netzbezug_termine_percent = appointments.to_dict('records')
+
+            return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent)
 
 @app.route('/return-files')
 @login_required
