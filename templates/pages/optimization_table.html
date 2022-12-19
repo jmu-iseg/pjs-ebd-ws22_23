@@ -57,41 +57,49 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6">  
+</div>
+<div class="row">
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">Stromverbrauch der Termine</div>
       <div class="card-body">
-          <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von <b>{{energy_consumption}} kWh</b>.</p> 
-          <p></p>
-          <div class="chart-container" style="position: relative; height:175vh; width:175vw">
-            <canvas id="netzbezug" width="175" height="175"></canvas>  
-          </div>
+        <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von
+          <b>{{energy_consumption}} kWh</b>.</p>
+        <p></p>
+        <div class="chart-container" style="position: relative; height:175vh; width:175vw">
+          <canvas id="netzbezug" width="175" height="175"></canvas>
+        </div>
       </div>
     </div>
- </div>
- <div class="col-md-6">  
+  </div>
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">Anteil PV-Strom</div>
       <div class="card-body">
-          <p class="card-text">Es kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die Photovoltaikanlage gedeckt werden.</p>  
-          <p></p>
-          <div class="chart-container" style="position: relative; height:175vh; width:175vw">
-            <canvas id="pv_percentage" width="175" height="175"></canvas>  
-          </div>
+        <p class="card-text">Es kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die
+          Photovoltaikanlage gedeckt werden.</p>
+        <p></p>
+        <div class="chart-container" style="position: relative; height:175vh; width:175vw">
+          <canvas id="pv_percentage" width="175" height="175"></canvas>
         </div>
+      </div>
     </div>
- </div>
+  </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0-rc.1/chartjs-plugin-datalabels.min.js" integrity="sha512-+UYTD5L/bU1sgAfWA0ELK5RlQ811q8wZIocqI7+K0Lhh8yVdIoAMEs96wJAIbgFvzynPm36ZCXtkydxu1cs27w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0-rc.1/chartjs-plugin-datalabels.min.js"
+  integrity="sha512-+UYTD5L/bU1sgAfWA0ELK5RlQ811q8wZIocqI7+K0Lhh8yVdIoAMEs96wJAIbgFvzynPm36ZCXtkydxu1cs27w=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
   var ctx1 = document.getElementById('netzbezug').getContext('2d');
-  var energy_consumption_list = {{energy_consumption_list}};
+  var energy_consumption_list = {{ energy_consumption_list }};
   var termin_list = {{ termin_list }};
   var termin_list_new = termin_list.map(String);
-  
+
   var netzbezug_chart = new Chart(ctx1, {
     plugins: [ChartDataLabels],
     type: 'doughnut',
@@ -99,7 +107,7 @@
       labels: termin_list_new,
       datasets: [{
         label: 'Stromverbrauch',
-        data: energy_consumption_list, 
+        data: energy_consumption_list,
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
           'rgba(15, 90, 150, 0.6)',
@@ -118,22 +126,22 @@
       tooltips: {
         enabled: true,
         callbacks: {
-          label: function(tooltipItem, data) {
+          label: function (tooltipItem, data) {
             var label = data.labels[tooltipItem.index] || '';
             var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
             return '#' + label + ': ' + value + ' kWh';
-           }
-         }
+          }
+        }
       },
       datalabels: {
-            display: 'auto',
-            align: 'bottom',
-            backgroundColor: '#ccc',
-            borderRadius: 3,
-            font: {
-              size: 18,
-            },
-            formatter: function (value, context) { return value || null;  },
+        display: 'auto',
+        align: 'bottom',
+        backgroundColor: '#ccc',
+        borderRadius: 3,
+        font: {
+          size: 18,
+        },
+        formatter: function (value, context) { return value || null; },
       },
       plugins: {
         legend: {
@@ -146,8 +154,8 @@
 
 <script>
   var ctx2 = document.getElementById('pv_percentage').getContext('2d');
-  var energy_consumption = {{energy_consumption}}
-  var netzbezug = {{obj_value}}
+  var energy_consumption = {{ energy_consumption }}
+  var netzbezug = {{ obj_value }}
 
   var percentage_chart = new Chart(ctx2, {
     plugins: [ChartDataLabels],
@@ -157,7 +165,7 @@
       datasets: [{
         label: 'Stromverbrauch',
         label: 'Prozentualer Anteil',
-        data: [energy_consumption-netzbezug, netzbezug], 
+        data: [energy_consumption - netzbezug, netzbezug],
         backgroundColor: [
           'rgba(10, 150, 20, 0.6)',
           'rgba(250, 10, 20, 0.6)'
@@ -175,22 +183,22 @@
       tooltips: {
         enabled: true,
         callbacks: {
-          label: function(tooltipItem, data) {
+          label: function (tooltipItem, data) {
             var label = data.labels[tooltipItem.index] || '';
             var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
             return label + ': ' + value + ' kWh';
-           }
-         }
+          }
+        }
       },
       datalabels: {
-            display: 'auto',
-            align: 'bottom',
-            backgroundColor: '#ccc',
-            borderRadius: 3,
-            font: {
-              size: 18,
-            },
-            formatter: function (value, context) { return value || null;  },
+        display: 'auto',
+        align: 'bottom',
+        backgroundColor: '#ccc',
+        borderRadius: 3,
+        font: {
+          size: 18,
+        },
+        formatter: function (value, context) { return value || null; },
       },
       plugins: {
         legend: {
