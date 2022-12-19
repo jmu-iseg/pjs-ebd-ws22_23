@@ -339,6 +339,15 @@ def optimization_table(start_date, end_date):
             appointments = appointments.groupby(by="Termin").sum().reset_index()
             appointments[['DateTime', 'TerminID']] = appointments['Termin'].str.split(',', 1, expand=True)
             appointments[['Date', 'Time']] = appointments['DateTime'].str.split(' ', 1, expand=True)
+
+             # calculate netzbezug (objective value) for every appointment
+            appointments['netzbezug'] = 0
+            for i in range(0,len(appointments)):
+                date = pd.to_datetime(appointments['DateTime'][i])
+                termin_id = str(appointments['TerminID'][i])
+                appointments['netzbezug'][i] = round(consumption[date,termin_id].getValue(),2)
+            
+            # drop unecessary columns
             appointments = appointments.drop('Termin', axis=1)
             appointments = appointments.drop('DateTime', axis=1)
             appointments = appointments.sort_values(by="TerminID")
