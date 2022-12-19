@@ -64,7 +64,8 @@
       <div class="card-header">Stromverbrauch der Termine</div>
       <div class="card-body">
         <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von
-          <b>{{energy_consumption}} kWh</b>.</p>
+          <b>{{energy_consumption}} kWh</b>.
+        </p>
         <p></p>
         <div class="chart-container">
           <canvas id="netzbezug" width="175" height="175"></canvas>
@@ -73,34 +74,35 @@
     </div>
   </div>
 
-  <div class="col-md-5 col-sm-5 col-xs-6">  
+  <div class="col-md-6">
     <div class="card mb-4" style="height: 20rem;">
-     <div class="card-header">Netzbezug der Termine</div>
-     <div class="row">
-       <div class="col-md-7">
-        <table class="table"> 
-          <thead>
-            <tr>
-              <th scope="col">Termin ID</th>
-              <th scope="col">Strom durch PV</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in netzbezug_termine_percent %}    
-            <tr>               
+      <div class="card-header">Netzbezug der Termine</div>
+      <div class="row">
+        <div class="col-md-7">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Termin ID</th>
+                <th scope="col">Strom durch PV</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in netzbezug_termine_percent %}
+              <tr>
                 <td style="width: 1px; white-space: nowrap;">{{ item.TerminID }}</td>
                 <td style="width: 1px; white-space: nowrap;">{{ item.percent }} %</td>
-            </tr>
-            {% endfor %}
-          </tbody>  
-        </table>
-      </div>
-      <div class="col-md-5">
-        <div class="card-body">
-          <p class="card-text">Es werden <b>{{obj_value}} kWh</b> aus dem Stromnetz bezogen.</p>
-          <p></p>
-          <div class="chart-container" style="position: relative; height:10vh; width:10vw">
-            <canvas id="netzbezug_pro_termin" width="10" height="10"></canvas>    
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-5">
+          <div class="card-body">
+            <p class="card-text">Es werden <b>{{obj_value}} kWh</b> aus dem Stromnetz bezogen.</p>
+            <p></p>
+            <div class="chart-container" style="position: relative; height:10vh; width:10vw">
+              <canvas id="netzbezug_pro_termin" width="10" height="10"></canvas>
+            </div>
           </div>
         </div>
       </div>
@@ -120,7 +122,6 @@
       </div>
     </div>
   </div>
-</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
@@ -189,10 +190,10 @@
 
 <script>
   var ctx3 = document.getElementById('netzbezug_pro_termin').getContext('2d');
-  var netzbezug_termine = {{netzbezug_termine}};
+  var netzbezug_termine = {{ netzbezug_termine }};
   var termin_list = {{ termin_list }};
   var termin_list_new = termin_list.map(String);
-  
+
   var netzbezug_chart = new Chart(ctx3, {
     plugins: [ChartDataLabels],
     type: 'doughnut',
@@ -200,7 +201,7 @@
       labels: termin_list_new,
       datasets: [{
         label: 'Netzbezug',
-        data: netzbezug_termine, 
+        data: netzbezug_termine,
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
           'rgba(15, 90, 150, 0.6)',
@@ -216,22 +217,22 @@
       tooltips: {
         enabled: true,
         callbacks: {
-          label: function(tooltipItem, data) {
+          label: function (tooltipItem, data) {
             var label = data.labels[tooltipItem.index] || '';
             var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
             return '#' + label + ': ' + value + ' kWh';
-           }
-         }
+          }
+        }
       },
       datalabels: {
-            display: 'auto',
-            align: 'bottom',
-            backgroundColor: '#ccc',
-            borderRadius: 3,
-            font: {
-              size: 18,
-            },
-            formatter: function (value, context) { return value || null;  },
+        display: 'auto',
+        align: 'bottom',
+        backgroundColor: '#ccc',
+        borderRadius: 3,
+        font: {
+          size: 18,
+        },
+        formatter: function (value, context) { return value || null; },
       },
       plugins: {
         legend: {
