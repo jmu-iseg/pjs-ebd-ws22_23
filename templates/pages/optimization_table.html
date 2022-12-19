@@ -57,37 +57,30 @@
       </div>
     </div>
   </div>
-</div>
-
-<p></p>
-
-<div class="container-fluid">
-  <div class="row">
-   <div class="col-md-3 col-sm-3 col-xs-8">  
-      <div class="card" style="width: 17rem; height: 22rem;">
-        <div class="card-body">
-            <h5 class="card-title">Stromverbrauch der Termine</h5>
-            <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von <b>{{energy_consumption}} kWh</b>.</p> 
-            <p></p>
-            <div class="chart-container" style="position: relative; height:175vh; width:175vw">
-              <canvas id="netzbezug" width="175" height="175"></canvas>  
-            </div>
-        </div>
-      </div>
-   </div>
-   <div class="col-md-3 col-sm-3 col-xs-8">  
-      <div class="card" style="width: 17rem; height: 22rem;">
-        <div class="card-body">
-            <h5 class="card-title">Anteil PV-Strom</h5>
-            <p class="card-text">Es kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die Photovoltaikanlage gedeckt werden.</p>  
-            <p></p>
-            <div class="chart-container" style="position: relative; height:175vh; width:175vw">
-              <canvas id="pv_percentage" width="175" height="175"></canvas>  
-            </div>
+  <div class="col-md-6">  
+    <div class="card">
+      <div class="card-header">Stromverbrauch der Termine</div>
+      <div class="card-body">
+          <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von <b>{{energy_consumption}} kWh</b>.</p> 
+          <p></p>
+          <div class="chart-container" style="position: relative; height:175vh; width:175vw">
+            <canvas id="netzbezug" width="175" height="175"></canvas>  
           </div>
       </div>
-   </div>
-  </div>
+    </div>
+ </div>
+ <div class="col-md-6">  
+    <div class="card">
+      <div class="card-header">Anteil PV-Strom</div>
+      <div class="card-body">
+          <p class="card-text">Es kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die Photovoltaikanlage gedeckt werden.</p>  
+          <p></p>
+          <div class="chart-container" style="position: relative; height:175vh; width:175vw">
+            <canvas id="pv_percentage" width="175" height="175"></canvas>  
+          </div>
+        </div>
+    </div>
+ </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
