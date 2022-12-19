@@ -345,7 +345,7 @@ def optimization_table(start_date, end_date):
 
             # join appointments with termine_df_neu
             appointments_output = pd.merge(appointments, termine_df_neu, how='left', left_on=['TerminID'], right_on=['termin_id'])
-            appointments_output.drop(['termin_id','energieverbrauch'], axis=1)
+            #appointments_output.drop(['termin_id','energieverbrauch'], axis=1)
 
             # parse to datetime format
             appointments_output['Date'] = pd.to_datetime(appointments_output['Date'], format="%Y.%m.%d")
