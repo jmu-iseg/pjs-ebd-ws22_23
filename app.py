@@ -134,11 +134,11 @@ def optimization():
     
 # reload route
 @app.route('/reload_webapp')
+@login_required
 def reload():
     subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     return redirect('/')
-
 
 @app.route('/run_script', methods=['POST'])
 def run_script():
@@ -146,6 +146,7 @@ def run_script():
     # TODO
     subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     output = subprocess.run(['bash', '/var/www/PJS/update_files.sh'], shell=True, check=True, text=True, cwd='/var/www/PJS/', capture_output=True)
+    print("run script")
     return output.stdout
 
 # add termin to dictionary
