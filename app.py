@@ -168,6 +168,7 @@ def add_termin():
 @login_required
 def delete_termin():
     id = request.form['id']
+    print(id)
     termine.pop(id, None)
     return Response(status=204)
 
