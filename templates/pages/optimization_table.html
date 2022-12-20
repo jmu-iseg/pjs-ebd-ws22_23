@@ -136,7 +136,7 @@
     data: {
       labels: termin_list_new,
       datasets: [{
-        //label: 'Stromverbrauch',
+        label: 'Stromverbrauch (kWh)',
         data: energy_consumption_list,
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
@@ -194,7 +194,7 @@
     data: {
       labels: termin_list_new,
       datasets: [{
-        label: 'Netzbezug',
+        label: 'Netzbezug (kWh)',
         data: netzbezug_termine,
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
@@ -251,8 +251,8 @@
     data: {
       labels: ['Solarstrom', 'Netzbezug'],
       datasets: [{
-        //label: 'Stromverbrauch',
-        //label: 'Prozentualer Anteil',
+        label: 'Solarstrom (kWh)',
+        label: 'Netzbezug (kWh)',
         data: [energy_consumption - netzbezug, netzbezug],
         backgroundColor: [
           'rgba(10, 150, 20, 0.6)',
