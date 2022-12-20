@@ -13,6 +13,16 @@
         <p></p>
         <p>Hier können Sie Ihre Energieverbräuche und -erzeugung über das Dashboard analysieren.</p>
         <p>Über die Optimierungsfunktion können Sie ihre Showroom-Kundentermine möglichst energieeffizient planen.</p>
+        <button onclick="runScript()">Run Script</button>
+
+        <script>
+          async function runScript() {
+            const response = await fetch('/run_script', { method: 'POST' });
+            const output = await response.text();
+            console.log(output);
+          }
+        </script>
+
       </div>
     </div>
   </div>
