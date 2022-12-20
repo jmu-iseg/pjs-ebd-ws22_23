@@ -84,8 +84,10 @@ main {
 
 .btn {
     background:#5263b4;
+    color: #fff;
     &:hover, &:active {
         background:#455398;
+        color: #fff;
     }
 }
 
