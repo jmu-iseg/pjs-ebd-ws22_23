@@ -158,14 +158,12 @@
       animation: {
         animateScale: true,
         animateRotate: true,
+        duration: 2000
       },
-      tooltips: {
-        enabled: true,
+      tooltip: {
         callbacks: {
-          label: function (tooltipItem, data) {
-            var label = data.labels[tooltipItem.index] || '';
-            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-            return '#' + label + ': ' + value + ' kWh';
+          afterLabel: function(context) {
+            return ' kWh';
           }
         }
       },

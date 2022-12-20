@@ -75,6 +75,7 @@ def home():
     username = flask_login.current_user.username
     return render_template("/pages/home.html", username=username)
 
+# login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -86,12 +87,14 @@ def login():
                 return redirect('/')
     return render_template('/pages/login.html', form=form)
 
+# logout route
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
+#  register route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -129,11 +132,13 @@ def optimization():
     termine = {}
     return render_template("/pages/optimization.html")
     
+# reload route
 @app.route('/reload_webapp')
 def reload():
     subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     return redirect('/')
+
 
 @app.route('/run_script', methods=['POST'])
 def run_script():
@@ -143,6 +148,7 @@ def run_script():
     output = subprocess.run(['bash', '/var/www/PJS/update_files.sh'], shell=True, check=True, text=True, cwd='/var/www/PJS/', capture_output=True)
     return output.stdout
 
+# add termin to dictionary
 @app.route('/add_termin', methods=['GET', 'POST'])
 @login_required
 def add_termin():
@@ -156,7 +162,8 @@ def add_termin():
     termine[id] = {'bezeichnung': bezeichnung, 'dauer': int(dauer), 'maschinen': maschinen}
 
     return Response(status=204)
-    
+
+# delete termin from dictionary 
 @app.route('/delete_termin', methods=['GET', 'POST'])
 @login_required
 def delete_termin():
@@ -180,13 +187,15 @@ def get_date():
     start_date = request.form['start_date']
     end_date = request.form['end_date']
     try:
-        d = datetime.strptime(start_date, "%d.%m.%Y")
+        start = datetime.strptime(start_date, "%d.%m.%Y")
     except ValueError:
         errors['Startzeiterror'] = 'Bitte das Startdatum angeben.'
     try:
-        d = datetime.strptime(end_date, "%d.%m.%Y")
+        end = datetime.strptime(end_date, "%d.%m.%Y")
     except ValueError:
         errors['Endzeiterror'] = 'Bitte das Enddatum angeben.'
+    if end_date < start_date: 
+        errors['Startzeiterror'] = 'Das Startdatum muss vor dem Enddatum liegen.'
     if len(errors) > 0:
         termine.clear()
         return render_template("pages/optimization.html", errors=errors)
