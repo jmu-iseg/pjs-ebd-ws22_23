@@ -138,7 +138,9 @@ def reload():
 @app.route('/run_script', methods=['POST'])
 def run_script():
     # Call the Python shell script and get the output
-    output = subprocess.run(['bash', '/var/www/PJS/update_files.sh'], capture_output=True)
+    # TODO
+    subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
+    output = subprocess.run(['bash', '/var/www/PJS/update_files.sh'], shell=True, check=True, text=True, cwd='/var/www/PJS/', capture_output=True)
     return output.stdout
 
 @app.route('/add_termin', methods=['GET', 'POST'])
