@@ -22,28 +22,28 @@
                 labels: {{ labels | safe }},
                 datasets: [
                     {
-                        label: "solar production",
+                        label: "Solarstrom",
                         data: {{ output | safe }},
                         fill: false,
                         borderColor: 'rgb(255, 99, 132)',
                         lineTension: 0.1
                     },
                     {
-                        label: "basic consumption",
+                        label: "Grundlast",
                         data: {{ bConsum | safe }},
                         fill: false,
                         borderColor: 'rgb(75, 192, 192)',
                         lineTension: 0.1
                     },
                     {
-                        label: "managment consumption",
+                        label: "Verwaltung",
                         data: {{ mConsum | safe }},
                         fill: false,
                         borderColor: 'rgb(255, 205, 86)',
                         lineTension: 0.1
                     },
                     {
-                        label: "production consumption",
+                        label: "Produktion",
                         data: {{ pConsum | safe }},
                         fill: false,
                         borderColor: 'rgb(201, 203, 207)',

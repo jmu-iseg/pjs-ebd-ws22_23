@@ -129,7 +129,7 @@ termine = {}
 @app.route('/optimization')
 @login_required
 def optimization():
-    termine = {}
+    termine.clear()
     return render_template("/pages/optimization.html")
     
 # reload route
