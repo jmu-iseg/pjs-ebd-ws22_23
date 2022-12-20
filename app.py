@@ -140,6 +140,7 @@ def reload():
     subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
     return redirect('/')
 
+# diese route wird vermutlich nicht gebraucht, da reload_webapp funktioniert 
 @app.route('/run_script', methods=['POST'])
 def run_script():
     # Call the Python shell script and get the output
