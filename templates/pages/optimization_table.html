@@ -90,7 +90,7 @@
               {% for item in netzbezug_termine_percent %}
               <tr>
                 <td style="width: 1px; white-space: nowrap;">#{{ item.TerminID }}</td>
-                <td style="width: 1px; white-space: nowrap;">{{ item.percent }} %</td>
+                <td style="width: 1px; white-space: nowrap;"><b>{{ item.percent }} %</b></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -136,7 +136,7 @@
     data: {
       labels: termin_list_new,
       datasets: [{
-        label: 'Stromverbrauch (kWh)',
+        label: 'Stromverbrauch',
         data: energy_consumption_list,
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
@@ -175,7 +175,7 @@
         tooltip: {
           callbacks: {
             afterLabel: function(context) {
-              return ' kWh';
+              return 'kWh';
             }
           }
         }
@@ -196,7 +196,7 @@
     data: {
       labels: termin_list_new,
       datasets: [{
-        label: 'Netzbezug (kWh)',
+        label: 'Netzbezug',
         data: netzbezug_termine,
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
@@ -235,7 +235,7 @@
         tooltip: {
           callbacks: {
             afterLabel: function(context) {
-              return ' kWh';
+              return 'kWh';
             }
           }
         }
@@ -253,7 +253,7 @@
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
-      labels: ['Solarstrom (kWh)', 'Netzbezug (kWh)'],
+      labels: ['Solarstrom', 'Netzbezug'],
       datasets: [{
         //label: 'Solarstrom (kWh)',
         //label: 'Netzbezug (kWh)',
@@ -294,7 +294,7 @@
         tooltip: {
           callbacks: {
             afterLabel: function(context) {
-              return ' kWh';
+              return 'kWh';
             }
           }
         }
