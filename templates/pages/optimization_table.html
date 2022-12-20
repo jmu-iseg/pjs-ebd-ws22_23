@@ -129,6 +129,8 @@
   var energy_consumption_list = {{ energy_consumption_list }};
   var termin_list = {{ termin_list }};
   var termin_list_new = termin_list.map(String);
+  Chart.defaults.global.animation.duration = 3000;
+
 
   var netzbezug_chart = new Chart(ctx1, {
     plugins: [ChartDataLabels],
@@ -154,8 +156,8 @@
         display: false
       },
       animation: {
-      animateScale: true,
-      animateRotate: true
+        animateScale: true,
+        animateRotate: true,
       },
       tooltips: {
         enabled: true,
@@ -215,6 +217,10 @@
       legend: {
         display: false
       },
+      animation: {
+        animateScale: true,
+        animateRotate: true,
+      },
       tooltips: {
         enabled: true,
         callbacks: {
@@ -271,6 +277,10 @@
       cutoutPercentage: 50,
       legend: {
         display: false
+      },
+      animation: {
+        animateScale: true,
+        animateRotate: true,
       },
       tooltips: {
         enabled: true,
