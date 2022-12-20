@@ -136,7 +136,7 @@
     data: {
       labels: termin_list_new,
       datasets: [{
-        label: 'Stromverbrauch',
+        //label: 'Stromverbrauch',
         data: energy_consumption_list,
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
@@ -204,6 +204,9 @@
       }]
     },
     options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      aspectRatio: 2,
       cutoutPercentage: 50,
       legend: {
         display: false
@@ -248,8 +251,8 @@
     data: {
       labels: ['Solarstrom', 'Netzbezug'],
       datasets: [{
-        label: 'Stromverbrauch',
-        label: 'Prozentualer Anteil',
+        //label: 'Stromverbrauch',
+        //label: 'Prozentualer Anteil',
         data: [energy_consumption - netzbezug, netzbezug],
         backgroundColor: [
           'rgba(10, 150, 20, 0.6)',
