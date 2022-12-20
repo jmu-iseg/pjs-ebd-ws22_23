@@ -126,7 +126,7 @@
       });
 
       // get variable for adding to dictionary
-      var id = "#" + count;
+      var id = count;
       var bezeichnung = $("#bezeichnung").val();
       var dauer = $("#dauer").val();
       var maschinen = $("#maschinen :selected").map((_, e) => e.value).get();
@@ -156,6 +156,7 @@
     $(document).on("click", ".delete", function () {
       var $row = $(this).closest("tr"); // Finds the closest row <tr> 
       var id = $row.find("td:nth-child(1)").text(); // Finds the 1st <td> element
+      id = id.replace('#', '')
       
       // delete in dictionary
       $.post("/delete_termin", { id: id }, function (delete_termin) { })
