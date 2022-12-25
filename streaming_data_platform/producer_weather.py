@@ -23,12 +23,13 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
 # Get forecast for every day and push it to kafka
 for day in response_content["list"]:
-    print(day["dt"])
-    print("____")
 
     # Convert Date
     date = datetime.fromtimestamp(day["dt"])
     date_string = date.strftime("%Y-%m-%d")
+
+    print(date_string)
+    print("____")
 
     # Push DateTime as Key and Output (kWh) as Value
     producer.send('weather', key=bytes(str(date_string), 'utf-8'),
