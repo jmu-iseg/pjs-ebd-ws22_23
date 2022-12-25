@@ -121,7 +121,7 @@ def register():
 #  settings route
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
-     # Check if the user is an admin
+    # Check if the user is an admin
     if users[request.user.username] != ADMIN:
         # Non-admin users are not allowed to access the settings page
         return redirect('/')
