@@ -26,7 +26,7 @@ for day in response_content["list"]:
     print(day["dt"])
     print("____")
 
-    datetime = date = datetime.datetime.fromtimestamp(day["dt"])
+    datetime = datetime.datetime.fromtimestamp(day["dt"])
 
     # Push DateTime as Key and Output (kWh) as Value
     producer.send('weather', key=bytes(str(datetime), 'utf-8'),
