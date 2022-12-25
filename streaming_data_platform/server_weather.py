@@ -56,7 +56,7 @@ async def main():
         while True:
             for day in response_content["list"]:
                 valDateTime = 'test'
-                
+                print(type(day))
                 # giving values
                 await varDateTime.write_value(valDateTime)
                 await varWeather.write_value(day)
