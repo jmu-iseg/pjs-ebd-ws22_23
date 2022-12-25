@@ -36,13 +36,6 @@ while True:
     
     # Create a DataFrame for each topic and rename value and drop column "topic"
     dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
-    #dfBConsum = df[df['topic'] == "bConsum"].rename({'value': 'bConsum'}, axis=1).drop('topic', axis=1)
-    #dfMConsum = df[df['topic'] == "mConsum"].rename({'value': 'mConsum'}, axis=1).drop('topic', axis=1)
-    #dfPConsum = df[df['topic'] == "pConsum"].rename({'value': 'pConsum'}, axis=1).drop('topic', axis=1)
+
     print(dfWeather)
 
-    # Merge DataFrames together on dateTime
-    dfs = [dfWeather]
-    dfFinal = ft.reduce(lambda left, right: pd.merge(left, right, on='dateTime'), dfs)
-    # Sammeln
-    
