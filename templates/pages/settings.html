@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Benutzer
+      </div>
+      <div class="card-body">
+        <h1>Willkommen zurück, {{username}}!</h1>
+        Auflistung aller Nutzer, neue Nutzer anlegen, Rechte verwalten
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Grundeinstellungen
+      </div>
+      <div class="card-body">
+        <form action="/update-settings" method="post">
+          <label for="OpenWeatherAPI">OpenWeatherAPI Key:</label><br>
+          <input type="text" id="OpenWeatherAPI" name="OpenWeatherAPI"><br>
+          <br>
+          <p>Koordinaten der Anlage</p>
+          <label for="lan">Latitute:</label><br>
+          <input type="text" id="lan" name="lan"><br>
+          <br>
+          <label for="long">Longitute:</label><br>
+          <input type="text" id="long" name="long"><br>
+          <input type="submit" value="Submit">
+        </form> 
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

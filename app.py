@@ -37,6 +37,16 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Define the different roles that users can have in the application
+ADMIN = 'admin'
+USER = 'user'
+
+# Assign roles to users
+users = {
+    'nils': ADMIN,
+}
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
@@ -107,6 +117,28 @@ def register():
         return redirect('/')
 
     return render_template('/pages/register.html', form=form)
+
+#  settings route
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+     # Check if the user is an admin
+    if users[request.user.username] != ADMIN:
+        # Non-admin users are not allowed to access the settings page
+        return redirect('/')
+    else:
+        if request.method == 'POST':
+            # Update the settings based on the form data
+            name = request.form['name']
+            update_settings(request.form)
+            return redirect('/settings')
+        else:
+            # Render the settings template
+            return render_template('/pages/settings.html')
+
+
+def update_settings(form_data):
+    # Update the settings in the database or file system
+    pass
 
 # dashboard route   
 @app.route('/dashboard')
