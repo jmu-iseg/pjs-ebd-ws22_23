@@ -61,9 +61,9 @@ async def main():
                 await varDateTime.write_value(valDateTime)
                 await varWeather.write_value(str(day))
                 
-                # wait 1 day before repeating
-                #await asyncio.sleep(3600)
+            #wait 1 day before repeating
+            await asyncio.sleep(3600)
                 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    asyncio.run(main(), debug=True)
+    asyncio.run(main(), debug=True) #254119
