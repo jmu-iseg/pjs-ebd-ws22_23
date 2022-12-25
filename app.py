@@ -42,7 +42,7 @@ ADMIN = 'admin'
 USER = 'user'
 
 # Assign roles to users
-users = {
+adminList = {
     'nils': ADMIN,
 }
 
@@ -122,7 +122,7 @@ def register():
 @login_required
 def settings():
     # Check if the user is an admin
-    if users[flask_login.current_user.username] != ADMIN:
+    if adminList[flask_login.current_user.username] != ADMIN:
         # Non-admin users are not allowed to access the settings page
         return redirect('/')
     else:
@@ -133,10 +133,10 @@ def settings():
             return redirect('/settings')
         else:
             # get list of every user
-            users = User.query.all()
+            userList = User.query.all()
 
             # Render the settings template
-            return render_template('/pages/settings.html', users=users)
+            return render_template('/pages/settings.html', userList=userList)
 
 
 def update_settings(form_data):
