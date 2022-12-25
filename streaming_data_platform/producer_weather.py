@@ -27,7 +27,7 @@ for day in response_content["list"]:
     print("____")
 
     # Convert Date
-    date = datetime.datetime.fromtimestamp(day["dt"])
+    date = datetime.fromtimestamp(day["dt"])
     date_string = date.strftime("%Y-%m-%d")
 
     # Push DateTime as Key and Output (kWh) as Value
