@@ -3,8 +3,6 @@ import mysql.connector
 import pandas as pd
 import functools as ft
 
-
-
 #cursor.execute("CREATE TABLE phData (datetime DATETIME, output FLOAT, basicConsumption FLOAT, managementConsumption FLOAT, productionConsumption FLOAT)")
 
 df = pd.DataFrame()
@@ -21,7 +19,7 @@ consumer.subscribe(topics=topics)
 
 while True:
     print('polling...')
-    records = consumer.poll(timeout_ms=1000)
+    records = consumer.poll(timeout_ms=360000)
     
     #read items
     for _, consumer_records in records.items():
