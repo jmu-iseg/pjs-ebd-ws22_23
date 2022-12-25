@@ -1,5 +1,4 @@
 from datetime import datetime
-import asyncio
 from kafka import KafkaProducer
 import requests
 
@@ -24,9 +23,9 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
 # Get forecast for every day and push it to kafka
 for day in response_content["list"]:
-    print(day)
+    print(day["dt"])
     print("____")
 
     # Push DateTime as Key and Output (kWh) as Value
-    producer.send('weather', key=bytes(str(dateTimeValue), 'utf-8'),
-              value=bytes(str(outputValue), 'utf-8'))
+    producer.send('weather', key=bytes(str(day["dt"]), 'utf-8'),
+              value=bytes(str(day), 'utf-8'))
