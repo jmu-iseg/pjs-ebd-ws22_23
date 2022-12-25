@@ -1,4 +1,5 @@
 from datetime import datetime
+import asyncio
 from kafka import KafkaProducer
 import requests
 
