@@ -46,7 +46,6 @@ users = {
     'nils': ADMIN,
 }
 
-
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
@@ -104,7 +103,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-#  register route
+# register route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -118,11 +117,12 @@ def register():
 
     return render_template('/pages/register.html', form=form)
 
-#  settings route
+# settings route
 @app.route('/settings', methods=['GET', 'POST'])
+@login_required
 def settings():
     # Check if the user is an admin
-    if users[request.user.username] != ADMIN:
+    if users[flask_login.current_user.username] != ADMIN:
         # Non-admin users are not allowed to access the settings page
         return redirect('/')
     else:
@@ -132,8 +132,11 @@ def settings():
             update_settings(request.form)
             return redirect('/settings')
         else:
+            # get list of every user
+            users = User.query.all()
+
             # Render the settings template
-            return render_template('/pages/settings.html')
+            return render_template('/pages/settings.html', users=users)
 
 
 def update_settings(form_data):
