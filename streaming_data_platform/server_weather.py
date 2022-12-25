@@ -59,7 +59,7 @@ async def main():
                 print(type(day))
                 # giving values
                 await varDateTime.write_value(valDateTime)
-                await varWeather.write_value(day)
+                await varWeather.write_value(str(day))
                 
                 # wait 1 day before repeating
                 #await asyncio.sleep(3600)
