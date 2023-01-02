@@ -10,10 +10,8 @@
                 <img src="{{ url_for('static', filename='img/img1234.jpg') }}" alt="mdo" width="34" height="34" class="rounded-circle">
             </a>
             <ul class="dropdown-menu text-small">
-                {% if flask_login.current_user.role %}
                 <li><a class="dropdown-item" href="/settings">Settings</a></li>
-                {% endif %}
-                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="/profile">Profile</a></li>
                 <li><a class="dropdown-item" href="/reload_webapp">Reload Webapp</a></li>
                 <li>
                     <hr class="dropdown-divider">
