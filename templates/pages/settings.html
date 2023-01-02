@@ -41,8 +41,12 @@
                       </td>
                       <td>
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
-                          <button type="button" class="btn btn-outline-primary">Admin</button>
-                          <button type="button" class="btn btn-outline-danger">delete</button>
+                          {%+ if user.role == "0" %}
+                            <button type="button" class="btn btn-outline-primary">degradieren</button>
+                          {%+ elif user.role == "1" %}
+                            <button type="button" class="btn btn-outline-primary">zum Admin</button>
+                          {% endif %}
+                          <a href="{{ url_for('settings',entry=user) }}" class="btn btn-outline-danger">delete</a>
                         </div>
                       </td>
                     </tr>
