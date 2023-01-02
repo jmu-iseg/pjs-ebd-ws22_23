@@ -134,8 +134,8 @@ def profilepage():
 
     if form.validate_on_submit():
         filename = secure_filename(form.profilepic.data.filename)
-        form.profilepic.data.save(os.path.join(app.root_path,'/static/img/profile/',filename))
-        filenameDB = os.path.join(app.root_path,'/static/img/profile/',filename)
+        form.profilepic.data.save(os.path.join(app.root_path,'static/img/profile',filename))
+        filenameDB = os.path.join(app.root_path,'static/img/profile',filename)
         user = User.query.filter_by(id = flask_login.current_user.id).first()
         user.username = form.username.data
         user.password = bcrypt.generate_password_hash(form.password.data)
