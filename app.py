@@ -82,29 +82,26 @@ def home():
 # login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if bcrypt.check_password_hash(user.password, form.password.data):
-                login_user(user)
-                return redirect('/')
-    return render_template('/pages/login.html', form=form)
+    if User.query.first():
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user:
+                if bcrypt.check_password_hash(user.password, form.password.data):
+                    login_user(user)
+                    return redirect('/')
+        return render_template('/pages/login.html', form=form)
+    else:
+        form = RegisterForm()
 
-# register route
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm()
+        if form.validate_on_submit():
+            hashed_password = bcrypt.generate_password_hash(form.password.data)
+            new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect('/')
 
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect('/')
-
-    return render_template('/pages/register.html', form=form)
-
+        return render_template('/pages/register.html', form=form)
 
 # 404 route
 @app.errorhandler(404)
