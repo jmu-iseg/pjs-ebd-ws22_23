@@ -32,7 +32,7 @@
                     <tr>
                       <th scope="row">{{user.id}}</th>
                       <td>{{user.username}}</td>
-                      <td>Otto</td>
+                      <td>{{user.role}}</td>
                       <td>
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
                           <button type="button" class="btn btn-outline-primary">Left</button>
@@ -66,6 +66,9 @@
                   {{ form.username }}
                   <label for="inputPassword" class="sr-only">Passwort</label>
                   {{ form.password }}
+                  <label for="inputRole" class="sr-only">Rolle</label>
+                  {{ form.role }}
+                  <br>
                   {{ form.submit }}
                 </form>
               </div>
