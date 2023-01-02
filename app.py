@@ -93,7 +93,7 @@ def inject_userdata():
     else:
         values['username'] = flask_login.current_user.username
         values['userrole'] = flask_login.current_user.role
-        if len(flask_login.current_user.profilepic > 0):
+        if len(flask_login.current_user.profilepic) > 0:
             values['profilepic'] = flask_login.current_user.profilepic
         else:
             values['profilepic'] = 'img/img1234.jpg'
