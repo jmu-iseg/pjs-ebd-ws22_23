@@ -131,11 +131,11 @@ def settings():
         User.query.filter_by(id = request.args.get('entry')).delete()
         db.session.commit()
     elif 'downgrade' in request.args:
-        user = User.query.filter_by(id = request.args.get('entry')).first()
+        user = User.query.filter_by(id = request.args.get('downgrade')).first()
         user.role = "1"
         db.session.commit()
     elif 'upgrade' in request.args:
-        user = User.query.filter_by(id = request.args.get('entry')).first()
+        user = User.query.filter_by(id = request.args.get('upgrade')).first()
         user.role = "0"
         db.session.commit()
 
