@@ -113,6 +113,14 @@ def register():
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data)
+        new_user = User(username=form.username.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect('/')
+
     if request.method == 'POST':
         # Update the settings based on the form data
         name = request.form['name']
@@ -123,7 +131,7 @@ def settings():
         userList = User.query.all()
 
         # Render the settings template
-        return render_template('/pages/settings.html', userList=userList)
+        return render_template('/pages/settings.html', userList=userList, form=form)
 
 
 def update_settings(form_data):
@@ -458,7 +466,7 @@ def return_files_calendar():
     event.add('dtend', endtime_formatted)
     organizer = vCalAddress('MAILTO:hannes.metz@stud-mail.uni-wuerzburg.de')
     organizer.params['cn'] = vText('Hannes Metz')
-    organizer.params['role'] = vText('CEO of Uni Wuerzburg')
+    organizer.params['role'] = vText('CEO of Uni Wuerzburg') # ein Macher
     event['organizer'] = organizer
     event['location'] = vText('Würzburg, DE')
     cal.add_component(event)
