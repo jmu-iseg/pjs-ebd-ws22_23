@@ -9,15 +9,15 @@
         <form method="POST" action="">
             <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="75"
                 height="75">
-            <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
+            <h1 class="h3 mb-3 font-weight-normal">Initiale Registrierung</h1>
             <label for="inputEmail" class="sr-only">Nutzername</label>
             {{ form.hidden_tag() }}
             {{ form.username }}
             <label for="inputPassword" class="sr-only">Passwort</label>
             {{ form.password }}
+            {{ form.role }}
             {{ form.submit }}
         </form>
-        <a class="mt-2 text-muted" href="{{ url_for('login') }}">Haben Sie schon einen Account? Login</a>
     </div>
     </div>
 </main>

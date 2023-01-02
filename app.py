@@ -18,7 +18,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 
@@ -47,6 +47,8 @@ class User(db.Model, UserMixin):
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+    
+    role = SelectField(u'role', choices=[('0', 'Admin'), ('1', 'Standard')])
 
     password = PasswordField(validators=[
                              InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
@@ -89,6 +91,21 @@ def login():
                 return redirect('/')
     return render_template('/pages/login.html', form=form)
 
+# register route
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data)
+        new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect('/')
+
+    return render_template('/pages/register.html', form=form)
+
+
 # 404 route
 @app.errorhandler(404)
 def page_not_found(e):
@@ -101,20 +118,6 @@ def page_not_found(e):
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
-# register route
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm()
-
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect('/')
-
-    return render_template('/pages/register.html', form=form)
 
 # settings route
 @app.route('/settings', methods=['GET', 'POST'])
