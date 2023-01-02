@@ -138,10 +138,12 @@ def profilepage():
     form = ProfileForm()
 
     if form.validate_on_submit():
-        filename = secure_filename(form.file.data.filename)
-        form.file.data.save('static/img/profile' + filename)
+        filename = secure_filename(form.profilepic.data.filename)
+        form.profilepic.data.save('static/img/profile/' + filename)
+        filenameDB = f"static/img/profile/{filename}"
+
         hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
+        new_user = User(username=form.username.data, password=hashed_password, role=form.role.data, filename=filenameDB)
         db.session.add(new_user)
         db.session.commit()
         return redirect('/profile')
