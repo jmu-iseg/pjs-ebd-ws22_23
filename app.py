@@ -125,10 +125,18 @@ def settings():
         new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
         db.session.add(new_user)
         db.session.commit()
-        return redirect('/')
+        return redirect('/settings')
 
     if 'entry' in request.args:
         User.query.filter_by(id = request.args.get('entry')).delete()
+        db.session.commit()
+    elif 'downgrade' in request.args:
+        user = User.query.filter_by(id = request.args.get('entry')).first()
+        user.role = "1"
+        db.session.commit()
+    elif 'upgrade' in request.args:
+        user = User.query.filter_by(id = request.args.get('entry')).first()
+        user.role = "0"
         db.session.commit()
 
     if request.method == 'POST':
