@@ -71,6 +71,10 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField('Login')
 
+@app.context_processor
+def inject_userdata():
+    return dict(username=flask_login.current_user.username, userrole=flask_login.current_user.role)
+
 # home route 
 @app.route('/')
 @login_required
