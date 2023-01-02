@@ -46,7 +46,7 @@
                           {%+ elif user.role == "1" %}
                             <button type="button" class="btn btn-outline-primary">zum Admin</button>
                           {% endif %}
-                          <a href="{{ url_for('settings',entry=user) }}" class="btn btn-outline-danger">delete</a>
+                          <a href="{{ url_for('settings',entry=user.id) }}" class="btn btn-outline-danger">delete</a>
                         </div>
                       </td>
                     </tr>

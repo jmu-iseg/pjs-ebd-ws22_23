@@ -128,8 +128,8 @@ def settings():
         return redirect('/')
 
     if 'entry' in request.args:
-        db.session.delete(request.args.get('entry'))
-        db.session.commit
+        User.query.filter_by(id = request.args.get('entry')).delete()
+        db.session.commit()
 
     if request.method == 'POST':
         # Update the settings based on the form data
