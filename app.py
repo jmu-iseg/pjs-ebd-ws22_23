@@ -73,7 +73,10 @@ class LoginForm(FlaskForm):
 
 @app.context_processor
 def inject_userdata():
-    return dict(username=flask_login.current_user.username, userrole=flask_login.current_user.role)
+    if flask_login.current_user.is_authenticated != True:
+        return dict(username="NotLoggedIn", userrole="NoRole")
+    else:
+        return dict(username=flask_login.current_user.username, userrole=flask_login.current_user.role)
 
 # home route 
 @app.route('/')
