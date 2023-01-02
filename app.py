@@ -18,12 +18,18 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
+from werkzeug.utils import secure_filename
+
+# Upload structure
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 # Create the Webserver
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 db = SQLAlchemy(app)
@@ -71,6 +77,17 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField('Login')
 
+class ProfileForm(FlaskForm):
+    username = StringField(validators=[
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+
+    password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    
+    profilepic = FileField()
+
+    submit = SubmitField('Login')
+
 @app.context_processor
 def inject_userdata():
     if flask_login.current_user.is_authenticated != True:
@@ -107,15 +124,32 @@ def login():
             return redirect('/')
 
         return render_template('/pages/register.html', form=form)
+
 # 404 route
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('/pages/404.html'), 404
 
-@app.route('/profile')
+# profle route
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profilepage():
-    return render_template('/pages/profil.html')
+    form = ProfileForm()
+
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        form.file.data.save('static/img/profile' + filename)
+        hashed_password = bcrypt.generate_password_hash(form.password.data)
+        new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect('/profile')
+    return render_template('/pages/profil.html', form=form)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # logout route
 @app.route('/logout', methods=['GET', 'POST'])
