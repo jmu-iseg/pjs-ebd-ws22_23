@@ -10,11 +10,14 @@
         Auflistung aller Nutzer, neue Nutzer anlegen, Rechte verwalten
         <br>
         Nutzer: {{userList}}
+        {% for user in userList %}
+          user {{user}} {{user.username}}
+      {% endfor %}
       </div>
       <form method="POST" action="">
         <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="75"
             height="75">
-        <h1 class="h3 mb-3 font-weight-normal">Registrieren</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Neuen Benutzer registrieren</h1>
         <label for="inputEmail" class="sr-only">Nutzername</label>
         {{ form.hidden_tag() }}
         {{ form.username }}
