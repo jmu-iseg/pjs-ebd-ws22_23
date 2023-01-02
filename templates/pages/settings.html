@@ -32,12 +32,17 @@
                     <tr>
                       <th scope="row">{{user.id}}</th>
                       <td>{{user.username}}</td>
-                      <td>{{user.role}}</td>
+                      <td>
+                        {%+ if user.role is 0 %}
+                          Admin
+                        {%+ elif user.role is 1 %}
+                          Standard
+                        {% endif %}
+                      </td>
                       <td>
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
-                          <button type="button" class="btn btn-outline-primary">Left</button>
-                          <button type="button" class="btn btn-outline-primary">Middle</button>
-                          <button type="button" class="btn btn-outline-danger">x</button>
+                          <button type="button" class="btn btn-outline-primary">Admin</button>
+                          <button type="button" class="btn btn-outline-danger">delete</button>
                         </div>
                       </td>
                     </tr>
@@ -67,6 +72,7 @@
                   <label for="inputPassword" class="sr-only">Passwort</label>
                   {{ form.password }}
                   <label for="inputRole" class="sr-only">Rolle</label>
+                  <br>
                   {{ form.role }}
                   <br>
                   {{ form.submit }}

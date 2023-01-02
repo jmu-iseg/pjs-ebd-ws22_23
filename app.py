@@ -122,7 +122,7 @@ def settings():
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
+        new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
         db.session.add(new_user)
         db.session.commit()
         return redirect('/')
