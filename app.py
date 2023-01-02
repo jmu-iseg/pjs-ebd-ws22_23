@@ -119,6 +119,10 @@ def logout():
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
+    role = flask_login.current_user.role
+    if role != "0":
+        return redirect('/')
+        
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data)
@@ -127,6 +131,7 @@ def settings():
         db.session.commit()
         return redirect('/settings')
 
+    # change user roles
     if 'entry' in request.args:
         User.query.filter_by(id = request.args.get('entry')).delete()
         db.session.commit()

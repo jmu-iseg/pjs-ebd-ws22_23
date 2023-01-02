@@ -91,6 +91,11 @@ main {
     }
 }
 
+.btn-outline-primary {
+    background: transparent;
+    color: #5263b4;
+}
+
 @media (min-width: 1200px) {
     .fs-4 {
         font-size: 1.2rem!important;
