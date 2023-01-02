@@ -42,7 +42,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), nullable=False, unique=True)
     role = db.Column(db.String(20))
     password = db.Column(db.String(80), nullable=False)
-    #role = db.Column(db.String(80), nullable=False)
+    profilepic = db.Column(db.String(100))
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
@@ -112,6 +112,10 @@ def login():
 def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('/pages/404.html'), 404
+
+@app.route('/profile')
+def profilepage():
+    return render_template('/pages/profil.html')
 
 # logout route
 @app.route('/logout', methods=['GET', 'POST'])
