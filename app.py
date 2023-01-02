@@ -102,7 +102,6 @@ def login():
             return redirect('/')
 
         return render_template('/pages/register.html', form=form)
-
 # 404 route
 @app.errorhandler(404)
 def page_not_found(e):
