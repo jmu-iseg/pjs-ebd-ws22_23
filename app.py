@@ -141,10 +141,11 @@ def profilepage():
         filename = secure_filename(form.profilepic.data.filename)
         form.profilepic.data.save('static/img/profile/' + filename)
         filenameDB = f"static/img/profile/{filename}"
+        user = User.query.filter_by(id = flask_login.current_user.id).first()
+        user.username = form.username.data
+        user.password = bcrypt.generate_password_hash(form.password.data)
+        user.profilepic = filenameDB
 
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password, role=form.role.data, filename=filenameDB)
-        db.session.add(new_user)
         db.session.commit()
         return redirect('/profile')
     return render_template('/pages/profil.html', form=form)
