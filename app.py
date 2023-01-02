@@ -82,9 +82,7 @@ def inject_userdata():
 @app.route('/')
 @login_required
 def home():
-    # get user name and push to home.html
-    username = flask_login.current_user.username
-    return render_template("/pages/home.html", username=username)
+    return render_template("/pages/home.html")
 
 # login route
 @app.route('/login', methods=['GET', 'POST'])
