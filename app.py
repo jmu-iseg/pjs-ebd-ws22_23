@@ -89,6 +89,12 @@ def login():
                 return redirect('/')
     return render_template('/pages/login.html', form=form)
 
+# 404 route
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html'), 404
+
 # logout route
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
