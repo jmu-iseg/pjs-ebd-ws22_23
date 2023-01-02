@@ -7,7 +7,22 @@
         Profil
       </div>
       <div class="card-body">
-       Name, Passwort, Bild
+        <form method="POST" action="">
+          <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="75" height="75">
+          <h1 class="h3 mb-3 font-weight-normal">Neuen Benutzer registrieren</h1>
+          <label for="inputPic" class="sr-only">Bild</label>
+          {{ form.profilepic }}
+          <label for="inputEmail" class="sr-only">Nutzername</label>
+          {{ form.hidden_tag() }}
+          {{ form.username }}
+          <label for="inputPassword" class="sr-only">Passwort</label>
+          {{ form.password }}
+          <label for="inputRole" class="sr-only">Rolle</label>
+          <br>
+          {{ form.role }}
+          <br>
+          {{ form.submit }}
+        </form>
       </div>
     </div>
   </div>
