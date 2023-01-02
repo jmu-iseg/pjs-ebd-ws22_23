@@ -23,13 +23,8 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 
-# Upload structure
-UPLOAD_FOLDER = '/path/to/the/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
 # Create the Webserver
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 db = SQLAlchemy(app)
@@ -139,8 +134,8 @@ def profilepage():
 
     if form.validate_on_submit():
         filename = secure_filename(form.profilepic.data.filename)
-        form.profilepic.data.save('static/img/profile/' + filename)
-        filenameDB = f"static/img/profile/{filename}"
+        form.profilepic.data.save('/static/img/profile/' + filename)
+        filenameDB = f"/static/img/profile/{filename}"
         user = User.query.filter_by(id = flask_login.current_user.id).first()
         user.username = form.username.data
         user.password = bcrypt.generate_password_hash(form.password.data)
