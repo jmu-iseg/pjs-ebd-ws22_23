@@ -81,7 +81,7 @@ class ProfileForm(FlaskForm):
     
     profilepic = FileField()
 
-    submit = SubmitField('Login')
+    submit = SubmitField('Aktualisieren')
 
 @app.context_processor
 def inject_userdata():
