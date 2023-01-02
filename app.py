@@ -85,10 +85,19 @@ class ProfileForm(FlaskForm):
 
 @app.context_processor
 def inject_userdata():
+    values = {}
     if flask_login.current_user.is_authenticated != True:
-        return dict(username="NotLoggedIn", userrole="NoRole")
+        values['username'] = "NotLoggedIn"
+        values['userrole'] = "NoRole"
+        return values
     else:
-        return dict(username=flask_login.current_user.username, userrole=flask_login.current_user.role)
+        values['username'] = flask_login.current_user.username
+        values['userrole'] = flask_login.current_user.role
+        if len(flask_login.current_user.profilepic > 0):
+            values['profilepic'] = flask_login.current_user.profilepic
+        else:
+            values['profilepic'] = 'img/img1234.jpg'
+        return values
 
 # home route 
 @app.route('/')
@@ -130,12 +139,13 @@ def page_not_found(e):
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profilepage():
-    form = ProfileForm()
+    username = flask_login.current_user.username
+    form = ProfileForm(username=username)
 
     if form.validate_on_submit():
         filename = secure_filename(form.profilepic.data.filename)
         form.profilepic.data.save(os.path.join(app.root_path,'static/img/profile',filename))
-        filenameDB = os.path.join(app.root_path,'static/img/profile',filename)
+        filenameDB = os.path.join('img/profile',filename)
         user = User.query.filter_by(id = flask_login.current_user.id).first()
         user.username = form.username.data
         user.password = bcrypt.generate_password_hash(form.password.data)
