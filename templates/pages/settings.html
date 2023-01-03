@@ -96,16 +96,17 @@
       </div>
       <div class="card-body">
         <form action="/update-settings" method="post">
+          {{ weatherForm.hidden_tag() }}
           <label for="OpenWeatherAPI">OpenWeatherAPI Key:</label><br>
-          <input type="text" id="OpenWeatherAPI" name="OpenWeatherAPI"><br>
+          {{ weatherForm.apikey }}
           <br>
           <p>Koordinaten der Anlage</p>
           <label for="lan">Latitute:</label><br>
-          <input type="text" id="lan" name="lan"><br>
+          {{ weatherForm.lan }}
           <br>
           <label for="long">Longitute:</label><br>
-          <input type="text" id="long" name="long"><br>
-          <input type="submit" value="Submit">
+          {{ weatherForm.lon }}
+          {{ weatherForm.submit }}
         </form>
       </div>
     </div>
