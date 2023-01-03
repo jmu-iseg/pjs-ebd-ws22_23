@@ -111,5 +111,26 @@
       </div>
     </div>
   </div>
+
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Maschinen
+      </div>
+      <div class="card-body">
+        <form action="" method="post">
+          <p>Verbräuche der Anlagen</p>
+          {{ machineForm.hidden_tag() }}
+          <label for="OpenWeatherAPI">Anlagen 1:</label><br>
+          {{ machineForm.consumption_m1 }}
+          <label for="lan">Anlagen 2:</label><br>
+          {{ machineForm.consumption_m2 }}
+          <label for="long">Anlagen 3:</label><br>
+          {{ machineForm.consumption_m3 }}<br>
+          {{ machineForm.submit }}
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

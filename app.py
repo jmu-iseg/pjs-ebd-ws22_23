@@ -96,6 +96,18 @@ class WeatherForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren')
 
+class MachineForm(FlaskForm):
+    consumption_m1 = StringField(validators=[
+                           InputRequired()])
+
+    consumption_m2 = StringField(validators=[
+                             InputRequired()])
+    
+    consumption_m3 = StringField(validators=[
+                             InputRequired()])
+
+    submit = SubmitField('Aktualisieren')
+
 @app.context_processor
 def inject_userdata():
     values = {}
@@ -111,6 +123,10 @@ def inject_userdata():
         else:
             values['profilepic'] = flask_login.current_user.profilepic
         return values
+
+# read settings
+config = configparser.ConfigParser()
+config.read(os.path.join(app.root_path,'settings.cfg'))
 
 # home route 
 @app.route('/')
@@ -184,10 +200,6 @@ def logout():
 @login_required
 def settings():
     role = flask_login.current_user.role
-
-    # read settings
-    config = configparser.ConfigParser()
-    config.read(os.path.join(app.root_path,'settings.cfg'))
     
     # specify the location
     lat = config['weather']['lat']
@@ -196,11 +208,27 @@ def settings():
     # specify the api key
     apikey = config['weather']['openweatherapikey']
 
+    # set the weatherForm
     weatherForm=WeatherForm(apikey=apikey,lat=lat,lon=lon)
     if weatherForm.validate_on_submit():
         config['weather']['lat'] = weatherForm.lat.data
         config['weather']['lon'] = weatherForm.lon.data
         config['weather']['openweatherapikey'] = weatherForm.apikey.data
+        with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
+            config.write(configfile)
+        return redirect('/settings')
+    
+     # specify the location
+    consumption_m1 = config['machine']['consumption_m1']
+    consumption_m2 = config['machine']['consumption_m2']
+    consumption_m3 = config['machine']['consumption_m3']
+
+    # set the machineForm
+    machineForm=MachineFormForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3)
+    if machineForm.validate_on_submit():
+        config['machineForm']['consumption_m1'] = machineForm.consumption_m1.data
+        config['machineForm']['consumption_m2'] = machineForm.consumption_m2.data
+        config['machineForm']['consumption_m3'] = machineForm.consumption_m3.data
         with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
             config.write(configfile)
         return redirect('/settings')
@@ -239,7 +267,7 @@ def settings():
         userList = User.query.all()
 
         # Render the settings template
-        return render_template('/pages/settings.html', userList=userList, form=form, weatherForm=weatherForm)
+        return render_template('/pages/settings.html', userList=userList, form=form, weatherForm=weatherForm, machineForm=machineForm)
 
 
 def update_settings(form_data):
@@ -388,9 +416,9 @@ def optimization_table(start_date, end_date):
     termine_df_neu['maschine3'].loc[(termine_df_neu['maschine3'].isnull())] = 0
 
     # define energy consumption per machine (TODO: Later via user input data )    
-    consumption_m1 = 50
-    consumption_m2 = 30
-    consumption_m3 = 20
+    consumption_m1 = config['machines']['consumption_m1']
+    consumption_m2 = config['machines']['consumption_m2']
+    consumption_m3 = config['machines']['consumption_m3']
 
     # calculate energy consumption for each termin
     termine_df_neu['energieverbrauch'] = ((termine_df_neu['maschine1'] * consumption_m1) + (termine_df_neu['maschine2'] * consumption_m2) + (termine_df_neu['maschine3'] * consumption_m3)) * termine_df_neu['dauer'] 
