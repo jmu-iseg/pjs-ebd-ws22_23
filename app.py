@@ -219,16 +219,16 @@ def settings():
         return redirect('/settings')
     
      # specify the location
-    consumption_m1 = config['machine']['consumption_m1']
-    consumption_m2 = config['machine']['consumption_m2']
-    consumption_m3 = config['machine']['consumption_m3']
+    consumption_m1 = config['machines']['consumption_m1']
+    consumption_m2 = config['machines']['consumption_m2']
+    consumption_m3 = config['machines']['consumption_m3']
 
     # set the machineForm
     machineForm=MachineFormForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3)
     if machineForm.validate_on_submit():
-        config['machineForm']['consumption_m1'] = machineForm.consumption_m1.data
-        config['machineForm']['consumption_m2'] = machineForm.consumption_m2.data
-        config['machineForm']['consumption_m3'] = machineForm.consumption_m3.data
+        config['machines']['consumption_m1'] = machineForm.consumption_m1.data
+        config['machines']['consumption_m2'] = machineForm.consumption_m2.data
+        config['machines']['consumption_m3'] = machineForm.consumption_m3.data
         with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
             config.write(configfile)
         return redirect('/settings')
