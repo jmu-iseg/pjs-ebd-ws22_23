@@ -43,14 +43,12 @@
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
                           {%+ if userid != user.id %}
                           {%+ if user.role == "0" %}
-                          <a href="{{ url_for('settings',downgrade=user.id) }}" class="btn btn-outline-primary">zum
-                            Standard</a>
+                          <a href="{{ url_for('settings',downgrade=user.id) }}" class="btn btn-outline-primary">Standard</a>
                           {%+ elif user.role == "1" %}
-                          <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">zum
-                            Admin</a>
+                          <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">Admin</a>
                           {% endif %}
                           <a data-toggle="modal" onclick="$('#deleteModal{{user.id}}').modal('toggle')"
-                            class="btn btn-outline-danger">delete</a>
+                            class="btn btn-outline-danger">x</a>
                           {% endif %}
                         </div>
                       </td>
