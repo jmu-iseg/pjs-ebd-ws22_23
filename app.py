@@ -237,7 +237,7 @@ def settings():
         userList = User.query.all()
 
         # Render the settings template
-        return render_template('/pages/settings.html', userList=userList, form=form)
+        return render_template('/pages/settings.html', userList=userList, form=form, weatherForm=weatherForm)
 
 
 def update_settings(form_data):
