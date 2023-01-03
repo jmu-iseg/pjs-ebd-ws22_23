@@ -201,6 +201,8 @@ def settings():
         config['weather']['lat'] = weatherForm.lat.data
         config['weather']['lon'] = weatherForm.lon.data
         config['weather']['openweatherapikey'] = weatherForm.apikey.data
+        with open('settings.cfg', 'w') as configfile:
+            config.write(configfile)
         return redirect('/settings')
 
     if role != "0":
