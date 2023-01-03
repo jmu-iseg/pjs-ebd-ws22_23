@@ -49,33 +49,12 @@
                           <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">zum
                             Admin</a>
                           {% endif %}
-                          <a data-toggle="modal" data-target="#deleteModal{{user.id}}" class="btn btn-outline-danger">delete</a>
+                          <a data-toggle="modal" data-target="#deleteModal{{user.id}}"
+                            class="btn btn-outline-danger">delete</a>
                           {% endif %}
                         </div>
                       </td>
                     </tr>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" role="dialog"
-                      aria-labelledby="deleteModal{{user.id}}Label" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModal{{user.id}}Label">Nutzer löschen</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            Wollen Sie wirklich den Nutzer {{user.username}} löschen?
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">auf keinen Fall!</button>
-                            <button type="button" href="{{ url_for('settings',entry=user.id) }}" class="btn btn-primary">Weg mit dem Kollegen!</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     {% endfor %}
                   </tbody>
                 </table>
@@ -157,4 +136,29 @@
     </div>
   </div>
 </div>
+
+{% for user in userList %}
+<!-- Modal -->
+<div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" role="dialog"
+  aria-labelledby="deleteModal{{user.id}}Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModal{{user.id}}Label">Nutzer löschen</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Wollen Sie wirklich den Nutzer {{user.username}} löschen?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">auf keinen Fall!</button>
+        <button type="button" href="{{ url_for('settings',entry=user.id) }}" class="btn btn-primary">Weg mit dem
+          Kollegen!</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
