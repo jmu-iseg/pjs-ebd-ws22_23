@@ -41,12 +41,14 @@
                       </td>
                       <td>
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
-                          {%+ if user.role == "0" %}
-                            <a href="{{ url_for('settings',downgrade=user.id) }}"class="btn btn-outline-primary">zum Standard</a>
-                          {%+ elif user.role == "1" %}
-                            <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">zum Admin</a>
+                          {%+ if userid != user.id %}
+                            {%+ if user.role == "0" %}
+                              <a href="{{ url_for('settings',downgrade=user.id) }}"class="btn btn-outline-primary">zum Standard</a>
+                            {%+ elif user.role == "1" %}
+                              <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">zum Admin</a>
+                            {% endif %}
+                            <a href="{{ url_for('settings',entry=user.id) }}" class="btn btn-outline-danger">delete</a>
                           {% endif %}
-                          <a href="{{ url_for('settings',entry=user.id) }}" class="btn btn-outline-danger">delete</a>
                         </div>
                       </td>
                     </tr>
