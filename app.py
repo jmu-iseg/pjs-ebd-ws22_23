@@ -14,6 +14,7 @@ import subprocess
 from icalendar import Calendar, Event, vCalAddress, vText
 import io
 import os
+import configparser
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
@@ -80,6 +81,18 @@ class ProfileForm(FlaskForm):
                              InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
     
     profilepic = FileField()
+
+    submit = SubmitField('Aktualisieren')
+
+class WeatherForm(FlaskForm):
+    apikey = StringField(validators=[
+                           InputRequired()])
+
+    lat = StringField(validators=[
+                             InputRequired()])
+    
+    lon = StringField(validators=[
+                             InputRequired()])
 
     submit = SubmitField('Aktualisieren')
 
@@ -171,6 +184,25 @@ def logout():
 @login_required
 def settings():
     role = flask_login.current_user.role
+
+    # read settings
+    config = configparser.ConfigParser()
+    config.read('settings.cfg')
+    
+    # specify the location
+    lat = config['weather']['lat']
+    lon = config['weather']['lon']
+
+    # specify the api key
+    apikey = config['weather']['openweatherapikey']
+
+    weatherForm=WeatherForm(apikey=apikey,lat=lat,lon=lon)
+    if weatherForm.validate_on_submit():
+        config['weather']['lat'] = weatherForm.lat.data
+        config['weather']['lon'] = weatherForm.lon.data
+        config['weather']['openweatherapikey'] = weatherForm.apikey.data
+        return redirect('/settings')
+
     if role != "0":
         return redirect('/')
         

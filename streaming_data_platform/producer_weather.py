@@ -1,16 +1,22 @@
 from datetime import datetime
 from kafka import KafkaProducer
 import requests
+import configparser
+import os
+
+# get config values
+config = configparser.ConfigParser()
+config.read(os.path.abspath(os.curdir)+'/settings.cfg')
 
 # specify the location
-lat = '49.7672'
-long = '9.5183'
+lat = config['weather']['lat']
+lon = config['weather']['lon']
 
 # specify the api key
-key = '2976793f8fedfed783bff2512733ed4b'
+key = config['weather']['openweatherapikey']
 
 # Make the POST request
-response = requests.post('https://pro.openweathermap.org/data/2.5/forecast/climate?units=metric&lat='+lat+'&lon='+long+'&appid='+key)
+response = requests.post('https://pro.openweathermap.org/data/2.5/forecast/climate?units=metric&lat='+lat+'&lon='+lon+'&appid='+key)
 
 # Print the status code of the response
 print(response.status_code) # should return 200
