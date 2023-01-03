@@ -234,8 +234,6 @@ def settings():
         with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
             config.write(configfile)
         return redirect('/settings')
-    else:
-        flash_errors(weatherForm)
     
      # specify the location
     consumption_m1 = config['machines']['consumption_m1']
