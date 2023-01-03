@@ -88,12 +88,6 @@ class WeatherForm(FlaskForm):
     apikey = StringField(validators=[
                            InputRequired()])
 
-    def validate_apikey(self, apikey):
-        def is_ascii(s):
-            return all(ord(c) < 128 for c in s)
-        if not is_ascii(apikey.data):
-            raise ValidationError('ASCII - Characters only')
-
     lat = StringField(validators=[
                              InputRequired()])
     
@@ -101,6 +95,12 @@ class WeatherForm(FlaskForm):
                              InputRequired()])
 
     submit = SubmitField('Aktualisieren')
+
+    def validate_apikey(self, apikey):
+        def is_ascii(s):
+            return all(ord(c) < 128 for c in s)
+        if not is_ascii(apikey.data):
+            raise ValidationError("ASCII - Characters only")
 
 class MachineForm(FlaskForm):
     consumption_m1 = StringField(validators=[
