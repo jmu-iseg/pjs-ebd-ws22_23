@@ -114,6 +114,15 @@ class MachineForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren')
 
+def flash_errors(form):
+    """Flashes form errors"""
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u"Error in the %s field - %s" % (
+                getattr(form, field).label.text,
+                error
+            ), 'error')
+
 @app.context_processor
 def inject_userdata():
     values = {}
@@ -225,6 +234,8 @@ def settings():
         with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
             config.write(configfile)
         return redirect('/settings')
+    else:
+        flash_errors(weatherForm)
     
      # specify the location
     consumption_m1 = config['machines']['consumption_m1']
