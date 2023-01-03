@@ -16,27 +16,35 @@ Vars
     font-style: normal;
     font-weight: 300;
     src: local(''),
-         url('../fonts/nunito-v25-latin-300.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-         url('../fonts/nunito-v25-latin-300.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-  }
-  /* nunito-regular - latin */
-  @font-face {
+        url('../fonts/nunito-v25-latin-300.woff2') format('woff2'),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */
+        url('../fonts/nunito-v25-latin-300.woff') format('woff');
+    /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* nunito-regular - latin */
+@font-face {
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 400;
     src: local(''),
-         url('../fonts/nunito-v25-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-         url('../fonts/nunito-v25-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-  }
-  /* nunito-700 - latin */
-  @font-face {
+        url('../fonts/nunito-v25-latin-regular.woff2') format('woff2'),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */
+        url('../fonts/nunito-v25-latin-regular.woff') format('woff');
+    /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* nunito-700 - latin */
+@font-face {
     font-family: 'Nunito';
     font-style: normal;
     font-weight: 700;
     src: local(''),
-         url('../fonts/nunito-v25-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-         url('../fonts/nunito-v25-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-  }
+        url('../fonts/nunito-v25-latin-700.woff2') format('woff2'),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */
+        url('../fonts/nunito-v25-latin-700.woff') format('woff');
+    /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
 
 /*
     General styling
@@ -45,7 +53,8 @@ Vars
 body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    background: rgb(250, 251, 254);;
+    background: rgb(250, 251, 254);
+    ;
     font-family: Nunito, sans-serif;
 }
 
@@ -66,6 +75,14 @@ main {
     overflow-y: hidden;
 }
 
+.inner {
+    .content {
+        height: calc(100vh - 66px);
+        overflow: auto;
+        padding-top: 1rem;
+    }
+}
+
 .nav-pills .nav-link {
     border-radius: var(--border-radius);
 }
@@ -83,10 +100,12 @@ main {
 }
 
 .btn {
-    background:#5263b4;
+    background: #5263b4;
     color: #fff;
-    &:hover, &:active {
-        background:#455398;
+
+    &:hover,
+    &:active {
+        background: #455398;
         color: #fff;
     }
 }
@@ -98,6 +117,10 @@ main {
 
 @media (min-width: 1200px) {
     .fs-4 {
-        font-size: 1.2rem!important;
+        font-size: 1.2rem !important;
     }
+}
+
+.profile-img-preview, .profile-pic {
+    object-fit: cover;
 }
