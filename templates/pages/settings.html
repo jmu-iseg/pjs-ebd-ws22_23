@@ -154,8 +154,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">auf keinen Fall!</button>
-        <button type="button" href="{{ url_for('settings',entry=user.id) }}" class="btn btn-primary">Weg mit dem
-          Kollegen!</button>
+        <a href="{{ url_for('settings',entry=user.id) }}" class="btn btn-danger">Weg mit dem
+          Kollegen!</a>
       </div>
     </div>
   </div>
