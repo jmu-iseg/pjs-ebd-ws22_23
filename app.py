@@ -84,9 +84,15 @@ class ProfileForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren')
 
+def ascii(form, field):
+    def is_ascii(s):
+        return all(ord(c) < 128 for c in s)
+    if not is_ascii(field.data):
+        raise ValidationError('ASCII - Characters only')
+
 class WeatherForm(FlaskForm):
     apikey = StringField(validators=[
-                           InputRequired()])
+                           InputRequired(), ascii])
 
     lat = StringField(validators=[
                              InputRequired()])
