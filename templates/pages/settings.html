@@ -49,7 +49,7 @@
                           <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">zum
                             Admin</a>
                           {% endif %}
-                          <a data-toggle="modal" href="#deleteModal{{user.id}}" data-target="#deleteModal{{user.id}}" onclick="$('#deleteModal{{user.id}}').modal('toggle')"
+                          <a data-toggle="modal" onclick="$('#deleteModal{{user.id}}').modal('toggle')"
                             class="btn btn-outline-danger">delete</a>
                           {% endif %}
                         </div>
