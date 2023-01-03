@@ -114,10 +114,12 @@ def inject_userdata():
     if flask_login.current_user.is_authenticated != True:
         values['username'] = "NotLoggedIn"
         values['userrole'] = "NoRole"
+        values['userid'] = "NoID"
         return values
     else:
         values['username'] = flask_login.current_user.username
         values['userrole'] = flask_login.current_user.role
+        values['userid'] = flask_login.current_user.id
         if flask_login.current_user.profilepic is None:
             values['profilepic'] = 'img/img1234.jpg'
         else:
