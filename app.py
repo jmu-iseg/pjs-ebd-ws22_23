@@ -187,7 +187,7 @@ def settings():
 
     # read settings
     config = configparser.ConfigParser()
-    config.read('/settings.cfg')
+    config.read(os.path.join(app.root_path,'settings.cfg'))
     
     # specify the location
     lat = config['weather']['lat']
