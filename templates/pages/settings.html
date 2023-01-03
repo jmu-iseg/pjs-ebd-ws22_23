@@ -110,7 +110,7 @@
           <br>
           <label for="long">Longitute:</label><br>
           {{ weatherForm.lon }}<br>
-          {% for field, errors in form.errors.items() %}
+          {% for field, errors in weatherForm.errors.items() %}
           <small class="form-text text-muted ">
               {{ ', '.join(errors) }}
           </small>
