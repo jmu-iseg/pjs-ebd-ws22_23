@@ -224,7 +224,7 @@ def settings():
     consumption_m3 = config['machines']['consumption_m3']
 
     # set the machineForm
-    machineForm=MachineFormForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3)
+    machineForm=MachineForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3)
     if machineForm.validate_on_submit():
         config['machines']['consumption_m1'] = machineForm.consumption_m1.data
         config['machines']['consumption_m2'] = machineForm.consumption_m2.data
