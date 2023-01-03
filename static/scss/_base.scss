@@ -108,6 +108,15 @@ main {
         background: #455398;
         color: #fff;
     }
+
+    &.btn-danger {
+        background: #b45252;
+    }
+
+    &.btn-outline-danger {
+        color: #b45252;
+        background: transparent;
+    }
 }
 
 .btn-outline-primary {

@@ -43,14 +43,12 @@
                         <div class="btn-group" role="group" aria-label="Basic outlined example">
                           {%+ if userid != user.id %}
                           {%+ if user.role == "0" %}
-                          <a href="{{ url_for('settings',downgrade=user.id) }}" class="btn btn-outline-primary">zum
-                            Standard</a>
+                          <a href="{{ url_for('settings',downgrade=user.id) }}" class="btn btn-outline-primary">Standard</a>
                           {%+ elif user.role == "1" %}
-                          <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">zum
-                            Admin</a>
+                          <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">Admin</a>
                           {% endif %}
                           <a data-toggle="modal" onclick="$('#deleteModal{{user.id}}').modal('toggle')"
-                            class="btn btn-outline-danger">delete</a>
+                            class="btn btn-outline-danger">x</a>
                           {% endif %}
                         </div>
                       </td>
@@ -144,8 +142,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteModal{{user.id}}Label">Nutzer löschen</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="deleteModal{{user.id}}Label">Nutzer {{user.username}} löschen</h5>
+        <button type="button" class="close" onclick="$('#deleteModal{{user.id}}').modal('toggle')" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -153,9 +151,9 @@
         Wollen Sie wirklich den Nutzer {{user.username}} löschen?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">auf keinen Fall!</button>
-        <button type="button" href="{{ url_for('settings',entry=user.id) }}" class="btn btn-primary">Weg mit dem
-          Kollegen!</button>
+        <button type="button" class="btn btn-secondary" onclick="$('#deleteModal{{user.id}}').modal('toggle')">auf keinen Fall!</button>
+        <a href="{{ url_for('settings',entry=user.id) }}" class="btn btn-danger">Weg mit dem
+          Kollegen!</a>
       </div>
     </div>
   </div>
