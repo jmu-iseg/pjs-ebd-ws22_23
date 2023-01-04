@@ -6,7 +6,7 @@ template_dir = os.path.abspath('templates')
 
 # set app
 app = Flask(__name__, template_folder=template_dir)
-from __init__ import main, settings
+import main, settings
 
 # run app
 if __name__ == "__main__":
