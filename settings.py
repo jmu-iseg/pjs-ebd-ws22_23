@@ -23,9 +23,6 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 
-settings = Blueprint('settings', __name__,
-                        template_folder='templates')
-
 # settings route
 @settings.route('/settings', methods=['GET', 'POST'])
 @login_required
