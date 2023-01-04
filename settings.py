@@ -1,4 +1,90 @@
+from lib2to3.pgen2.pgen import DFAState
+from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, Response
+import subprocess
+import pandas as pd
+import numpy as np
+import mysql.connector as sql
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+from datetime import datetime, timedelta
+import subprocess
+import io
+import os
+import configparser
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
+import flask_login
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField
+from wtforms.validators import InputRequired, Length, ValidationError
+from flask_bcrypt import Bcrypt
+from werkzeug.utils import secure_filename
 from app import app
+
+lass LoginForm(FlaskForm):
+    username = StringField(validators=[
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+
+    password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+
+    submit = SubmitField('Login')
+
+class ProfileForm(FlaskForm):
+    username = StringField(validators=[
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+
+    password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    
+    profilepic = FileField()
+
+    submit = SubmitField('Aktualisieren')
+
+class WeatherForm(FlaskForm):
+    apikey = StringField(validators=[
+                           InputRequired()])
+
+    lat = StringField(validators=[
+                             InputRequired()])
+    
+    lon = StringField(validators=[
+                             InputRequired()])
+
+    submit = SubmitField('Aktualisieren')
+
+    def validate_apikey(self, apikey):
+        def is_ascii(s):
+            return all(ord(c) < 128 for c in s)
+        if not is_ascii(apikey.data):
+            raise ValidationError("ASCII - Characters only")
+
+class MachineForm(FlaskForm):
+    consumption_m1 = StringField(validators=[
+                           InputRequired()])
+
+    consumption_m2 = StringField(validators=[
+                             InputRequired()])
+    
+    consumption_m3 = StringField(validators=[
+                             InputRequired()])
+
+    submit = SubmitField('Aktualisieren')
+
+class MailForm(FlaskForm):
+    mail_server = StringField(validators=[
+                           InputRequired()])
+
+    mail_port = StringField(validators=[
+                           InputRequired()])
+
+    mail_user = StringField(validators=[
+                             InputRequired()])
+    
+    mail_pw = PasswordField(validators=[
+                             InputRequired()])
+
+    submit = SubmitField('Aktualisieren')
 
 # settings route
 @app.route('/settings', methods=['GET', 'POST'])
