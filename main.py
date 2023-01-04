@@ -33,6 +33,10 @@ app.config['SECRET_KEY'] = 'thisisasecretkey'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
+# read settings
+config = configparser.ConfigParser()
+config.read(os.path.join(app.root_path,'settings.cfg'))
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
