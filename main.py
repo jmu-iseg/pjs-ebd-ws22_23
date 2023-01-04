@@ -93,10 +93,10 @@ class ProfileForm(FlaskForm):
     submit = SubmitField('Aktualisieren')
 
 class SendMailForm(FlaskForm):
-    address = StringField(validators=[
+    mailAddress = StringField(validators=[
                            InputRequired()], render_kw={"placeholder": "Adressen"})
 
-    text = StringField(validators=[
+    mailText = StringField(validators=[
                              InputRequired()], render_kw={"placeholder": "Text"})
 
     submit = SubmitField('Absenden')
@@ -301,15 +301,14 @@ def optimization_table(start_date, end_date):
     print("_________test2_________")
     if sendMailForm.validate_on_submit():
         print("_________test_________")
-
+        a = sendMailForm.MailAddress.data
         #sender = 'termine@pjs-mail.de'
-        #receiver = sendMailForm.address.data
         sender = 'termine@pjs-mail.de'
         receiver = 'nils.heilemann@gmail.com'
 
-        #msg = MIMEText(sendMailForm.text.data)
+        b = sendMailForm.mailText.data
         msg = MIMEText('This is a test mail')
-        print(receiver,msg)
+        print(a,b)
 
         msg['Subject'] = 'Test mail'
         msg['From'] = 'termine@pjs-mail.de'
