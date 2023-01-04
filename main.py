@@ -21,7 +21,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, TextField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
@@ -96,7 +96,7 @@ class SendMailForm(FlaskForm):
     address = StringField(validators=[
                            InputRequired()], render_kw={"placeholder": "Adressen"})
 
-    text = TextField(validators=[
+    text = TextAreaField(validators=[
                              InputRequired()], render_kw={"placeholder": "Password"})
 
     submit = SubmitField('Absenden')
