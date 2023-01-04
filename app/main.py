@@ -166,7 +166,7 @@ config.read(os.path.join(app.root_path,'settings.cfg'))
 @app.route('/')
 @login_required
 def home():
-    return render_template("/pages/home.html")
+    return render_template("../pages/home.html")
 
 # login route
 @app.route('/login', methods=['GET', 'POST'])
