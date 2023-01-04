@@ -10,23 +10,18 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from datetime import datetime, timedelta
 import subprocess
-from icalendar import Calendar, Event, vCalAddress, vText
 import io
 import os
 import configparser
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField
-from wtforms.validators import InputRequired, Length, ValidationError
-from flask_bcrypt import Bcrypt
-from werkzeug.utils import secure_filename
+
 
 # settings route
-@settings.route('/settings', methods=['GET', 'POST'])
+@app.route('/settings', methods=['GET', 'POST'])
 @login_required
-def settings():
+def app():
     role = flask_login.current_user.role
     
     # specify the location
