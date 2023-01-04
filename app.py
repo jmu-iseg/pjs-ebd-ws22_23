@@ -114,6 +114,21 @@ class MachineForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren')
 
+class MailForm(FlaskForm):
+    mail_server = StringField(validators=[
+                           InputRequired()])
+
+    mail_port = StringField(validators=[
+                           InputRequired()])
+
+    mail_user = StringField(validators=[
+                             InputRequired()])
+    
+    mail_pw = PasswordField(validators=[
+                             InputRequired()])
+
+    submit = SubmitField('Aktualisieren')
+
 def flash_errors(form):
     """Flashes form errors"""
     for field, errors in form.errors.items():
@@ -250,6 +265,24 @@ def settings():
             config.write(configfile)
         return redirect('/settings')
 
+
+    # specify the mail fields
+    mail_server = config['mail']['mail_server']
+    mail_port = config['mail']['mail_port']
+    mail_user = config['mail']['mail_user']
+    mail_pw = config['mail']['mail_pw']
+
+    # set the mailForm
+    mailForm=MailForm(mail_server=mail_server,mail_port=mail_port,mail_user=mail_user,mail_pw=mail_pw)
+    if mailForm.validate_on_submit():
+        config['mail']['mail_server'] = mailForm.mail_server.data
+        config['mail']['mail_port'] = mailForm.mail_port.data
+        config['mail']['mail_user'] = mailForm.mail_user.data
+        config['mail']['mail_pw'] = mailForm.mail_pw.data
+        with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
+            config.write(configfile)
+        return redirect('/settings')
+
     if role != "0":
         return redirect('/')
         
@@ -284,7 +317,7 @@ def settings():
         userList = User.query.all()
 
         # Render the settings template
-        return render_template('/pages/settings.html', userList=userList, form=form, weatherForm=weatherForm, machineForm=machineForm)
+        return render_template('/pages/settings.html', userList=userList, form=form, weatherForm=weatherForm, machineForm=machineForm, mailForm=mailForm)
 
 
 def update_settings(form_data):

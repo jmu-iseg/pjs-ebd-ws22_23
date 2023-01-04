@@ -134,6 +134,29 @@
     </div>
   </div>
 </div>
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Mail-Server
+      </div>
+      <div class="card-body">
+        <form action="" method="post">
+          {{ mailForm.hidden_tag() }}
+          <label for="OpenWeatherAPI">Server-Adresse:</label><br>
+          {{ mailForm.mail_server }}<br>
+          <label for="lan">Server-Port:</label><br>
+          {{ mailForm.mail_port }}<br>
+          <label for="long">Benutzer:</label><br>
+          {{ mailForm.mail_user }}<br>
+          <label for="long">Passwort:</label><br>
+          {{ mailForm.mail_pw }}<br>
+          {{ mailForm.submit }}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% for user in userList %}
 <!-- Modal -->
