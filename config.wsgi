@@ -1,1 +1,1 @@
-from app.__init__ import app as application
+from __init__ import app as application
