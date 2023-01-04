@@ -64,12 +64,12 @@
                                   <div class="mb-3">
                                     {{ sendMailForm.hidden_tag() }}
                                     <label for="mailInputEmail1" class="form-label">Email-Empfänger</label><br>
-                                    {{ sendMailForm.address }}
+                                    {{ sendMailForm.mailAddress }}
                                     <div id="emailHelp" class="form-text">Mehrere Adressen per Komma trennen.</div>
                                   </div>
                                   <div class="mb-3">
                                     <label for="mailInputText1" class="form-label">Text</label><br>
-                                    {{ sendMailForm.text }}
+                                    {{ sendMailForm.mailText }}
                                   </div>
                                   {{ sendMailForm.submit }}
                                 </form>
