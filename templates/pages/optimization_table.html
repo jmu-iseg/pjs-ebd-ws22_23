@@ -42,8 +42,10 @@
                       <td>{{ item.Time }}</td>
                       <td>{{ item.dauer }}</td>
                       <td>
-                        <a href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
-                          target="blank"><button class='btn btn-primary'>Kalendereintrag</button></a>
+                          <div class="btn-group" role="group" aria-label="Basic example">
+                            <a type="button" ref="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}" class="btn btn-secondary">herunterladen</a>
+                            <a type="button" class="btn btn-secondary">senden</a>
+                          </div>
                       </td>
                     </tr>
                     {% endfor %}
