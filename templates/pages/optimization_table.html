@@ -29,7 +29,7 @@
                       <th scope="col">Datum</th>
                       <th scope="col">Uhrzeit</th>
                       <th scope="col">Dauer (h)</th>
-                      <th scope="col">Kalendereinladung</th>
+                      <th scope="col">Einladung</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -43,8 +43,8 @@
                       <td>{{ item.dauer }}</td>
                       <td>
                           <div class="btn-group" role="group" aria-label="Basic example">
-                            <a type="button" ref="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}" class="btn btn-secondary">herunterladen</a>
-                            <a type="button" class="btn btn-secondary">senden</a>
+                            <a type="button" href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}" class="btn btn-primary">herunterladen</a>
+                            <a type="button" class="btn btn-primary">senden</a>
                           </div>
                       </td>
                     </tr>
