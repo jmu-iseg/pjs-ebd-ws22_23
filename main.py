@@ -86,51 +86,6 @@ class ProfileForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren')
 
-class WeatherForm(FlaskForm):
-    apikey = StringField(validators=[
-                           InputRequired()])
-
-    lat = StringField(validators=[
-                             InputRequired()])
-    
-    lon = StringField(validators=[
-                             InputRequired()])
-
-    submit = SubmitField('Aktualisieren')
-
-    def validate_apikey(self, apikey):
-        def is_ascii(s):
-            return all(ord(c) < 128 for c in s)
-        if not is_ascii(apikey.data):
-            raise ValidationError("ASCII - Characters only")
-
-class MachineForm(FlaskForm):
-    consumption_m1 = StringField(validators=[
-                           InputRequired()])
-
-    consumption_m2 = StringField(validators=[
-                             InputRequired()])
-    
-    consumption_m3 = StringField(validators=[
-                             InputRequired()])
-
-    submit = SubmitField('Aktualisieren')
-
-class MailForm(FlaskForm):
-    mail_server = StringField(validators=[
-                           InputRequired()])
-
-    mail_port = StringField(validators=[
-                           InputRequired()])
-
-    mail_user = StringField(validators=[
-                             InputRequired()])
-    
-    mail_pw = PasswordField(validators=[
-                             InputRequired()])
-
-    submit = SubmitField('Aktualisieren')
-
 def flash_errors(form):
     """Flashes form errors"""
     for field, errors in form.errors.items():
@@ -157,10 +112,6 @@ def inject_userdata():
         else:
             values['profilepic'] = flask_login.current_user.profilepic
         return values
-
-# read settings
-config = configparser.ConfigParser()
-config.read(os.path.join(app.root_path,'settings.cfg'))
 
 # home route 
 @app.route('/')
