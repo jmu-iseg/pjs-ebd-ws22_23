@@ -1,21 +1,3 @@
-from lib2to3.pgen2.pgen import DFAState
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, Response
-import subprocess
-import pandas as pd
-import numpy as np
-import mysql.connector as sql
-import gurobipy as gp
-from gurobipy import GRB
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-from datetime import datetime, timedelta
-import subprocess
-import io
-import os
-import configparser
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
-import flask_login
 from app import app
 
 # settings route
