@@ -191,6 +191,9 @@ def login():
 
         return render_template('/pages/register.html', form=form)
 
+# registering settings page
+import settings
+
 # 404 route
 @app.errorhandler(404)
 def page_not_found(e):
@@ -567,6 +570,3 @@ def return_files_calendar():
             
 if __name__ == "__main__":
     app.run(ssl_context='adhoc', debug=True)
-
-# registering settings page
-import settings
