@@ -21,7 +21,7 @@ from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from app import app
 
-lass LoginForm(FlaskForm):
+class LoginForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
 
