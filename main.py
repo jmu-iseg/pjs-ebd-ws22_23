@@ -192,9 +192,6 @@ def login():
 
         return render_template('/pages/register.html', form=form)
 
-# registering settings page
-import app.settings as settings
-
 # 404 route
 @app.errorhandler(404)
 def page_not_found(e):
