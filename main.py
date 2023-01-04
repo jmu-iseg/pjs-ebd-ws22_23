@@ -96,8 +96,8 @@ class SendMailForm(FlaskForm):
     address = StringField(validators=[
                            InputRequired()], render_kw={"placeholder": "Adressen"})
 
-    text = TextAreaField(validators=[
-                             InputRequired()], render_kw={"placeholder": "Password"})
+    text = StringField(validators=[
+                             InputRequired()], render_kw={"placeholder": "Text"})
 
     submit = SubmitField('Absenden')
 
