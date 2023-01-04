@@ -86,6 +86,10 @@ class MailForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren')
 
+# read settings
+config = configparser.ConfigParser()
+config.read(os.path.join(app.root_path,'settings.cfg'))
+
 # settings route
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
