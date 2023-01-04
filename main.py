@@ -25,6 +25,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField, FileFi
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import BadRequest
 import smtplib
 from email.mime.text import MIMEText
 

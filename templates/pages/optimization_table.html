@@ -61,16 +61,12 @@
                               </div>
                               <div class="modal-body">
                                 <form action="" method="post">
-                                  <div class="mb-3">
-                                    {{ sendMailForm.hidden_tag() }}
-                                    <label for="mailInputEmail1" class="form-label">Email-Empfänger</label><br>
-                                    {{ sendMailForm.mailAddress }}
-                                    <div id="emailHelp" class="form-text">Mehrere Adressen per Komma trennen.</div>
-                                  </div>
-                                  <div class="mb-3">
-                                    <label for="mailInputText1" class="form-label">Text</label><br>
-                                    {{ sendMailForm.mailText }}
-                                  </div>
+                                  {{ sendMailForm.hidden_tag() }}
+                                  <label for="mailInputEmail1" class="form-label">Email-Empfänger</label><br>
+                                  {{ sendMailForm.mailAddress }}
+                                  <div id="emailHelp" class="form-text">Mehrere Adressen per Komma trennen.</div>
+                                  <label for="mailInputText1" class="form-label">Text</label><br>
+                                  {{ sendMailForm.mailText }}
                                   {{ sendMailForm.submit }}
                                 </form>
                               </div>
