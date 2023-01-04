@@ -21,10 +21,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, TextField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
+import smtplib
+from email.mime.text import MIMEText
 
 
 
@@ -89,6 +91,15 @@ class ProfileForm(FlaskForm):
     profilepic = FileField()
 
     submit = SubmitField('Aktualisieren')
+
+class SendMailForm(FlaskForm):
+    address = StringField(validators=[
+                           InputRequired()], render_kw={"placeholder": "Adressen"})
+
+    text = TextField(validators=[
+                             InputRequired()], render_kw={"placeholder": "Password"})
+
+    submit = SubmitField('Absenden')
 
 def flash_errors(form):
     """Flashes form errors"""
@@ -285,6 +296,34 @@ def get_date():
 @app.route('/optimization_table', methods=('GET', 'POST'))
 @login_required
 def optimization_table(start_date, end_date):
+
+    sendMailForm = SendMailForm()
+
+    if sendMailForm.validate_on_submit():
+        receiver = sendMailForm.address.data
+        msg = MIMEText(sendMailForm.text.data)
+        
+        sender = 'termine@pjs-mail.de'
+
+        msg['Subject'] = 'Test mail'
+        msg['From'] = 'termine@pjs-mail.de'
+        msg['To'] = 'nils.heilemann@gmail.com'
+
+        user = 'termine@pjs-mail.de'
+        password = 'jb79G7JLep'
+
+        # Set up connection to the SMTP server
+        with smtplib.SMTP("smtp.ionos.de", 587) as server:
+
+            # Log in to the server
+            server.login(user, password)
+
+            # Send the email
+            server.sendmail(sender, receiver, msg.as_string())
+            print("mail successfully sent")
+
+        return redirect('/optimization')
+
     # input date range
     start_date = pd.to_datetime(start_date, format="%d.%m.%Y")
     end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
