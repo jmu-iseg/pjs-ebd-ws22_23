@@ -1,7 +1,6 @@
 #from crypt import methods
 from lib2to3.pgen2.pgen import DFAState
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, Response
-from app.settings import settings
 import subprocess
 import pandas as pd
 import numpy as np
