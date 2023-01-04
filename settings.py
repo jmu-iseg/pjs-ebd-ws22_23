@@ -16,7 +16,7 @@ import configparser
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
-
+from app import app
 
 # settings route
 @app.route('/settings', methods=['GET', 'POST'])
