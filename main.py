@@ -326,9 +326,9 @@ def optimization_table(start_date, end_date):
     termine_df_neu['maschine3'].loc[(termine_df_neu['maschine3'].isnull())] = 0
 
     # define energy consumption per machine (TODO: Later via user input data )    
-    consumption_m1 = config['machines']['consumption_m1']
-    consumption_m2 = config['machines']['consumption_m2']
-    consumption_m3 = config['machines']['consumption_m3']
+    consumption_m1 = int(config['machines']['consumption_m1'])
+    consumption_m2 = int(config['machines']['consumption_m2'])
+    consumption_m3 = int(config['machines']['consumption_m3'])
 
     # calculate energy consumption for each termin
     termine_df_neu['energieverbrauch'] = ((termine_df_neu['maschine1'] * consumption_m1) + (termine_df_neu['maschine2'] * consumption_m2) + (termine_df_neu['maschine3'] * consumption_m3)) * termine_df_neu['dauer'] 
