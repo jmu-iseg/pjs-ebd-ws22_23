@@ -1,5 +1,6 @@
 #from crypt import methods
 from app import app
+
 from lib2to3.pgen2.pgen import DFAState
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, Response
 import subprocess
@@ -192,7 +193,7 @@ def login():
         return render_template('/pages/register.html', form=form)
 
 # registering settings page
-import settings
+import app.settings as settings
 
 # 404 route
 @app.errorhandler(404)
@@ -567,6 +568,3 @@ def return_files_calendar():
     buf.write(cal.to_ical())
     buf.seek(0)
     return send_file(buf, download_name=filename)
-            
-if __name__ == "__main__":
-    app.run(ssl_context='adhoc', debug=True)
