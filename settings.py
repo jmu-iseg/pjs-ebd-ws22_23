@@ -136,7 +136,7 @@ config.read(os.path.join(app.root_path,'settings.cfg'))
 # settings route
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
-def app():
+def settings():
     role = flask_login.current_user.role
     
     # specify the location
