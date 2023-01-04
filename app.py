@@ -1,4 +1,5 @@
 #from crypt import methods
+from app import app
 from lib2to3.pgen2.pgen import DFAState
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, Response
 import subprocess
@@ -24,8 +25,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 
-# Create the Webserver
-app = Flask(__name__)
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
