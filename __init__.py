@@ -1,11 +1,8 @@
 from flask import Flask
 import os
 
-# set template path
-template_dir = os.path.abspath('templates')
-
 # set app
-app = Flask(__name__, template_folder=template_dir)
+app = Flask(__name__)
 import main, settings
 
 # run app
