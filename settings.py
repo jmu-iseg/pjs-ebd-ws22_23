@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, abort
-from app import app
 
 settings = Blueprint('settings', __name__,
                         template_folder='templates')
