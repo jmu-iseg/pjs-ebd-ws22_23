@@ -307,7 +307,8 @@ def optimization_table(start_date, end_date):
         sender = 'termine@pjs-mail.de'
         receiver = 'nils.heilemann@gmail.com'
 
-        msg = MIMEText(sendMailForm.text.data)
+        #msg = MIMEText(sendMailForm.text.data)
+        msg = MIMEText('This is a test mail')
         print(receiver,msg)
 
         msg['Subject'] = 'Test mail'
