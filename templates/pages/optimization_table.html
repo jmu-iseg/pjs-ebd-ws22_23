@@ -50,7 +50,7 @@
                         </div>
 
                         <!-- Modal -->
-                        <div class="modal fade modal-dialog-centered" id="mailModal{{ item.TerminID }}" tabindex="-1" aria-labelledby="mailModalLabel{{ item.TerminID }}"
+                        <div class="modal fade" id="mailModal{{ item.TerminID }}" tabindex="-1" aria-labelledby="mailModalLabel{{ item.TerminID }}"
                           aria-hidden="true">
                           <div class="modal-dialog">
                             <div class="modal-content">
@@ -63,12 +63,12 @@
                                 <form>
                                   <div class="mb-3">
                                     {{ sendMailForm.hidden_tag() }}
-                                    <label for="mailInputEmail1" class="form-label">Email-Empfänger</label>
+                                    <label for="mailInputEmail1" class="form-label">Email-Empfänger</label><br>
                                     {{ sendMailForm.address }}
                                     <div id="emailHelp" class="form-text">Mehrere Adressen per Komma trennen.</div>
                                   </div>
                                   <div class="mb-3">
-                                    <label for="mailInputText1" class="form-label">Inhalt</label>
+                                    <label for="mailInputText1" class="form-label">Text</label><br>
                                     {{ sendMailForm.text }}
                                   </div>
                                   {{ sendMailForm.submit }}
