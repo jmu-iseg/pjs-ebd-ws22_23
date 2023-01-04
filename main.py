@@ -298,7 +298,7 @@ def get_date():
 def optimization_table(start_date, end_date):
 
     sendMailForm = SendMailForm()
-
+    print("_________test2_________")
     if sendMailForm.validate_on_submit():
         print("_________test_________")
 
