@@ -302,8 +302,10 @@ def optimization_table(start_date, end_date):
     if sendMailForm.validate_on_submit():
         print("_________test_________")
 
+        #sender = 'termine@pjs-mail.de'
+        #receiver = sendMailForm.address.data
         sender = 'termine@pjs-mail.de'
-        receiver = sendMailForm.address.data
+        receiver = 'nils.heilemann@gmail.com'
 
         msg = MIMEText(sendMailForm.text.data)
         print(receiver,msg)
