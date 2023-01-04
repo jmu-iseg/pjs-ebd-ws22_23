@@ -4,8 +4,8 @@ import os
 # set template path
 template_dir = os.path.abspath('templates')
 
-# sett app
-app = Flask(__name__)
+# set app
+app = Flask(__name__, template_folder=template_dir)
 from app import main, settings
 
 # run app
