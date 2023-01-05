@@ -291,6 +291,8 @@ def get_date():
             # Send the email
             server.sendmail(sender, receiver, msg.as_string())
             print("mail successfully sent")
+            flash(f"Mail erfolgreich verschickt")
+        return redirect('/optimization')
 
     if len(termine) < 1: 
         errors['Terminerror'] = 'Bitte mindestens einen Termin definieren.'

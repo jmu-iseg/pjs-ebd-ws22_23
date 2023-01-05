@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <div class="row">
   <div class="col">
     <div class="card">
@@ -60,7 +61,15 @@
                                   aria-label="Close"></button>
                               </div>
                               <div class="modal-body">
-                                
+                                <form method="POST" action="">
+                                  {{ sendMailForm.hidden_tag() }}
+                                  <p>Mail-Empfänger</p>
+                                  {{ sendMailForm.mailAddress }}<br>
+                                  <i>Mehrere Empfänger werden mit einem Komma getrennt</i><br>
+                                  <p>Mail-Empfänger</p>
+                                  {{ sendMailForm.mailText }}<br>
+                                  {{ sendMailForm.submit }}
+                                </form>
                               </div>
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -148,12 +157,6 @@
     </div>
   </div>
 </div>
-<form method="POST" action="">
-  {{ sendMailForm.hidden_tag() }}
-  {{ sendMailForm.mailAddress }}
-  {{ sendMailForm.mailText }}<br>
-  {{ sendMailForm.submit }}
-</form>
 <script>
   var ctx1 = document.getElementById('netzbezug').getContext('2d');
   var energy_consumption_list = {{ energy_consumption_list }};
