@@ -324,7 +324,9 @@ def submit():
 def optimization_table(start_date, end_date):
     # send mail
     sendMailForm = SendMailForm()
+    print("____________MOIN1____________")
     if sendMailForm.validate_on_submit():
+        print("____________MOIN2____________")
         receiver = sendMailForm.mailAddress.data
         sender = config['mail']['mail_user']
         msg = MIMEText(sendMailForm.mailText.data)
