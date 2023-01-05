@@ -322,7 +322,30 @@ def submit():
 @app.route('/optimization_table', methods=['GET', 'POST'])
 @login_required
 def optimization_table(start_date, end_date):
+    # send mail
+    sendMailForm = SendMailForm()
+    if sendMailForm.validate_on_submit():
+        receiver = sendMailForm.mailAddress.data
+        sender = config['mail']['mail_user']
+        msg = MIMEText(sendMailForm.mailText.data)
 
+        msg['Subject'] = 'Termineinladung'
+        msg['From'] = config['mail']['mail_user']
+        msg['To'] = receiver
+
+        user = config['mail']['mail_user']
+        password = config['mail']['mail_pw']
+
+        # Set up connection to the SMTP server
+        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
+
+            # Log in to the server
+            server.login(user, password)
+
+            # Send the email
+            server.sendmail(sender, receiver, msg.as_string())
+            print("mail successfully sent")
+        return redirect('/optimization')
     # input date range
     start_date = pd.to_datetime(start_date, format="%d.%m.%Y")
     end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
@@ -533,30 +556,6 @@ def optimization_table(start_date, end_date):
             appointments['percent'] = appointments['percent'].astype(float)
             appointments['percent'] = appointments['percent'].round(2) 
             netzbezug_termine_percent = appointments.to_dict('records')
-    
-    sendMailForm = SendMailForm()
-    if sendMailForm.validate_on_submit():
-        receiver = sendMailForm.mailAddress.data
-        sender = config['mail']['mail_user']
-        msg = MIMEText(sendMailForm.mailText.data)
-
-        msg['Subject'] = 'Termineinladung'
-        msg['From'] = config['mail']['mail_user']
-        msg['To'] = receiver
-
-        user = config['mail']['mail_user']
-        password = config['mail']['mail_pw']
-
-        # Set up connection to the SMTP server
-        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
-
-            # Log in to the server
-            server.login(user, password)
-
-            # Send the email
-            server.sendmail(sender, receiver, msg.as_string())
-            print("mail successfully sent")
-        return redirect('/optimization')
     return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
 
 @app.route('/return-files')
