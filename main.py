@@ -577,17 +577,17 @@ def return_files_calendar():
     starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
     endtime_formatted = starttime_formatted + timedelta(hours=float(request.args.get('dauer')))
     filename = "Termineinladung {}.ics".format(request.args.get('id'))
-    buf = create_file_object(starttime_formatted, endtime_formatted, flask_login.current_user.username, request.args.get('bezeichnung'))
+    buf = create_file_object(starttime_formatted, endtime_formatted, request.args.get('bezeichnung'))
     return send_file(buf, download_name=filename)
 
-def create_file_object(start, end, name, summary):
+def create_file_object(start, end, summary):
     cal = Calendar()
     event = Event()
     event.add('summary', summary)
     event.add('dtstart', start)
     event.add('dtend', end)
     organizer = vCalAddress('MAILTO:termine@pjs-termine.de')
-    organizer.params['cn'] = vText(name)
+    organizer.params['cn'] = vText('Hannes Metz')
     organizer.params['role'] = vText('CEO of Uni Wuerzburg') # ein Macher
     event['organizer'] = organizer
     event['location'] = vText('Würzburg, DE')
