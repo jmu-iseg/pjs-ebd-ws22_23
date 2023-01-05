@@ -95,8 +95,8 @@ class SendMailForm(FlaskForm):
     mailAddress = StringField(validators=[
                            InputRequired()], render_kw={"placeholder": "Adressen"})
 
-    mailText = StringField(validators=[
-                             InputRequired()], render_kw={"placeholder": "Text"})
+    mailText = TextAreaField(validators=[
+                             InputRequired()], render_kw={"placeholder": "Nachricht"})
 
     submit = SubmitField('Absenden')
 
@@ -299,7 +299,7 @@ def submit():
         sender = config['mail']['mail_user']
         msg = MIMEText(sendMailForm.mailText.data)
 
-        msg['Subject'] = 'Test mail'
+        msg['Subject'] = 'Termineinladung'
         msg['From'] = config['mail']['mail_user']
         msg['To'] = receiver
 
@@ -316,43 +316,12 @@ def submit():
             server.sendmail(sender, receiver, msg.as_string())
             print("mail successfully sent")
         return redirect('/mail')
-    return render_template('pages/mail.html', sendMailForm=sendMailForm)    
+    return render_template('pages/mail.html', sendMailForm=sendMailForm)
+
 # optimization route
 @app.route('/optimization_table', methods=['GET', 'POST'])
 @login_required
 def optimization_table(start_date, end_date):
-
-    sendMailForm = SendMailForm()
-    print("_________test2_________")
-    if sendMailForm.validate_on_submit():
-        print("_________test_________")
-        a = sendMailForm.mailAddress.data
-        #sender = 'termine@pjs-mail.de'
-        sender = 'termine@pjs-mail.de'
-        receiver = 'nils.heilemann@gmail.com'
-
-        b = sendMailForm.mailText.data
-        msg = MIMEText('This is a test mail')
-        print(a,b)
-
-        msg['Subject'] = 'Test mail'
-        msg['From'] = 'termine@pjs-mail.de'
-        msg['To'] = receiver
-
-        user = 'termine@pjs-mail.de'
-        password = 'jb79G7JLep'
-
-        # Set up connection to the SMTP server
-        with smtplib.SMTP("smtp.ionos.de", 587) as server:
-
-            # Log in to the server
-            server.login(user, password)
-
-            # Send the email
-            server.sendmail(sender, receiver, msg.as_string())
-            print("mail successfully sent")
-
-        return redirect('/optimization')
 
     # input date range
     start_date = pd.to_datetime(start_date, format="%d.%m.%Y")
@@ -564,6 +533,30 @@ def optimization_table(start_date, end_date):
             appointments['percent'] = appointments['percent'].astype(float)
             appointments['percent'] = appointments['percent'].round(2) 
             netzbezug_termine_percent = appointments.to_dict('records')
+
+            sendMailForm = SendMailForm()
+            if sendMailForm.validate_on_submit():
+                receiver = sendMailForm.mailAddress.data
+                sender = config['mail']['mail_user']
+                msg = MIMEText(sendMailForm.mailText.data)
+
+                msg['Subject'] = 'Termineinladung'
+                msg['From'] = config['mail']['mail_user']
+                msg['To'] = receiver
+
+                user = config['mail']['mail_user']
+                password = config['mail']['mail_pw']
+
+                # Set up connection to the SMTP server
+                with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
+
+                    # Log in to the server
+                    server.login(user, password)
+
+                    # Send the email
+                    server.sendmail(sender, receiver, msg.as_string())
+                    print("mail successfully sent")
+                return redirect('/optimization')
 
             return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
 
