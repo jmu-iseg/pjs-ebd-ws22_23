@@ -291,19 +291,13 @@ def get_date():
     else:    
         return optimization_table(start_date, end_date)
 
-@app.route('/submit', methods=['GET', 'POST'])
+@app.route('/mail', methods=['GET', 'POST'])
 def submit():
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit():
-        print("_________test_________")
-        a = sendMailForm.mailAddress.data
-        #sender = 'termine@pjs-mail.de'
+        receiver = sendMailForm.mailAddress.data
         sender = 'termine@pjs-mail.de'
-        receiver = 'nils.heilemann@gmail.com'
-
-        b = sendMailForm.mailText.data
-        msg = MIMEText('This is a test mail')
-        print(a,b)
+        msg = MIMEText(sendMailForm.mailText.data)
 
         msg['Subject'] = 'Test mail'
         msg['From'] = 'termine@pjs-mail.de'
@@ -321,7 +315,7 @@ def submit():
             # Send the email
             server.sendmail(sender, receiver, msg.as_string())
             print("mail successfully sent")
-        return redirect('/')
+        return redirect('/mail')
     return render_template('pages/mail.html', sendMailForm=sendMailForm)    
 # optimization route
 @app.route('/optimization_table', methods=['GET', 'POST'])
