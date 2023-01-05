@@ -296,18 +296,18 @@ def submit():
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit():
         receiver = sendMailForm.mailAddress.data
-        sender = 'termine@pjs-mail.de'
+        sender = config['mail']['mail_user']
         msg = MIMEText(sendMailForm.mailText.data)
 
         msg['Subject'] = 'Test mail'
-        msg['From'] = 'termine@pjs-mail.de'
+        msg['From'] = config['mail']['mail_user']
         msg['To'] = receiver
 
-        user = 'termine@pjs-mail.de'
-        password = 'jb79G7JLep'
+        user = config['mail']['mail_user']
+        password = config['mail']['mail_pw']
 
         # Set up connection to the SMTP server
-        with smtplib.SMTP("smtp.ionos.de", 587) as server:
+        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
 
             # Log in to the server
             server.login(user, password)
