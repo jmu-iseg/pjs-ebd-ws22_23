@@ -290,7 +290,13 @@ def get_date():
         return render_template("pages/optimization.html", errors=errors)
     else:    
         return optimization_table(start_date, end_date)
-    
+
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
+    sendMailForm = SendMailForm()
+    if sendMailForm.validate_on_submit():
+        return redirect('/')
+    return render_template('pages/mail.html', sendMailForm=sendMailForm)    
 # optimization route
 @app.route('/optimization_table', methods=['GET', 'POST'])
 @login_required
