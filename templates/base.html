@@ -8,14 +8,13 @@
 <body>
 
   {# get_flashed_messages() is auto sent to the template with the flash() call #}
-  <div style="position: absolute; top: 0; right: 0;">
+  <div class="toast-container position-static" style="z-index:100">
     {% for mess in get_flashed_messages() %}
-    <div class="toast">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
-        <strong class="mr-auto">Info</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <img src="..." class="rounded me-2" alt="...">
+        <strong class="me-auto">Info</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div class="toast-body">
         {{mess}}
