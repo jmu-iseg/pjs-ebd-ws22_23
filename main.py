@@ -21,7 +21,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 import flask_login
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, HiddenField, TextAreaField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
@@ -97,6 +97,12 @@ class SendMailForm(FlaskForm):
 
     mailText = TextAreaField(validators=[
                              InputRequired()], render_kw={"placeholder": "Nachricht"})
+
+    dauer = HiddenField()
+    bezeichnung = HiddenField()
+    date = HiddenField()
+    time = HiddenField()
+    terminID = HiddenField()
 
     submit = SubmitField('Absenden')
 
@@ -271,6 +277,7 @@ def get_date():
     print("____________MOIN1____________")
     if sendMailForm.validate_on_submit():
         print("____________MOIN2____________")
+        print(sendMailForm.bezeichnung.data)
         receiver = sendMailForm.mailAddress.data
         sender = config['mail']['mail_user']
         msg = MIMEText(sendMailForm.mailText.data)
