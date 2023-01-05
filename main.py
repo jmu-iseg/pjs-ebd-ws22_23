@@ -265,6 +265,34 @@ def delete_termin():
 @login_required
 def get_date():
     errors = {}
+
+     # send mail
+    sendMailForm = SendMailForm()
+    print("____________MOIN1____________")
+    if sendMailForm.validate_on_submit():
+        print("____________MOIN2____________")
+        receiver = sendMailForm.mailAddress.data
+        sender = config['mail']['mail_user']
+        msg = MIMEText(sendMailForm.mailText.data)
+
+        msg['Subject'] = 'Termineinladung'
+        msg['From'] = config['mail']['mail_user']
+        msg['To'] = receiver
+
+        user = config['mail']['mail_user']
+        password = config['mail']['mail_pw']
+
+        # Set up connection to the SMTP server
+        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
+
+            # Log in to the server
+            server.login(user, password)
+
+            # Send the email
+            server.sendmail(sender, receiver, msg.as_string())
+            print("mail successfully sent")
+        return redirect('/optimization')
+
     if len(termine) < 1: 
         errors['Terminerror'] = 'Bitte mindestens einen Termin definieren.'
     else:
@@ -289,7 +317,7 @@ def get_date():
         termine.clear()
         return render_template("pages/optimization.html", errors=errors)
     else:    
-        return optimization_table(start_date, end_date)
+        return optimization_table(start_date, end_date,sendMailForm)
 
 @app.route('/mail', methods=['GET', 'POST'])
 def submit():
@@ -321,33 +349,7 @@ def submit():
 # optimization route
 @app.route('/optimization_table', methods=['GET', 'POST'])
 @login_required
-def optimization_table(start_date, end_date):
-    # send mail
-    sendMailForm = SendMailForm()
-    print("____________MOIN1____________")
-    if sendMailForm.validate_on_submit():
-        print("____________MOIN2____________")
-        receiver = sendMailForm.mailAddress.data
-        sender = config['mail']['mail_user']
-        msg = MIMEText(sendMailForm.mailText.data)
-
-        msg['Subject'] = 'Termineinladung'
-        msg['From'] = config['mail']['mail_user']
-        msg['To'] = receiver
-
-        user = config['mail']['mail_user']
-        password = config['mail']['mail_pw']
-
-        # Set up connection to the SMTP server
-        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
-
-            # Log in to the server
-            server.login(user, password)
-
-            # Send the email
-            server.sendmail(sender, receiver, msg.as_string())
-            print("mail successfully sent")
-        return redirect('/optimization')
+def optimization_table(start_date, end_date, sendMailForm):
     # input date range
     start_date = pd.to_datetime(start_date, format="%d.%m.%Y")
     end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
