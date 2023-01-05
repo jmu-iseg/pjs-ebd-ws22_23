@@ -149,6 +149,7 @@
   </div>
 </div>
 <form action="/" method="post">
+  {{ sendMailForm.hidden_tag() }}
   {{ sendMailForm.mailAddress }}
   {{ sendMailForm.mailText }}<br>
   {{ sendMailForm.submit }}

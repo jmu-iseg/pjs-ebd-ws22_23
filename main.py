@@ -292,7 +292,7 @@ def get_date():
         return optimization_table(start_date, end_date)
     
 # optimization route
-@app.route('/optimization_table', methods=('GET', 'POST'))
+@app.route('/optimization_table', methods=['GET', 'POST'])
 @login_required
 def optimization_table(start_date, end_date):
 
