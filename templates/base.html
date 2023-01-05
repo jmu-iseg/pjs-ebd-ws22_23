@@ -8,7 +8,7 @@
 <body>
 
   {# get_flashed_messages() is auto sent to the template with the flash() call #}
-  <div class="toast-container position-static position-absolute top-0 end-0" style="z-index:100">
+  <div class="toast-container position-static position-absolute top-0 end-0 mt-2 me-2" style="z-index:100">
     {% for mess in get_flashed_messages() %}
     <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
