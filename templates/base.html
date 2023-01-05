@@ -8,14 +8,21 @@
 <body>
 
   {# get_flashed_messages() is auto sent to the template with the flash() call #}
-  {% for mess in get_flashed_messages() %}
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    {{mess}}
+  <div style="position: absolute; top: 0; right: 0;">
+    {% for mess in get_flashed_messages() %}
+    <div class="toast">
+      <div class="toast-header">
+        <strong class="mr-auto">Info</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="toast-body">
+        {{mess}}
+      </div>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
 
   <div class="sidebar d-flex flex-column flex-shrink-0 text-bg-dark">
     {% include 'elements/sidebar.html' %}

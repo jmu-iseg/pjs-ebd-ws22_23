@@ -63,18 +63,13 @@
                               <div class="modal-body">
                                 <form method="POST" action="">
                                   {{ sendMailForm.hidden_tag() }}
-                                  <p>Mail-Empfänger</p>
+                                  <label for="exampleInputPassword1" class="form-label">Mail-Empfänger</label><br>
                                   {{ sendMailForm.mailAddress }}<br>
-                                  <i>Mehrere Empfänger werden mit einem Komma getrennt</i><br>
-                                  <p>Mail-Empfänger</p>
+                                  <div id="emailHelp" class="form-text">Mehrere Empfänger werden mit einem Komma getrennt.</div>
+                                  <label for="exampleInputPassword1" class="form-label">Mail-Text</label><br>
                                   {{ sendMailForm.mailText }}<br>
                                   {{ sendMailForm.submit }}
                                 </form>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
-                                {{ sendMailForm.submit }}
                               </div>
                             </div>
                           </div>
