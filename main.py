@@ -28,6 +28,21 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequest
 import smtplib
 from email.mime.text import MIMEText
+import sentry_sdk
+from flask import Flask
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+sentry_sdk.init(
+    dsn="https://8114bf81447447ebac5e30460b77bc04@o4504452235395072.ingest.sentry.io/4504452236443648",
+    integrations=[
+        FlaskIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
 
 
 
