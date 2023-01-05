@@ -60,15 +60,7 @@
                                   aria-label="Close"></button>
                               </div>
                               <div class="modal-body">
-                                <form action="" method="post">
-                                  {{ sendMailForm.hidden_tag() }}
-                                  <label for="mailInputEmail1" class="form-label">Email-Empfänger</label><br>
-                                  {{ sendMailForm.mailAddress }}
-                                  <div id="emailHelp" class="form-text">Mehrere Adressen per Komma trennen.</div>
-                                  <label for="mailInputText1" class="form-label">Text</label><br>
-                                  {{ sendMailForm.mailText }}<br>
-                                  {{ sendMailForm.submit }}
-                                </form>
+                                
                               </div>
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -156,7 +148,12 @@
     </div>
   </div>
 </div>
-
+<form action="" method="post">
+  {{ sendMailForm.hidden_tag() }}
+  {{ sendMailForm.mailAddress }}
+  {{ sendMailForm.mailText }}<br>
+  {{ sendMailForm.submit }}
+</form>
 <script>
   var ctx1 = document.getElementById('netzbezug').getContext('2d');
   var energy_consumption_list = {{ energy_consumption_list }};
