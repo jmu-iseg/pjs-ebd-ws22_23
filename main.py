@@ -44,7 +44,7 @@ sentry_sdk.init(
     traces_sample_rate=1.0
 )
 
-
+%
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
