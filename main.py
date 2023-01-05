@@ -302,7 +302,7 @@ def optimization_table(start_date, end_date):
     print("_________test2_________")
     if sendMailForm.validate_on_submit():
         print("_________test_________")
-        a = sendMailForm.MailAddress.data
+        a = sendMailForm.mailAddress.data
         #sender = 'termine@pjs-mail.de'
         sender = 'termine@pjs-mail.de'
         receiver = 'nils.heilemann@gmail.com'
