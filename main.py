@@ -287,7 +287,7 @@ def get_date():
         msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
-        msg['From'] = config['mail']['mail_user']
+        msg['From'] = "Nicolas Neis"
         msg['To'] = receiver
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
         msg.attach(msgText)
