@@ -15,7 +15,11 @@
         <p>Über die Optimierungsfunktion können Sie ihre Showroom-Kundentermine möglichst energieeffizient planen.</p>
         <p>Hier sollen verschiedene Cards angezeigt werden.</p>
         <form method="POST" action="">
-          {{ sendMailForm.hidden_tag() }}
+          {{ sendMailForm.csrf_token() }}
+          {{ sendMailForm.dauer(value='2') }}
+          {{ sendMailForm.bezeichnung(value='abc') }}
+          {{ sendMailForm.date(value='20.01.2022') }}
+          {{ sendMailForm.time(value='18:00') }}
           {{ sendMailForm.mailAddress }}
           {{ sendMailForm.mailText }}<br>
           {{ sendMailForm.submit }}
