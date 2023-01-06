@@ -3,6 +3,7 @@ import os
 
 # set app
 app = Flask(__name__)
+
 import main, settings
 
 # run app
