@@ -127,6 +127,9 @@ class MailForm(FlaskForm):
     mail_pw = PasswordField(validators=[
                              InputRequired()])
 
+    mail_sender = StringField(validators=[
+                             InputRequired()])
+
     submit = SubmitField('Aktualisieren')
 
 # read settings
@@ -177,14 +180,16 @@ def settings():
     mail_port = config['mail']['mail_port']
     mail_user = config['mail']['mail_user']
     mail_pw = config['mail']['mail_pw']
+    mail_sender = config['mail']['mail_sender']
 
     # set the mailForm
-    mailForm=MailForm(mail_server=mail_server,mail_port=mail_port,mail_user=mail_user,mail_pw=mail_pw)
+    mailForm=MailForm(mail_server=mail_server,mail_port=mail_port,mail_user=mail_user,mail_pw=mail_pw, mail_sender=mail_sender)
     if mailForm.validate_on_submit():
         config['mail']['mail_server'] = mailForm.mail_server.data
         config['mail']['mail_port'] = mailForm.mail_port.data
         config['mail']['mail_user'] = mailForm.mail_user.data
         config['mail']['mail_pw'] = mailForm.mail_pw.data
+        config['mail']['mail_sender'] = mailForm.mail_sender.data
         with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
             config.write(configfile)
         return redirect('/settings')
