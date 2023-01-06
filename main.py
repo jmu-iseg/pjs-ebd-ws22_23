@@ -30,6 +30,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from email.utils import formataddr
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
@@ -287,8 +288,9 @@ def get_date():
         msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
-        msg['From'] = 'Nils Heilemann'
+        msg['From'] = config['mail']['mail_user']
         msg['To'] = receiver
+        formataddr(('Example Sender Name', config['mail']['mail_user']))
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
         msg.attach(msgText)
 
