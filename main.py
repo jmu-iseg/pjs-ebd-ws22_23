@@ -353,7 +353,7 @@ def submit():
         msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
-        msg['From'] = config['mail']['mail_user']
+        msg['From'] = formataddr(('Test', config['mail']['mail_user']))
         msg['To'] = receiver
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
         msg.attach(msgText)
