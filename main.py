@@ -284,11 +284,22 @@ def get_date():
         print(sendMailForm.bezeichnung.data)
         receiver = sendMailForm.mailAddress.data
         sender = config['mail']['mail_user']
-        msg = MIMEText(sendMailForm.mailText.data)
+        msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
         msg['From'] = config['mail']['mail_user']
         msg['To'] = receiver
+        msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
+        msg.attach(msgText)
+
+        starttime = "{} {}".format(sendMailForm.date.data, sendMailForm.time.data)
+        starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
+        endtime_formatted = starttime_formatted + timedelta(hours=float(sendMailForm.dauer.data))
+
+        calendar = create_file_object(starttime_formatted, endtime_formatted, sendMailForm.bezeichnung.data)
+        attachment = MIMEApplication(calendar.read())
+        attachment.add_header('Content-Disposition','attachment',filename='Termineinladung.ics')
+        msg.attach(attachment)
 
         user = config['mail']['mail_user']
         password = config['mail']['mail_pw']
