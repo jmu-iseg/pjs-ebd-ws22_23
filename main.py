@@ -350,7 +350,7 @@ def submit():
         endtime_formatted = starttime_formatted + timedelta(hours=float(sendMailForm.dauer.data))
 
         calendar = create_file_object(starttime_formatted, endtime_formatted, sendMailForm.bezeichnung.data)
-        attachment = MIMEApplication(calendar)
+        attachment = MIMEApplication(calendar.read())
         attachment.add_header('Content-Disposition','attachment','Termineinladung.ics')
         msg.attach(attachment)
 
