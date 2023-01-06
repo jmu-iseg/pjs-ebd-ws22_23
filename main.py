@@ -34,6 +34,8 @@ app.config['SECRET_KEY'] = 'thisisasecretkey'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
+ALLOWED_EXTENSIONS = {'png', 'jpg'}
+
 # read settings
 config = configparser.ConfigParser()
 config.read(os.path.join(app.root_path,'settings.cfg'))
