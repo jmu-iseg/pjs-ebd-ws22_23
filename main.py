@@ -288,9 +288,9 @@ def get_date():
         msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
-        msg['From'] = config['mail']['mail_user']
+        msg['From'] = msg['From'] = formataddr((config['mail']['mail_sender'], config['mail']['mail_user']))
         msg['To'] = receiver
-        formataddr(('Example Sender Name', config['mail']['mail_user']))
+
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
         msg.attach(msgText)
 
@@ -353,7 +353,7 @@ def submit():
         msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
-        msg['From'] = formataddr(('Test', config['mail']['mail_user']))
+        msg['From'] = formataddr((config['mail']['mail_sender'], config['mail']['mail_user']))
         msg['To'] = receiver
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
         msg.attach(msgText)
