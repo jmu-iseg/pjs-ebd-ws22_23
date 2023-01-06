@@ -3,7 +3,7 @@ import os
 
 # set app
 app = Flask(__name__)
-import main, settings
+import settings
 
 # run app
 if __name__ == "__main__":
