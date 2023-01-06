@@ -27,7 +27,9 @@ from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import BadRequest
 import smtplib
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
@@ -335,11 +337,22 @@ def submit():
     if sendMailForm.validate_on_submit():
         receiver = sendMailForm.mailAddress.data
         sender = config['mail']['mail_user']
-        msg = MIMEText(sendMailForm.mailText.data)
+        msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
         msg['From'] = config['mail']['mail_user']
         msg['To'] = receiver
+        msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
+        msg.attach(msgText)
+
+        starttime = "{} {}".format(sendMailForm.date.data, sendMailForm.time.data)
+        starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
+        endtime_formatted = starttime_formatted + timedelta(hours=float(sendMailForm.dauer.data))
+
+        calendar = create_file_object(starttime_formatted, endtime_formatted, sendMailForm.bezeichnung.data)
+        attachment = MIMEApplication(calendar)
+        attachment.add_header('Content-Disposition','attachment','Termineinladung.ics')
+        msg.attach(attachment)
 
         user = config['mail']['mail_user']
         password = config['mail']['mail_pw']
