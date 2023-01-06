@@ -351,7 +351,7 @@ def submit():
 
         calendar = create_file_object(starttime_formatted, endtime_formatted, sendMailForm.bezeichnung.data)
         attachment = MIMEApplication(calendar.read())
-        attachment.add_header('Content-Disposition','attachment','Termineinladung.ics')
+        attachment.add_header('Content-Disposition','attachment',filename='Termineinladung.ics')
         msg.attach(attachment)
 
         user = config['mail']['mail_user']
