@@ -283,11 +283,11 @@ def get_date():
         print("____________MOIN2____________")
         print(sendMailForm.bezeichnung.data)
         receiver = sendMailForm.mailAddress.data
-        sender = "Nicolas Neis"
+        sender = config['mail']['mail_user']
         msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
-        msg['From'] = config['mail']['mail_user']
+        msg['From'] = 'a'
         msg['To'] = receiver
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
         msg.attach(msgText)
