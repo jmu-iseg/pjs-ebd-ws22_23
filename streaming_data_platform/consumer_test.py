@@ -76,6 +76,6 @@ for _, consumer_records in records.items():
 df = df.reset_index()
 
 print(df)
-json_object = df.to_json()
+json_object = df["value"].to_json()
 with open("data.json", "w") as outfile:
     outfile.write(json_object)
