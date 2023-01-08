@@ -37,3 +37,6 @@ for _, consumer_records in records.items():
 #dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
 
 print(df)
+json_object = df.to_json()
+with open("dara.json", "w") as outfile:
+    outfile.write(json_object)
