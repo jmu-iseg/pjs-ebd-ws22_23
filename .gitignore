@@ -3,5 +3,4 @@ __pycache__
 instance
 migrations
 app/static/img/profile
-app/static/css
 test.py

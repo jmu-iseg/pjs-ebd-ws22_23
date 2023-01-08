@@ -68,10 +68,10 @@
                                   {{ sendMailForm.date(value=item.Date) }}
                                   {{ sendMailForm.time(value=item.Time) }}
                                   {{ sendMailForm.terminID(value=item.TerminID) }}
-                                  <label for="exampleInputPassword1" class="form-label">Mail-Empfänger</label><br>
+                                  {{ sendMailForm.mailAddress.label }}<br>
                                   {{ sendMailForm.mailAddress }}<br>
                                   <div id="emailHelp" class="form-text">Mehrere Empfänger werden mit einem Komma getrennt.</div>
-                                  <label for="exampleInputPassword1" class="form-label">Mail-Text</label><br>
+                                  {{ sendMailForm.mailText.label }}<br>
                                   {{ sendMailForm.mailText }}<br>
                                   {{ sendMailForm.submit }}
                                 </form>

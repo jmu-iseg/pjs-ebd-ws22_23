@@ -7,12 +7,12 @@ from flask_login import login_user
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
 
-    role = SelectField(u'role', choices=[('0', 'Admin'), ('1', 'Standard')])
+    role = SelectField(choices=[('0', 'Admin'), ('1', 'Standard')], label='Rolle')
 
     password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort')
 
     submit = SubmitField('Register', name='registerForm', id='submit')
 
@@ -24,10 +24,10 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
 
     password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort')
 
     submit = SubmitField('Login', name='loginForm', id='submit')
 
@@ -47,7 +47,7 @@ class LoginForm(FlaskForm):
 
 class ProfileForm(FlaskForm):
     username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Nutzername')
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
 
     password = PasswordField(validators=[
                              InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort')
@@ -70,10 +70,10 @@ class ProfileForm(FlaskForm):
 
 class SendMailForm(FlaskForm):
     mailAddress = StringField(validators=[
-        InputRequired()], render_kw={"placeholder": "Adressen"})
+        InputRequired()], render_kw={"placeholder": "Adressen"}, label='Mailaddressen')
 
     mailText = TextAreaField(validators=[
-                             InputRequired()], render_kw={"placeholder": "Nachricht"})
+                             InputRequired()], render_kw={"placeholder": "Nachricht"}, label='Mail-Text')
 
     dauer = HiddenField()
     bezeichnung = HiddenField()
@@ -86,13 +86,13 @@ class SendMailForm(FlaskForm):
 
 class WeatherForm(FlaskForm):
     apikey = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='API-Schlüssel')
 
     lat = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Latitude')
 
     lon = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Longitude')
 
     submit = SubmitField('Aktualisieren', name='weatherForm', id='submit')
 
@@ -105,31 +105,31 @@ class WeatherForm(FlaskForm):
 
 class MachineForm(FlaskForm):
     consumption_m1 = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Verbrauch Maschine 1')
 
     consumption_m2 = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Verbrauch Maschine 2')
 
     consumption_m3 = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Verbrauch Maschine 3')
 
     submit = SubmitField('Aktualisieren', name='machineForm', id='submit')
 
 
 class MailForm(FlaskForm):
     mail_server = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Mail-Server')
 
     mail_port = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Mail-Port')
 
     mail_user = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Mail-Nutzer')
 
     mail_pw = PasswordField(validators=[
-        InputRequired()])
+        InputRequired()], label='Mail-Passwort')
 
     mail_sender = StringField(validators=[
-        InputRequired()])
+        InputRequired()], label='Absendername')
 
     submit = SubmitField('Aktualisieren', name='mailForm', id='submit')

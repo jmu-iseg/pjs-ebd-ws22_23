@@ -77,12 +77,12 @@
                   <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="75"
                     height="75">
                   <h1 class="h3 mb-3 font-weight-normal">Neuen Benutzer registrieren</h1>
-                  <label for="inputEmail" class="sr-only">Nutzername</label>
                   {{ form.hidden_tag() }}
+                  {{ form.username.label }}
                   {{ form.username }}
-                  <label for="inputPassword" class="sr-only">Passwort</label>
+                  {{ form.password.label }}
                   {{ form.password }}
-                  <label for="inputRole" class="sr-only">Rolle</label>
+                  {{ form.role.label }}
                   <br>
                   {{ form.role }}
                   <br>
@@ -104,13 +104,13 @@
       <div class="card-body">
         <form action="" method="post">
           {{ weatherForm.hidden_tag() }}
-          <label for="OpenWeatherAPI">OpenWeatherAPI Key:</label><br>
+          {{ weatherForm.apikey.label }}
           {{ weatherForm.apikey }}
           <br>
-          <label for="lan">Latitute:</label><br>
+          {{ weatherForm.lat.label }}<br>
           {{ weatherForm.lat }}
           <br>
-          <label for="long">Longitute:</label><br>
+          {{ weatherForm.lon.label }}<br>
           {{ weatherForm.lon }}<br>
           {{ weatherForm.submit }}
         </form>
@@ -126,11 +126,11 @@
       <div class="card-body">
         <form action="" method="post">
           {{ machineForm.hidden_tag() }}
-          <label for="OpenWeatherAPI">Anlage 1:</label><br>
+          {{ machineForm.consumption_m1.label }}<br>
           {{ machineForm.consumption_m1 }} kWh<br>
-          <label for="lan">Anlage 2:</label><br>
+          {{ machineForm.consumption_m2.label }}<br>
           {{ machineForm.consumption_m2 }} kWh<br>
-          <label for="long">Anlage 3:</label><br>
+          {{ machineForm.consumption_m3.label }}<br>
           {{ machineForm.consumption_m3 }} kWh<br>
           {{ machineForm.submit }}
         </form>
@@ -145,15 +145,15 @@
       <div class="card-body">
         <form action="" method="post">
           {{ mailForm.hidden_tag() }}
-          <label for="OpenWeatherAPI">Server-Adresse:</label><br>
+          {{ mailForm.mail_server.label }}<br>
           {{ mailForm.mail_server }}<br>
-          <label for="lan">Server-Port:</label><br>
+          {{ mailForm.mail_port.label }}<br>
           {{ mailForm.mail_port }}<br>
-          <label for="long">Benutzer:</label><br>
+          {{ mailForm.mail_user.label }}<br>
           {{ mailForm.mail_user }}<br>
-          <label for="long">Passwort:</label><br>
+          {{ mailForm.mail_pw.label }}<br>
           {{ mailForm.mail_pw }}<br>
-          <label for="long">Absender-Name:</label><br>
+          {{ mailForm.mail_sender.label }}<br>
           {{ mailForm.mail_sender }}<br>
           {{ mailForm.submit }}
         </form>
