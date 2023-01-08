@@ -32,7 +32,7 @@
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oH_.svg">
-                  <span>{{ informations['Druck'][0] }} mB</span>
+                  <span>{{ informations['Druck'][0] }} hPa</span>
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oKS.svg">
@@ -42,7 +42,7 @@
             </div>
           </div>
         </div>
-        { informations[0]
+        {{ informations[0] }}
         <!-- Weather Forecast -->
         <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
           <div class="p-4 d-flex flex-column justify-content-center align-items-center">
