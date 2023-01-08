@@ -2,6 +2,7 @@ from kafka import KafkaConsumer
 #import mysql.connector
 import pandas as pd
 import functools as ft
+import datetime
 
 #cursor.execute("CREATE TABLE phData (datetime DATETIME, output FLOAT, basicConsumption FLOAT, managementConsumption FLOAT, productionConsumption FLOAT)")
 
@@ -29,6 +30,8 @@ for sub_topic in consumer.topics():
 
 print(weather_topics)
 
+print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S')))
+print("111")
 # Subscribe to topics
 consumer.subscribe(topics=topics)
 
