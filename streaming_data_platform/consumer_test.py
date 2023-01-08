@@ -52,7 +52,8 @@ consumer.subscribe(topics=top_topic)
 print('polling...')
 records = consumer.poll(timeout_ms=1000)
 
-print("Test"+records)
+print("Test")
+print(records)
 
 #read items
 for _, consumer_records in records.items():
