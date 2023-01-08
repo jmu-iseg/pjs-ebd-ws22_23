@@ -29,10 +29,10 @@ weather_topics = set()
 # check if topic starts with 'weather' and write it to a new set
 for sub_topic in consumer.topics():
     if sub_topic.startswith("weather"):
-        print("vor "+sub_topic)
+        
         #remove 'weather'
         sub_topic = sub_topic.removeprefix("weather")
-        print("nach "+sub_topic)
+        
         # check if sub_topic is not empty
         if sub_topic:
             # add subtopic to new set
@@ -40,7 +40,7 @@ for sub_topic in consumer.topics():
 
 print(weather_topics)
 
-print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, 'weather%y-%m-%d-%H-%M-%S')))
+print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S')))
 print("111")
 # Subscribe to topics
 consumer.subscribe(topics=topics)
