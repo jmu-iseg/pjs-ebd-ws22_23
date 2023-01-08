@@ -11,7 +11,7 @@ function sidebar_switch() {
       $( ".sidebar-toggle" ).removeClass( "sidebarmin" );
 
       $("body").toggleClass("sidebarmax");
-      console.log("Wechsel");
+      console.log("Wechsel Mobil");
       if (sessionStorage.getItem("key") != "min") {
         sessionStorage.setItem("sidebar", "min");
       } else {
@@ -28,7 +28,7 @@ function sidebar_switch() {
       $( "body" ).removeClass( "sidebarmax" );
 
       $("body").toggleClass("sidebarmin");
-      console.log("Wechsel");
+      console.log("Wechsel Desktop");
       if (sessionStorage.getItem("key") != "min") {
         sessionStorage.setItem("sidebar", "min");
       } else {
