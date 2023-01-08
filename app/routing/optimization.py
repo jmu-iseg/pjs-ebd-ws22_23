@@ -70,7 +70,7 @@ def get_date():
         msg = MIMEMultipart()
 
         msg['Subject'] = 'Termineinladung'
-        msg['From'] = msg['From'] = formataddr((config['mail']['mail_sender'], config['mail']['mail_user']))
+        msg['From'] = config['mail']['mail_user'] #formataddr((config['mail']['mail_sender'], config['mail']['mail_user']))
         msg['To'] = receiver
 
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
@@ -96,7 +96,6 @@ def get_date():
 
             # Send the email
             server.sendmail(sender, receiver, msg.as_string())
-            print("mail successfully sent")
             flash(f"Mail erfolgreich verschickt")
         return redirect('/optimization')
 
