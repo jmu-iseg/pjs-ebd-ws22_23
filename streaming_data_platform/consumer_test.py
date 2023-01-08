@@ -17,7 +17,17 @@ consumer = KafkaConsumer(auto_offset_reset='earliest',
 
 # get topics
 print("___")
-print(type(consumer.topics()))
+#print(type(consumer.topics()))
+
+# empty set
+weather_topics = set()
+
+# check if topic starts with 'weather' and write it to a new set
+for sub_topic in consumer.topics():
+    if sub_topic.startswith("weather"):
+        weather_topics.add(sub_topic)
+
+print(weather_topics)
 
 # Subscribe to topics
 consumer.subscribe(topics=topics)
