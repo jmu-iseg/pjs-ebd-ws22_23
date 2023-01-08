@@ -29,10 +29,10 @@ weather_topics = set()
 # check if topic starts with 'weather' and write it to a new set
 for sub_topic in consumer.topics():
     if sub_topic.startswith("weather"):
-
+        print("vor "+sub_topic)
         #remove 'weather'
-        sub_topic.removeprefix("weather")
-
+        sub_topic = sub_topic.removeprefix("weather")
+        print("nach "+sub_topic)
         # check if sub_topic is not empty
         if sub_topic:
             # add subtopic to new set
