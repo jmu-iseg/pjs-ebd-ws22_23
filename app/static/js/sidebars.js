@@ -1,5 +1,4 @@
 $(document).ready(sidebar_switch);
-$(window).on('resize', sidebar_switch);
 
 // Klappe das Menü auf und zu, wenn jemand auf den Button .sidebar-toggle klickt
 function sidebar_switch() {
@@ -10,7 +9,7 @@ function sidebar_switch() {
       // Prüfen, ob noch von anderer Viewport-Size die Klasse zugewiesen ist
       $( ".sidebar-toggle" ).removeClass( "sidebarmin" );
 
-      $("body").toggleClass("sidebarmax");
+      $("body").toggleClass("sidebarmax"+$(window).width());
       console.log("Wechsel Mobil");
       if (sessionStorage.getItem("key") != "min") {
         sessionStorage.setItem("sidebar", "min");
@@ -28,7 +27,7 @@ function sidebar_switch() {
       $( "body" ).removeClass( "sidebarmax" );
 
       $("body").toggleClass("sidebarmin");
-      console.log("Wechsel Desktop");
+      console.log("Wechsel Desktop"+$(window).width());
       if (sessionStorage.getItem("key") != "min") {
         sessionStorage.setItem("sidebar", "min");
       } else {
