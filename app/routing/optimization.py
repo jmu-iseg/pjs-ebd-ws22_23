@@ -1,4 +1,4 @@
-from app import app
+from app import app, flash_errors
 import flask_login
 from flask_login import login_required
 from flask import request, Response, render_template, redirect, flash
@@ -61,10 +61,7 @@ def get_date():
 
      # send mail
     sendMailForm = SendMailForm()
-    print("____________MOIN1____________")
-    if sendMailForm.validate_on_submit():
-        print("____________MOIN2____________")
-        print(sendMailForm.bezeichnung.data)
+    if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
         receiver = sendMailForm.mailAddress.data
         sender = config['mail']['mail_user']
         msg = MIMEMultipart()
@@ -90,13 +87,12 @@ def get_date():
 
         # Set up connection to the SMTP server
         with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
-
-            # Log in to the server
             server.login(user, password)
-
-            # Send the email
             server.sendmail(sender, receiver, msg.as_string())
-            flash(f"Mail erfolgreich verschickt")
+            flash("Mail erfolgreich verschickt")
+        return redirect('/optimization')
+    elif request.method == "POST" and 'sendMailForm' in request.form:
+        flash_errors(sendMailForm)
         return redirect('/optimization')
 
     if len(termine) < 1: 
