@@ -48,6 +48,8 @@ top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strpti
 
 # Subscribe to topics
 consumer.subscribe(top_topic)
+consumer.seek_to_beginning()
+
 
 print("Test")
 print(consumer.topics())
