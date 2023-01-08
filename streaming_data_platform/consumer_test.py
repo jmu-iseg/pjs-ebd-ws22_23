@@ -73,7 +73,7 @@ for _, consumer_records in records.items():
 # Create a DataFrame for each topic and rename value and drop column "topic"
 df = df.reset_index()
 
-json_object = ""
+json_object = "("
 for index, row in df.iterrows():
     if index != 0:
         print(row['value'])
@@ -81,7 +81,7 @@ for index, row in df.iterrows():
     else:
         print(row['value'])
         json_object+=str(row['value'])
-
+json_object+=")"
 # save as json
 with open("data.json", "w") as outfile:
     outfile.write(json_object)
