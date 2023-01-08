@@ -42,4 +42,4 @@ for day in response_content["list"]:
 
     # Push DateTime as Key and Output (kWh) as Value
     producer.send('weather', key=bytes(str(date_string), 'utf-8'),
-              value=bytes(str(day), 'utf-8'))
+            value=bytes(str(day), 'utf-8'))

@@ -19,7 +19,7 @@ consumer.subscribe(topics=topics)
 
 while True:
     print('polling...')
-    records = consumer.poll(timeout_ms=360000)
+    records = consumer.poll(timeout_ms=100)
     
     #read items
     for _, consumer_records in records.items():
