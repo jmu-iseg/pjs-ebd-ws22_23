@@ -13,7 +13,7 @@ df = pd.DataFrame()
    
 """ Consumer """
 consumer = KafkaConsumer(auto_offset_reset='earliest',
-                         client_id='local-test',
+                         client_id='local-test1',
                          bootstrap_servers=['localhost:9092'])
 
 # empty set
