@@ -38,7 +38,7 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092')
 act_datetime = datetime.now()
 
 msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
-print(msg_topic)
+print(response_content)
 
 # Push Date as Key and Weather as Value
 producer.send(topic=msg_topic, value=bytes(str(response_content), 'utf-8'))
