@@ -3,11 +3,13 @@ from kafka import KafkaProducer
 import requests
 import configparser
 import os
-from app import app
+from pathlib import Path
 
 # get config values
 config = configparser.ConfigParser()
-config.read(os.path.join(app.root_path,'settings.cfg'))
+path = Path(os.curdir())
+config.read(os.path.join(path.parent.absolute(),'app/settings.cfg'))
+print(os.path.join(path.parent.absolute(),'app/settings.cfg'))
 
 # specify the location
 lat = config['weather']['lat']
