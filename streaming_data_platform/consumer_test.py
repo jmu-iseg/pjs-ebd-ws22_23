@@ -10,18 +10,11 @@ import datetime
 #cursor.execute("CREATE TABLE phData (datetime DATETIME, output FLOAT, basicConsumption FLOAT, managementConsumption FLOAT, productionConsumption FLOAT)")
 
 df = pd.DataFrame()
-
-# Define topics
-topics = ["weather"]
    
 """ Consumer """
 consumer = KafkaConsumer(auto_offset_reset='earliest',
                          client_id='local-test',
                          bootstrap_servers=['localhost:9092'])
-
-# get topics
-print("___")
-#print(type(consumer.topics()))
 
 # empty set
 weather_topics = set()
@@ -57,7 +50,9 @@ top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strpti
 consumer.subscribe(topics=top_topic)
 
 print('polling...')
-records = consumer.poll(timeout_ms=50000)
+records = consumer.poll(timeout_ms=1000)
+
+print("Test"+records)
 
 #read items
 for _, consumer_records in records.items():
