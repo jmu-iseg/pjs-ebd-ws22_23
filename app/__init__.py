@@ -38,7 +38,7 @@ def flash_errors(form):
     """Flashes form errors"""
     for field, errors in form.errors.items():
         for error in errors:
-            flash(u"Fehler im '%s' Feld - %s" % (
+            flash(u"Fehler im Feld '%s' - %s" % (
                 getattr(form, field).label.text,
                 error
             ), 'error')

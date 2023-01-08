@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField, FileFi
 from wtforms.validators import InputRequired, Length, ValidationError
 from app.models import User
 from app import bcrypt
+from flask_login import login_user
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
@@ -41,6 +42,7 @@ class LoginForm(FlaskForm):
         else:
             self.username.errors.append('Der Benutzer existiert nicht')
             return False
+        login_user(user)
         return True
 
 class ProfileForm(FlaskForm):

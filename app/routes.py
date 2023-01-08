@@ -52,7 +52,7 @@ def dashboard():
 @login_required
 def reload():
     subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd=app.root_path)
-    subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd=app.root_path)
+    subprocess.run('./update_files.sh', shell=True, check=True, text=True, cwd=app.root_path)
     return redirect('/')
 
 @app.route('/return-files')
