@@ -11,36 +11,29 @@ df = pd.DataFrame()
 topics = ["weather"]
    
 """ Consumer """
-"""consumer = KafkaConsumer(auto_offset_reset='earliest',
+consumer = KafkaConsumer(auto_offset_reset='earliest',
                          client_id='local-test',
                          bootstrap_servers=['localhost:9092'])
 # Subscribe to topics
-consumer.subscribe(topics=topics)"""
+consumer.subscribe(topics=topics)
 
-consumer = KafkaConsumer('weather',auto_offset_reset='earliest',bootstrap_servers='localhost:9092')
-for msg in consumer:
-    print (msg)
+print('polling...')
+records = consumer.poll(timeout_ms=100)
 
-"""
-while True:
-    print('polling...')
-    records = consumer.poll(timeout_ms=100)
-    
-    #read items
-    for _, consumer_records in records.items():
-        # Parse records
-        for consumer_record in consumer_records:
-            # get information
-            dataTemp = [[consumer_record.topic, consumer_record.key.decode("utf-8") , consumer_record.value.decode("utf-8") ]]
-            dfTemp = pd.DataFrame(dataTemp, columns=["topic", "dateTime", "value"])
-            
-            # add the information to the DataFrame
-            df = pd.concat([df, dfTemp], axis=0)
+#read items
+for _, consumer_records in records.items():
+    # Parse records
+    for consumer_record in consumer_records:
+        # get information
+        dataTemp = [[consumer_record.topic, consumer_record.key.decode("utf-8") , consumer_record.value.decode("utf-8") ]]
+        dfTemp = pd.DataFrame(dataTemp, columns=["topic", "dateTime", "value"])
+        
+        # add the information to the DataFrame
+        df = pd.concat([df, dfTemp], axis=0)
 
-        continue
-    
-    # Create a DataFrame for each topic and rename value and drop column "topic"
-    dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
+    continue
 
-    print(dfWeather)
-"""
+# Create a DataFrame for each topic and rename value and drop column "topic"
+dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
+
+print(dfWeather)
