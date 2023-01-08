@@ -34,9 +34,19 @@ for sub_topic in consumer.topics():
         sub_topic = sub_topic.removeprefix("weather")
         
         # check if sub_topic is not empty
-        if sub_topic and datetime.datetime.strptime(sub_topic, '%y-%m-%d-%H-%M-%S'):
+        if sub_topic:
+            # checking if format matches the date
+            res = True
+            
+            # using try-except to check for truth value
+            try:
+                res = bool(datetime.datetime.strptime(sub_topic, '%y-%m-%d-%H-%M-%S'))
+            except ValueError:
+                res = False
+            
             # add subtopic to new set
-            weather_topics.add(sub_topic)
+            if res:
+                weather_topics.add(sub_topic)
 
 print(weather_topics)
 
