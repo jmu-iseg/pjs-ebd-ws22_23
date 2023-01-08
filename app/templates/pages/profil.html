@@ -11,14 +11,17 @@
           <img class="mb-4 profile-pic" src="{{ url_for('static', filename=profilepic) }}" alt="" width="75" height="75">
           <h1 class="h3 mb-3 font-weight-normal">Profil anpassen</h1>
           {{ form.hidden_tag() }}
-          <label for="inputPic" class="sr-only">Bild (hochladen / anpassen)</label>
+          {{ form.profilepic.label }}
           <br>
           {{ form.profilepic }}
           <br>
-          <label for="inputEmail" class="sr-only">Nutzername</label>
+          {{ form.username.label }}
           {{ form.username }}
-          <label for="inputPassword" class="sr-only">Passwort</label>
+          {{ form.password.label }}
           {{ form.password }}
+          {{ form.val_password.label }}
+          {{ form.val_password }}
+          <br>
           {{ form.submit }}
         </form>
       </div>

@@ -19,7 +19,7 @@ class RegisterForm(FlaskForm):
         existing_user_username = User.query.filter_by(
             username=username.data).first()
         if existing_user_username:
-            raise ValidationError('That username already exists. Please choose a different one.')
+            raise ValidationError('Der Benutzername existiert bereits.')
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[
@@ -45,14 +45,25 @@ class LoginForm(FlaskForm):
 
 class ProfileForm(FlaskForm):
     username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
+                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Nutzername')
 
     password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort')
 
-    profilepic = FileField()
+    val_password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort wiederholen')
+
+    profilepic = FileField(label='Profilbild')
 
     submit = SubmitField('Aktualisieren', name='profileForm', id='submit')
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        if not self.password.data == self.val_password.data:
+            self.password.errors.append('Die Passwörter stimmen nicht überein')
+            return False
+        return True
 
 
 class SendMailForm(FlaskForm):
@@ -87,7 +98,7 @@ class WeatherForm(FlaskForm):
         def is_ascii(s):
             return all(ord(c) < 128 for c in s)
         if not is_ascii(apikey.data):
-            raise ValidationError("ASCII - Characters only")
+            raise ValidationError("Bitte geben Sie valide Zeichen an.")
 
 
 class MachineForm(FlaskForm):
