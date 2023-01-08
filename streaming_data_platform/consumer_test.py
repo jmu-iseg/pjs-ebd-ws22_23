@@ -1,3 +1,6 @@
+###
+#    TODO: Diese Datei regelmäßig über einen Cron ausführen
+###
 from kafka import KafkaConsumer
 #import mysql.connector
 import pandas as pd
@@ -26,7 +29,14 @@ weather_topics = set()
 # check if topic starts with 'weather' and write it to a new set
 for sub_topic in consumer.topics():
     if sub_topic.startswith("weather"):
-        weather_topics.add(sub_topic)
+
+        #remove 'weather'
+        sub_topic.removeprefix("weather")
+
+        # check if sub_topic is not empty
+        if sub_topic:
+            # add subtopic to new set
+            weather_topics.add(sub_topic)
 
 print(weather_topics)
 

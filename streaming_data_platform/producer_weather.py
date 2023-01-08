@@ -1,3 +1,6 @@
+###
+#    TODO: Diese Datei regelmäßig über einen Cron ausführen
+###
 from datetime import datetime
 from kafka import KafkaProducer
 import requests
