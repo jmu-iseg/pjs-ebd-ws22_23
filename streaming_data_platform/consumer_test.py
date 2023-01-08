@@ -57,7 +57,7 @@ top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strpti
 consumer.subscribe(topics=top_topic)
 
 print('polling...')
-records = consumer.poll(timeout_ms=5000)
+records = consumer.poll(timeout_ms=50000)
 
 #read items
 for _, consumer_records in records.items():
