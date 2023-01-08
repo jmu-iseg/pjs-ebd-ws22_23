@@ -5,7 +5,6 @@ import configparser
 import os
 from pathlib import Path
 import time
-import datetime
 
 # get config values
 config = configparser.ConfigParser()
@@ -42,8 +41,8 @@ for day in response_content["list"]:
     print("____")
 
     # get Datetime
-    datetime = datetime.datetime.now()
+    act_datetime = datetime.datetime.now()
 
     # Push Date as Key and Weather as Value
-    producer.send('weather_' + datetime.strftime("%y-%m-%d_%H:%M"), key=bytes(str(date_string), 'utf-8'),
+    producer.send('weather_' + act_datetime.strftime("%y-%m-%d_%H:%M"), key=bytes(str(date_string), 'utf-8'),
             value=bytes(str(day), 'utf-8'))
