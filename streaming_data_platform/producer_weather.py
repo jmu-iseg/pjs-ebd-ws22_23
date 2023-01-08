@@ -34,21 +34,12 @@ response_content = response.json()
 # Create a Kafka Producer
 producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
-# Get forecast for every day and push it to kafka
-for day in response_content["list"]:
-    # Convert Date
-    date = datetime.fromtimestamp(day["dt"])
-    date_string = date.strftime("%Y-%m-%d")
+# get Datetime
+act_datetime = datetime.now()
 
-    print(str(day))
-    print("____")
+msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
+print(msg_topic)
 
-    # get Datetime
-    act_datetime = datetime.now()
-
-    msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
-    print(msg_topic)
-
-    # Push Date as Key and Weather as Value
-    producer.send(topic=msg_topic, key=bytes(str(date_string), 'utf-8'),
-            value=bytes(str(day), 'utf-8'))
+# Push Date as Key and Weather as Value
+producer.send(topic=msg_topic, key=act_datetime.strftime("%y-%m-%d-%H-%M-%S"),
+            value=response_content)
