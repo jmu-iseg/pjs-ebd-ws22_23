@@ -6,6 +6,7 @@ from kafka import KafkaConsumer
 import pandas as pd
 import functools as ft
 import datetime
+import random
 
 #cursor.execute("CREATE TABLE phData (datetime DATETIME, output FLOAT, basicConsumption FLOAT, managementConsumption FLOAT, productionConsumption FLOAT)")
 
@@ -14,6 +15,7 @@ df = pd.DataFrame()
 """ Consumer """
 consumer = KafkaConsumer(auto_offset_reset='earliest',
                          client_id='local-test1',
+                         group_id=random.randint(1,1000000000),
                          bootstrap_servers=['localhost:9092'])
 
 # empty set
@@ -48,7 +50,6 @@ top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strpti
 
 # Subscribe to topics
 consumer.subscribe(top_topic)
-consumer.seek_to_beginning()
 
 
 print("Test")
