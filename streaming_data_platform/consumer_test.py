@@ -50,6 +50,7 @@ top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strpti
 consumer.subscribe(topics=top_topic)
 
 print("Test")
+print(consumer.topics())
 for msg in consumer:
     print(msg)
 
