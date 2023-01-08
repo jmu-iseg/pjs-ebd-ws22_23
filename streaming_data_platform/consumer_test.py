@@ -47,7 +47,7 @@ print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-
 top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S'))
 
 # Subscribe to topics
-consumer.subscribe(topics=top_topic)
+consumer.subscribe(top_topic)
 
 print("Test")
 print(consumer.topics())
@@ -55,6 +55,7 @@ for msg in consumer:
     print(msg)
 
 print('polling...')
+print(top_topic)
 records = consumer.poll(timeout_ms=1000)
 
 print(records)
