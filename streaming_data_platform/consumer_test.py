@@ -1,5 +1,5 @@
 from kafka import KafkaConsumer
-import mysql.connector
+#import mysql.connector
 import pandas as pd
 import functools as ft
 
@@ -17,7 +17,7 @@ consumer = KafkaConsumer(auto_offset_reset='earliest',
 
 # get topics
 print("___")
-print(consumer.topics())
+print(type(consumer.topics()))
 
 # Subscribe to topics
 consumer.subscribe(topics=topics)
