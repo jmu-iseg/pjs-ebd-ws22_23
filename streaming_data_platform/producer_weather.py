@@ -8,6 +8,7 @@ import configparser
 import os
 from pathlib import Path
 import time
+from kafka.errors import KafkaError
 
 # get config values
 config = configparser.ConfigParser()
@@ -40,5 +41,15 @@ act_datetime = datetime.now()
 msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
 print(response_content)
 
+# Error logging
+def on_send_success(record_metadata):
+    print(record_metadata.topic)
+    print(record_metadata.partition)
+    print(record_metadata.offset)
+
+def on_send_error(excp):
+    print('I am an errback', exc_info=excp)
+    # handle exception
+
 # Push Date as Key and Weather as Value
-producer.send(topic=msg_topic, value=bytes(str(response_content), 'utf-8'))
+producer.send(topic=msg_topic, value=bytes(str(response_content), 'utf-8')).add_callback(on_send_success).add_errback(on_send_error)
