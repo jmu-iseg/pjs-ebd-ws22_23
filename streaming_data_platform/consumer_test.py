@@ -40,7 +40,7 @@ for sub_topic in consumer.topics():
 
 print(weather_topics)
 
-print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S')))
+print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M')))
 print("111")
 # Subscribe to topics
 consumer.subscribe(topics=topics)

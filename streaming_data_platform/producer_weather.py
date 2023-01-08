@@ -46,7 +46,7 @@ for day in response_content["list"]:
     # get Datetime
     act_datetime = datetime.now()
 
-    msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
+    msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M")
     print(msg_topic)
 
     # Push Date as Key and Weather as Value
