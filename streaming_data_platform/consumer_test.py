@@ -34,13 +34,13 @@ for sub_topic in consumer.topics():
         sub_topic = sub_topic.removeprefix("weather")
         
         # check if sub_topic is not empty
-        if sub_topic:
+        if sub_topic and datetime.datetime.strptime(sub_topic, '%y-%m-%d-%H-%M-%S'):
             # add subtopic to new set
             weather_topics.add(sub_topic)
 
 print(weather_topics)
 
-print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M')))
+print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S')))
 print("111")
 # Subscribe to topics
 consumer.subscribe(topics=topics)
