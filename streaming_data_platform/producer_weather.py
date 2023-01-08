@@ -41,5 +41,5 @@ msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
 print(msg_topic)
 
 # Push Date as Key and Weather as Value
-producer.send(topic=msg_topic, key=act_datetime.strftime("%y-%m-%d-%H-%M-%S"),
-            value=response_content)
+producer.send(topic=msg_topic, key=bytes(str(act_datetime.strftime("%y-%m-%d-%H-%M-%S"), 'utf-8')),
+            value=bytes(str(response_content), 'utf-8'))

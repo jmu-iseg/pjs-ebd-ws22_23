@@ -1,7 +1,102 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <div class="row">
-  <div class="col">
+  <div class="col mb-3">
+    <div class="card">
+      <div class="card-header">
+        Übersicht
+      </div>
+      <div class="card-body">
+        <!-- Weather -->
+        <div class="container mt-5">
+          <div class="d-flex flex-row justify-content-center align-items-center">
+            <div class="weather__card">
+              <div class="d-flex flex-row justify-content-center align-items-center">
+                <div class="p-3">
+                  <h2>{{ informations['Temp'][0] }}&deg;</h2>
+                </div>
+                <div class="p-3">
+                  <img src="https://svgur.com/i/oKG.svg">
+                </div>
+                <div class="p-3">
+                  <h5>{{ informations['Tag'][0] }}</h5>
+                  <h3>San Francisco</h3>
+                  <span class="weather__description">{{ informations['Wetter'][0] }}</span>
+                </div>
+              </div>
+              <div class="weather__status d-flex flex-row justify-content-center align-items-center mt-3">
+                <div class="p-4 d-flex justify-content-center align-items-center">
+                  <img src="https://svgur.com/i/oHw.svg">
+                  <span>{{ informations['Feuchtigkeit'][0] }}%</span>
+                </div>
+                <div class="p-4 d-flex justify-content-center align-items-center">
+                  <img src="https://svgur.com/i/oH_.svg">
+                  <span>{{ informations['Druck'][0] }} hPa</span>
+                </div>
+                <div class="p-4 d-flex justify-content-center align-items-center">
+                  <img src="https://svgur.com/i/oKS.svg">
+                  <span>10 km/h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{ informations[0] }}
+        <!-- Weather Forecast -->
+        <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Wed</span>
+            <img src="https://svgur.com/i/oJe.svg">
+            <span>{{ informations['Temp'][1]&deg;</span>
+          </div>
+
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Thu</span>
+            <img src="https://svgur.com/i/oKG.svg">
+            <span>{{ informations['Temp'][2]&deg;</span>
+          </div>
+
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Wed</span>
+            <img src="https://svgur.com/i/oKG.svg">
+            <span>{{ informations['Temp'][3]&deg;</span>
+          </div>
+
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Fri</span>
+            <img src="https://svgur.com/i/oJe.svg">
+            <span>{{ informations['Temp'][4]&deg;</span>
+          </div>
+
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Sat</span>
+            <img src="https://svgur.com/i/oJx.svg">
+            <span>{{ informations['Temp'][5]&deg;</span>
+          </div>
+
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Sun</span>
+            <img src="https://svgur.com/i/oJU.svg">
+            <span>{{ informations['Temp'][6]&deg;</span>
+          </div>
+
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Mon</span>
+            <img src="https://svgur.com/i/oJU.svg">
+            <span>{{ informations['Temp'][7]&deg;</span>
+          </div>
+
+          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
+            <span>Tue</span>
+            <img src="https://svgur.com/i/oJy.svg">
+            <span>{{ informations['Temp'][8]&deg;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col mb-3">
     <div class="card">
       <div class="card-header">
         Wetterbericht
@@ -26,7 +121,7 @@
               <td>{{ informations['Druck'][i] }}</td>
               <td>{{ informations['Feuchtigkeit'][i] }}</td>
             </tr>
-          {% endfor %}
+            {% endfor %}
           </tbody>
         </table>
       </div>
