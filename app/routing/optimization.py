@@ -1,225 +1,25 @@
-#from crypt import methods
-from __init__ import app
-
-from lib2to3.pgen2.pgen import DFAState
-from flask import Flask, jsonify, render_template, request, url_for, flash, redirect, send_file, session, escape, Response
-import subprocess
-import pandas as pd
-import numpy as np
-import mysql.connector as sql
-import gurobipy as gp
-from gurobipy import GRB
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-from datetime import datetime, timedelta
-import subprocess
-from icalendar import Calendar, Event, vCalAddress, vText
-import io
-import os
-import configparser
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
+from app import app
 import flask_login
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, HiddenField, TextAreaField
-from wtforms.validators import InputRequired, Length, ValidationError
-from flask_bcrypt import Bcrypt
-from werkzeug.utils import secure_filename
-from werkzeug.exceptions import BadRequest
+from flask_login import login_required
+from flask import request, Response, render_template, redirect, flash
+from app.forms import SendMailForm
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.utils import formataddr
+import configparser
+import os
+from datetime import datetime, timedelta
+from icalendar import Calendar, Event, vCalAddress, vText
+import pandas as pd
+import mysql.connector as sql
+import gurobipy as gp
+from gurobipy import GRB
+import io
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdata.db'
-app.config['SECRET_KEY'] = 'thisisasecretkey'
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-
-ALLOWED_EXTENSIONS = {'png', 'jpg'}
-
-# read settings
 config = configparser.ConfigParser()
 config.read(os.path.join(app.root_path,'settings.cfg'))
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable=False, unique=True)
-    role = db.Column(db.String(20))
-    password = db.Column(db.String(80), nullable=False)
-    profilepic = db.Column(db.String(100))
-
-class RegisterForm(FlaskForm):
-    username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-    
-    role = SelectField(u'role', choices=[('0', 'Admin'), ('1', 'Standard')])
-
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
-
-    submit = SubmitField('Register')
-
-    def validate_username(self, username):
-        existing_user_username = User.query.filter_by(
-            username=username.data).first()
-        if existing_user_username:
-            raise ValidationError(
-                'That username already exists. Please choose a different one.')
-
-class LoginForm(FlaskForm):
-    username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
-
-    submit = SubmitField('Login')
-
-class ProfileForm(FlaskForm):
-    username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
-    
-    profilepic = FileField()
-
-    submit = SubmitField('Aktualisieren')
-
-class SendMailForm(FlaskForm):
-    mailAddress = StringField(validators=[
-                           InputRequired()], render_kw={"placeholder": "Adressen"})
-
-    mailText = TextAreaField(validators=[
-                             InputRequired()], render_kw={"placeholder": "Nachricht"})
-
-    dauer = HiddenField()
-    bezeichnung = HiddenField()
-    date = HiddenField()
-    time = HiddenField()
-    terminID = HiddenField()
-
-    submit = SubmitField('Absenden')
-
-def flash_errors(form):
-    """Flashes form errors"""
-    for field, errors in form.errors.items():
-        for error in errors:
-            flash(u"Error in the %s field - %s" % (
-                getattr(form, field).label.text,
-                error
-            ), 'error')
-
-@app.context_processor
-def inject_userdata():
-    values = {}
-    if flask_login.current_user.is_authenticated != True:
-        values['username'] = "NotLoggedIn"
-        values['userrole'] = "NoRole"
-        values['userid'] = "NoID"
-        return values
-    else:
-        values['username'] = flask_login.current_user.username
-        values['userrole'] = flask_login.current_user.role
-        values['userid'] = flask_login.current_user.id
-        if flask_login.current_user.profilepic is None:
-            values['profilepic'] = 'img/img1234.jpg'
-        else:
-            values['profilepic'] = flask_login.current_user.profilepic
-        return values
-
-# home route 
-@app.route('/')
-@login_required
-def home():
-    return render_template("/pages/home.html")
-
-# login route
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if User.query.first():
-        form = LoginForm()
-        if form.validate_on_submit():
-            user = User.query.filter_by(username=form.username.data).first()
-            if user:
-                if bcrypt.check_password_hash(user.password, form.password.data):
-                    login_user(user)
-                    return redirect('/')
-        return render_template('/pages/login.html', form=form)
-    else:
-        form = RegisterForm()
-
-        if form.validate_on_submit():
-            hashed_password = bcrypt.generate_password_hash(form.password.data)
-            new_user = User(username=form.username.data, password=hashed_password, role=form.role.data)
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect('/')
-
-        return render_template('/pages/register.html', form=form)
-
-# 404 route
-@app.errorhandler(404)
-def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return render_template('/pages/404.html'), 404
-
-# profle route
-@app.route('/profile', methods=['GET', 'POST'])
-@login_required
-def profilepage():
-    username = flask_login.current_user.username
-    form = ProfileForm(username=username)
-
-    if form.validate_on_submit():
-        filename = secure_filename(form.profilepic.data.filename)
-        form.profilepic.data.save(os.path.join(app.root_path,'static/img/profile',filename))
-        filenameDB = os.path.join('img/profile',filename)
-        user = User.query.filter_by(id = flask_login.current_user.id).first()
-        user.username = form.username.data
-        user.password = bcrypt.generate_password_hash(form.password.data)
-        user.profilepic = filenameDB
-
-        db.session.commit()
-        return redirect('/profile')
-    return render_template('/pages/profil.html', form=form)
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# logout route
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-# dashboard route   
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    #Executing SQL Statements
-    db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
-    query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
-    df = pd.read_sql(query,db_connection)
-    db_connection.close()
-    
-    
-    # filter time (todo: dynamic with user input)
-    df = df[(df['dateTime'] >= '2022-07-04 00:00:00') & (df['dateTime'] <= '2022-07-06 23:00:00')]
-
-    return render_template("/pages/dashboard.html", labels=df['dateTime'].tolist(), output=df['output'].tolist(), bConsum=df['basicConsumption'].tolist(), mConsum=df['managementConsumption'].tolist(), pConsum=df['productionConsumption'].tolist())
 
 termine = {}
 # optimization route
@@ -228,24 +28,6 @@ termine = {}
 def optimization():
     termine.clear()
     return render_template("/pages/optimization.html")
-    
-# reload route
-@app.route('/reload_webapp')
-@login_required
-def reload():
-    subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
-    subprocess.run('/var/www/PJS/update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
-    return redirect('/')
-
-# diese route wird vermutlich nicht gebraucht, da reload_webapp funktioniert 
-@app.route('/run_script', methods=['POST'])
-def run_script():
-    # Call the Python shell script and get the output
-    # TODO
-    subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd='/var/www/PJS/')
-    output = subprocess.run(['bash', '/var/www/PJS/update_files.sh'], shell=True, check=True, text=True, cwd='/var/www/PJS/', capture_output=True)
-    print("run script")
-    return output.stdout
 
 # add termin to dictionary
 @app.route('/add_termin', methods=['GET', 'POST'])
@@ -343,44 +125,6 @@ def get_date():
         return render_template("pages/optimization.html", errors=errors)
     else:    
         return optimization_table(start_date, end_date,sendMailForm)
-
-@app.route('/mail', methods=['GET', 'POST'])
-def submit():
-    sendMailForm = SendMailForm()
-    if sendMailForm.validate_on_submit():
-        receiver = sendMailForm.mailAddress.data
-        sender = config['mail']['mail_user']
-        msg = MIMEMultipart()
-
-        msg['Subject'] = 'Termineinladung'
-        msg['From'] = formataddr((config['mail']['mail_sender'], config['mail']['mail_user']))
-        msg['To'] = receiver
-        msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
-        msg.attach(msgText)
-
-        starttime = "{} {}".format(sendMailForm.date.data, sendMailForm.time.data)
-        starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
-        endtime_formatted = starttime_formatted + timedelta(hours=float(sendMailForm.dauer.data))
-
-        calendar = create_file_object(starttime_formatted, endtime_formatted, sendMailForm.bezeichnung.data)
-        attachment = MIMEApplication(calendar.read())
-        attachment.add_header('Content-Disposition','attachment',filename='Termineinladung.ics')
-        msg.attach(attachment)
-
-        user = config['mail']['mail_user']
-        password = config['mail']['mail_pw']
-
-        # Set up connection to the SMTP server
-        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
-
-            # Log in to the server
-            server.login(user, password)
-
-            # Send the email
-            server.sendmail(sender, receiver, msg.as_string())
-            print("mail successfully sent")
-        return redirect('/mail')
-    return render_template('pages/mail.html', sendMailForm=sendMailForm)
 
 # optimization route
 @app.route('/optimization_table', methods=['GET', 'POST'])
@@ -597,16 +341,6 @@ def optimization_table(start_date, end_date, sendMailForm):
             appointments['percent'] = appointments['percent'].round(2) 
             netzbezug_termine_percent = appointments.to_dict('records')
     return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
-
-@app.route('/return-files')
-@login_required
-def return_files_calendar():
-    starttime = "{} {}".format(request.args.get('datum'), request.args.get('uhrzeit'))
-    starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
-    endtime_formatted = starttime_formatted + timedelta(hours=float(request.args.get('dauer')))
-    filename = "Termineinladung {}.ics".format(request.args.get('id'))
-    buf = create_file_object(starttime_formatted, endtime_formatted, request.args.get('bezeichnung'))
-    return send_file(buf, download_name=filename)
 
 def create_file_object(start, end, summary):
     cal = Calendar()

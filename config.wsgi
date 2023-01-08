@@ -1,1 +1,1 @@
-from __init__ import app as application
+from terminplanung import app as application

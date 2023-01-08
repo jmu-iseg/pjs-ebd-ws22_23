@@ -1,4 +1,4 @@
-ID,dateTime,output (kWh),basicConsumption (kWh),managementConsumption (kWh),productionConsumption (kWh)
+ID,dateTime,output,basicConsumption,managementConsumption,productionConsumption
 0,2022-01-01 00:00:00,0.4032,5.5403,0.0,0.0
 1,2022-01-01 01:00:00,0.5633,5.5386,0.0,0.0
 2,2022-01-01 02:00:00,0.0198,5.5402,0.0,0.0
