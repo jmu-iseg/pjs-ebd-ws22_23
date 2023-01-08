@@ -11,7 +11,7 @@ df = pd.DataFrame()
 topics = ["weather"]
    
 """ Consumer """
-consumer = KafkaConsumer(auto_offset_reset='earliest',
+consumer = KafkaConsumer(auto_offset_reset='latest',
                          client_id='local-test',
                          bootstrap_servers=['localhost:9092'])
 # Subscribe to topics
