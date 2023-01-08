@@ -14,6 +14,11 @@ topics = ["weather"]
 consumer = KafkaConsumer(auto_offset_reset='latest',
                          client_id='local-test',
                          bootstrap_servers=['localhost:9092'])
+
+# get topics
+print("___")
+consumer.topics()
+
 # Subscribe to topics
 consumer.subscribe(topics=topics)
 
