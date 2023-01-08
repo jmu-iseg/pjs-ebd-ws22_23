@@ -4,6 +4,7 @@ import requests
 import configparser
 import os
 from pathlib import Path
+import time
 
 # get config values
 config = configparser.ConfigParser()
@@ -31,15 +32,16 @@ response_content = response.json()
 producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
 # Get forecast for every day and push it to kafka
-for day in response_content["list"]:
+for i in range(1000):
+    for day in response_content["list"]:
+        time.sleep(3)
+        # Convert Date
+        date = datetime.fromtimestamp(day["dt"])
+        date_string = date.strftime("%Y-%m-%d")
 
-    # Convert Date
-    date = datetime.fromtimestamp(day["dt"])
-    date_string = date.strftime("%Y-%m-%d")
+        print(date_string)
+        print("____")
 
-    print(date_string)
-    print("____")
-
-    # Push DateTime as Key and Output (kWh) as Value
-    producer.send('weather', key=bytes(str(date_string), 'utf-8'),
-            value=bytes(str(day), 'utf-8'))
+        # Push DateTime as Key and Output (kWh) as Value
+        producer.send('weather', key=bytes(str(date_string), 'utf-8'),
+                value=bytes(str(day), 'utf-8'))

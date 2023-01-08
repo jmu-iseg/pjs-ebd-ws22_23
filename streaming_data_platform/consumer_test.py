@@ -18,7 +18,7 @@ consumer = KafkaConsumer(auto_offset_reset='earliest',
 consumer.subscribe(topics=topics)
 
 print('polling...')
-records = consumer.poll(timeout_ms=100)
+records = consumer.poll(timeout_ms=5000)
 
 #read items
 for _, consumer_records in records.items():
@@ -34,6 +34,6 @@ for _, consumer_records in records.items():
     continue
 
 # Create a DataFrame for each topic and rename value and drop column "topic"
-dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
+#dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
 
-print(dfWeather)
+print(df)
