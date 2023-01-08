@@ -51,8 +51,6 @@ consumer.subscribe(top_topic)
 
 print("Test")
 print(consumer.topics())
-for msg in consumer:
-    print(msg)
 
 print('polling...')
 print(top_topic)
