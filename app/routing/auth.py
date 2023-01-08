@@ -3,7 +3,7 @@ from app.forms import LoginForm, RegisterForm, ProfileForm
 from app.models import User
 import flask_login
 from flask_login import login_user, login_required, logout_user
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, request
 from werkzeug.utils import secure_filename
 import os
 
@@ -39,20 +39,23 @@ def login():
 @login_required
 def profilepage():
     username = flask_login.current_user.username
-    form = ProfileForm(username=username)
+    profileForm = ProfileForm(username=username)
 
-    if form.validate_on_submit():
-        filename = secure_filename(form.profilepic.data.filename)
-        form.profilepic.data.save(os.path.join(app.root_path,'static/img/profile',filename))
-        filenameDB = os.path.join('img/profile',filename)
+    if profileForm.validate_on_submit() and 'profileForm' in request.form:
         user = User.query.filter_by(id = flask_login.current_user.id).first()
-        user.username = form.username.data
-        user.password = bcrypt.generate_password_hash(form.password.data)
-        user.profilepic = filenameDB
-
+        if profileForm.profilepic.data:
+            filename = secure_filename(profileForm.profilepic.data.filename)
+            profileForm.profilepic.data.save(os.path.join(app.root_path,'static/img/profile',filename))
+            filenameDB = os.path.join('img/profile/',filename)
+            user.profilepic = filenameDB
+        user.username = profileForm.username.data
+        user.password = bcrypt.generate_password_hash(profileForm.password.data)
         db.session.commit()
         return redirect('/profile')
-    return render_template('/pages/profil.html', form=form)
+    elif request.method == "POST" and 'profileForm' in request.form:
+        flash_errors(profileForm)
+        return redirect('/profile')
+    return render_template('/pages/profil.html', form=profileForm)
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
