@@ -49,9 +49,8 @@ for sub_topic in consumer.topics():
                 weather_topics.add(sub_topic)
 
 print(weather_topics)
-
 print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S')))
-print("111")
+
 # Subscribe to topics
 consumer.subscribe(topics=topics)
 
@@ -72,10 +71,13 @@ for _, consumer_records in records.items():
     continue
 
 # Create a DataFrame for each topic and rename value and drop column "topic"
-#dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
 df = df.reset_index()
 
-print(df)
-json_object = df["value"].to_json()
+json_object = ""
+for index, row in df.iterrows():
+    print(row['value'])
+    json_object+=str(row['value'])
+
+# save as json
 with open("data.json", "w") as outfile:
     outfile.write(json_object)
