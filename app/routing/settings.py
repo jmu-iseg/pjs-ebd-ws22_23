@@ -70,7 +70,8 @@ def settings():
         config['mail']['mail_server'] = mailForm.mail_server.data
         config['mail']['mail_port'] = mailForm.mail_port.data
         config['mail']['mail_user'] = mailForm.mail_user.data
-        config['mail']['mail_pw'] = mailForm.mail_pw.data
+        if mailForm.mail_pw.data:
+            config['mail']['mail_pw'] = mailForm.mail_pw.data
         config['mail']['mail_sender'] = mailForm.mail_sender.data
         with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
             config.write(configfile)
