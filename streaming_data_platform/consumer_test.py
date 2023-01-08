@@ -14,7 +14,7 @@ df = pd.DataFrame()
    
 """ Consumer """
 consumer = KafkaConsumer(auto_offset_reset='earliest',
-                         client_id='local-test1',
+                         client_id='local-test',
                          group_id=str(random.randint(1,1000000000)),
                          bootstrap_servers=['localhost:9092'])
 
@@ -49,7 +49,12 @@ print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-
 top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S'))
 
 # Subscribe to topics
-consumer.subscribe(top_topic)
+consumer2 = KafkaConsumer(top_topic,
+                         auto_offset_reset='earliest',
+                         client_id='local-test',
+                         group_id=str(random.randint(1,1000000000)),
+                         bootstrap_servers=['localhost:9092'])
+consumer2.subscribe(top_topic)
 
 
 print("Test")
@@ -57,7 +62,7 @@ print(consumer.topics())
 
 print('polling...')
 print(top_topic)
-records = consumer.poll(timeout_ms=1000)
+records = consumer2.poll(timeout_ms=1000)
 
 print(records)
 
