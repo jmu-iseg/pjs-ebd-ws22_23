@@ -20,19 +20,19 @@
                   <img src="https://svgur.com/i/oKG.svg">
                 </div>
                 <div class="p-3">
-                  <h5>Tuesday, 10 AM</h5>
+                  <h5>{{ informations['Tag'][0] }}</h5>
                   <h3>San Francisco</h3>
-                  <span class="weather__description">Mostly Cloudy</span>
+                  <span class="weather__description">{{ informations['Wetter'][0] }}</span>
                 </div>
               </div>
               <div class="weather__status d-flex flex-row justify-content-center align-items-center mt-3">
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oHw.svg">
-                  <span>10%</span>
+                  <span>{{ informations['Feuchtigkeit'][0] }}%</span>
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oH_.svg">
-                  <span>0.53 mB</span>
+                  <span>{{ informations['Druck'][0] }} mB</span>
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oKS.svg">
@@ -42,6 +42,7 @@
             </div>
           </div>
         </div>
+        { informations[0]
         <!-- Weather Forecast -->
         <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
           <div class="p-4 d-flex flex-column justify-content-center align-items-center">
