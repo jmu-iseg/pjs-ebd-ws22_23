@@ -17,7 +17,7 @@ topics = ["weather"]
 # Subscribe to topics
 consumer.subscribe(topics=topics)"""
 
-consumer = KafkaConsumer('weather')
+consumer = KafkaConsumer('weather',auto_offset_reset='earliest',bootstrap_servers='localhost:9092')
 for msg in consumer:
     print (msg)
 
