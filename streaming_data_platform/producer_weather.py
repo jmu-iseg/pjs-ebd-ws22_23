@@ -52,4 +52,4 @@ def on_send_error(excp):
     # handle exception
 
 # Push Date as Key and Weather as Value
-producer.send(topic=msg_topic, value=bytes(str(response_content), 'utf-8')).add_callback(on_send_success).add_errback(on_send_error)
+producer.send(topic=msg_topic, value=bytes(str(response_content), 'utf-8'))
