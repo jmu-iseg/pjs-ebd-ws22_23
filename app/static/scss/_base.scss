@@ -124,13 +124,18 @@ main {
     color: #5263b4;
 }
 
+label {
+    margin-top: 10px;
+}
+
 @media (min-width: 1200px) {
     .fs-4 {
         font-size: 1.2rem !important;
     }
 }
 
-.profile-img-preview, .profile-pic {
+.profile-img-preview,
+.profile-pic {
     object-fit: cover;
 }
 
