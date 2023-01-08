@@ -37,7 +37,7 @@ for day in response_content["list"]:
     date = datetime.fromtimestamp(day["dt"])
     date_string = date.strftime("%Y-%m-%d")
 
-    print(bytes(str(day)))
+    print(str(day))
     print("____")
 
     # get Datetime
