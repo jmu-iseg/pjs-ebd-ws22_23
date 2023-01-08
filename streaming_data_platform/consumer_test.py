@@ -75,8 +75,12 @@ df = df.reset_index()
 
 json_object = ""
 for index, row in df.iterrows():
-    print(row['value'])
-    json_object+=str(row['value'])
+    if index != 0:
+        print(row['value'])
+        json_object+=str(","+row['value'])
+    else:
+        print(row['value'])
+        json_object+=str(row['value'])
 
 # save as json
 with open("data.json", "w") as outfile:
