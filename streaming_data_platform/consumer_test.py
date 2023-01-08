@@ -17,7 +17,7 @@ consumer = KafkaConsumer(auto_offset_reset='earliest',
 
 # get topics
 print("___")
-consumer.topics()
+print(consumer.topics())
 
 # Subscribe to topics
 consumer.subscribe(topics=topics)
