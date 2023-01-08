@@ -15,7 +15,7 @@ df = pd.DataFrame()
 """ Consumer """
 consumer = KafkaConsumer(auto_offset_reset='earliest',
                          client_id='local-test1',
-                         group_id=random.randint(1,1000000000),
+                         group_id=str(random.randint(1,1000000000)),
                          bootstrap_servers=['localhost:9092'])
 
 # empty set
