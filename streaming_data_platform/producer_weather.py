@@ -3,10 +3,14 @@ from kafka import KafkaProducer
 import requests
 import configparser
 import os
+from pathlib import Path
+import time
 
 # get config values
 config = configparser.ConfigParser()
-config.read(os.path.abspath(os.curdir)+'/settings.cfg')
+path = Path(os.curdir)
+config.read(os.path.join(os.path.abspath('..'),'app/settings.cfg'))
+print(os.path.join(os.path.abspath('..'),'app/settings.cfg'))
 
 # specify the location
 lat = config['weather']['lat']
@@ -29,14 +33,19 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
 # Get forecast for every day and push it to kafka
 for day in response_content["list"]:
-
     # Convert Date
     date = datetime.fromtimestamp(day["dt"])
     date_string = date.strftime("%Y-%m-%d")
 
-    print(date_string)
+    print(str(day))
     print("____")
 
-    # Push DateTime as Key and Output (kWh) as Value
-    producer.send('weather', key=bytes(str(date_string), 'utf-8'),
-              value=bytes(str(day), 'utf-8'))
+    # get Datetime
+    act_datetime = datetime.now()
+
+    msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
+    print(msg_topic)
+
+    # Push Date as Key and Weather as Value
+    producer.send(topic=msg_topic, key=bytes(str(date_string), 'utf-8'),
+            value=bytes(str(day), 'utf-8'))
