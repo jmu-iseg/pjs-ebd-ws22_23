@@ -49,14 +49,15 @@
 
 
 .nav-text {
-  opacity: 0;
-  visibility: hidden;
-  display: none;
   margin-left: .5rem;
 }
 
 .sidebar-toggle {
   cursor: pointer;
+}
+
+.sidebar-toggle-icon {
+  transform: rotate(90deg) !important;
 }
 
 .nav-pills .nav-link.active {
@@ -66,26 +67,15 @@
 .sidebarmax {
   .sidebar {
     width: 280px;
+    box-shadow: rgba(154, 161, 171, 0.75) 0px 0px 35px 0px;
   }
 
   .sidebar-toggle-icon {
     transform: rotate(270deg) !important;
   }
-
-  .nav-text {
-    opacity: 1;
-    visibility: visible;
-    display: inline-block;
-  }
 }
 
 @media (min-width: 992px) {
-  .nav-text {
-    opacity: 1;
-    visibility: visible;
-    display: inline-block;
-  }
-
   .sidebar {
     width: 280px;
   }
@@ -106,13 +96,6 @@
   .sidebarmin .sidebar {
     width: 60px;
   }
-
-  .sidebarmin .nav-text {
-    opacity: 0;
-    visibility: hidden;
-    display: none;
-  }
-
   .inner .sidebar-toggle-icon {
     display: none;
   }
