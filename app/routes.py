@@ -17,6 +17,7 @@ import io
 import os
 import configparser
 from flask_login import login_required
+import requests
 
 ALLOWED_EXTENSIONS = {'png', 'jpg'}
 
@@ -47,6 +48,39 @@ def dashboard():
 
     return render_template("/pages/dashboard.html", labels=df['dateTime'].tolist(), output=df['output'].tolist(), bConsum=df['basicConsumption'].tolist(), mConsum=df['managementConsumption'].tolist(), pConsum=df['productionConsumption'].tolist())
     
+@app.route('/weather')
+@login_required
+def weather():
+    lat = config['weather']['lat']
+    lon = config['weather']['lon']
+    key = config['weather']['openweatherapikey']
+    resp = requests.get(f'https://pro.openweathermap.org/data/2.5/forecast/climate?lat={lat}&lon={lon}&appid={key}&units=metric&lang=de').json()
+    timestamp = []
+    temps = []
+    weather = []
+    pressure = []
+    humidity = []
+    records = resp['cnt']
+    for day in resp['list']:
+        timestamp.append(datetime.utcfromtimestamp(day['dt']).date())
+        temps.append(day['temp']['day'])
+        weather.append(day['weather'][0]['description'])
+        pressure.append(day['pressure'])
+        humidity.append(day['humidity'])
+    informations = {
+        'Tag': timestamp,
+        'Temp': temps,
+        'Wetter': weather,
+        'Druck': pressure,
+        'Feuchtigkeit': humidity
+    }
+    return render_template('/pages/weather.html', records=records, informations=informations)
+
+@app.route('/calendar')
+@login_required
+def calendar():
+    return render_template('/pages/calendar.html')
+
 # reload route
 @app.route('/reload_webapp')
 @login_required

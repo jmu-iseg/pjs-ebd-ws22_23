@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Wetterbericht
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Tag</th>
+              <th scope="col">Temperatur</th>
+              <th scope="col">Wetter</th>
+              <th scope="col">Druck</th>
+              <th scope="col">Feuchtigkeit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in range(records-1) %}
+            <tr>
+              <th scope="row">{{ informations['Tag'][i] }}</th>
+              <td>{{ informations['Temp'][i] }}</td>
+              <td>{{ informations['Wetter'][i] }}</td>
+              <td>{{ informations['Druck'][i] }}</td>
+              <td>{{ informations['Feuchtigkeit'][i] }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
