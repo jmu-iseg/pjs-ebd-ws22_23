@@ -7,7 +7,7 @@ from pathlib import Path
 
 # get config values
 config = configparser.ConfigParser()
-path = Path(os.curdir())
+path = Path(os.curdir)
 config.read(os.path.join(path.parent.absolute(),'app/settings.cfg'))
 print(os.path.join(path.parent.absolute(),'app/settings.cfg'))
 
