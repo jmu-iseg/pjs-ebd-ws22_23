@@ -11,12 +11,17 @@ df = pd.DataFrame()
 topics = ["weather"]
    
 """ Consumer """
-consumer = KafkaConsumer(auto_offset_reset='earliest',
+"""consumer = KafkaConsumer(auto_offset_reset='earliest',
                          client_id='local-test',
                          bootstrap_servers=['localhost:9092'])
 # Subscribe to topics
-consumer.subscribe(topics=topics)
+consumer.subscribe(topics=topics)"""
 
+consumer = KafkaConsumer('weather')
+for msg in consumer:
+    print (msg)
+
+"""
 while True:
     print('polling...')
     records = consumer.poll(timeout_ms=100)
@@ -38,4 +43,4 @@ while True:
     dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
 
     print(dfWeather)
-
+"""
