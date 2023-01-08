@@ -1,62 +1,53 @@
-<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-    <img class="bi pe-none me-2" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="42"height="42">
-    <span class="fs-4">Energieoptimierung</span>
-</a>
-<hr>
-<ul class="nav nav-pills flex-column mb-auto">
-    <li class="nav-item">
-        <a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
-            <script src="{{ url_for('static', filename='js/icons/home.js') }}"></script>
-            <lord-icon
-                class="bi pe-none"
-                src="{{ url_for('static', filename='js/icons/home.json') }}"
-                trigger="hover"
-                target=".nav-item"
+<div class="sidebar-inner d-flex flex-column flex-shrink-0">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <img class="bi pe-none me-2" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="42"
+            height="42">
+        <span class="fs-4">Energieoptimierung</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="{{ url_for('home') }}" class="nav-link {% if request.path == '/' %}active{% endif %} text-white"
+                aria-current="page">
+                <script src="{{ url_for('static', filename='js/icons/home.js') }}"></script>
+                <lord-icon class="bi pe-none" src="{{ url_for('static', filename='js/icons/home.json') }}"
+                    trigger="hover" target=".nav-item" colors="primary:#ffffff"
+                    style="width:26px;height:26px;vertical-align: middle;">
+                </lord-icon>
+                <span class="nav-text">Home</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('dashboard') }}"
+                class="nav-link {% if request.path == '/dashboard' %}active{% endif %} text-white">
+                <script src="{{ url_for('static', filename='js/icons/dashboard.js') }}"></script>
+                <lord-icon src="{{ url_for('static', filename='js/icons/dashboard.json') }}" trigger="hover"
+                    target=".nav-item" colors="primary:#ffffff" style="width:26px;height:26px;vertical-align: middle;">
+                </lord-icon>
+                <span class="nav-text">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('optimization') }}"
+                class="nav-link {% if request.path == '/optimization' %}active{% endif %} text-white">
+                <script src="{{ url_for('static', filename='js/icons/optimize.js') }}"></script>
+                <lord-icon src="{{ url_for('static', filename='js/icons/optimize.json') }}" trigger="hover"
+                    target=".nav-item" colors="primary:#ffffff" style="width:26px;height:26px;vertical-align: middle;">
+                </lord-icon>
+                <span class="nav-text">Optimization</span>
+            </a>
+        </li>
+    </ul>
+    <hr>
+    <div class="nav-item sidebar-toggle">
+        <div class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
+            <script src="{{ url_for('static', filename='js/icons/arrow.js') }}"></script>
+            <lord-icon class="bi pe-none sidebar-toggle-icon"
+                src="{{ url_for('static', filename='js/icons/arrow.json') }}" trigger="hover" target=".nav-item"
                 colors="primary:#ffffff"
-                style="width:26px;height:26px;vertical-align: middle;">
+                style="width:26px;height:26px;vertical-align: middle;transform: rotate(270deg);">
             </lord-icon>
-            <span class="nav-text">Home</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.path == '/dashboard' %}active{% endif %} text-white">
-            <script src="{{ url_for('static', filename='js/icons/dashboard.js') }}"></script>
-            <lord-icon
-                src="{{ url_for('static', filename='js/icons/dashboard.json') }}"
-                trigger="hover"
-                target=".nav-item"
-                colors="primary:#ffffff"
-                style="width:26px;height:26px;vertical-align: middle;">
-            </lord-icon>
-            <span class="nav-text">Dashboard</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{{ url_for('optimization') }}" class="nav-link {% if request.path == '/optimization' %}active{% endif %} text-white">
-            <script src="{{ url_for('static', filename='js/icons/optimize.js') }}"></script>
-            <lord-icon
-                src="{{ url_for('static', filename='js/icons/optimize.json') }}"
-                trigger="hover"
-                target=".nav-item"
-                colors="primary:#ffffff"
-                style="width:26px;height:26px;vertical-align: middle;">
-            </lord-icon>
-            <span class="nav-text">Optimization</span>
-        </a>
-    </li>
-</ul>
-<hr>
-<div class="nav-item sidebar-toggle">
-    <div class="nav-link {% if request.path == '/' %}active{% endif %} text-white" aria-current="page">
-        <script src="{{ url_for('static', filename='js/icons/arrow.js') }}"></script>
-        <lord-icon
-            class="bi pe-none sidebar-toggle-icon"
-            src="{{ url_for('static', filename='js/icons/arrow.json') }}"
-            trigger="hover"
-            target=".nav-item"
-            colors="primary:#ffffff"
-            style="width:26px;height:26px;vertical-align: middle;transform: rotate(270deg);">
-        </lord-icon>
-        <span class="nav-text">Menü einklappen</span>
+            <span class="nav-text">Menü einklappen</span>
+        </div>
     </div>
 </div>

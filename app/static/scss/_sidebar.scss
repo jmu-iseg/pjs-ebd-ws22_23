@@ -79,7 +79,7 @@
   }
 }
 
-@media (min-width: 960px) {
+@media (min-width: 992px) {
   .nav-text {
     opacity: 1;
     visibility: visible;
@@ -164,4 +164,9 @@
 
 .scrollarea {
   overflow-y: auto;
+}
+
+.sidebar-inner {
+  width: 260px;
+  height: 100%;
 }
