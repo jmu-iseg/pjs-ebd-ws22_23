@@ -41,7 +41,7 @@ for day in response_content["list"]:
     print("____")
 
     # get Datetime
-    act_datetime = datetime.datetime.now()
+    act_datetime = datetime.now()
 
     # Push Date as Key and Weather as Value
     producer.send('weather_' + act_datetime.strftime("%y-%m-%d_%H:%M"), key=bytes(str(date_string), 'utf-8'),
