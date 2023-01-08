@@ -6,7 +6,7 @@ import os
 
 # get config values
 config = configparser.ConfigParser()
-config.read(os.path.abspath(os.curdir)+'/app/settings.cfg')
+config.read('/app/settings.cfg')
 
 # specify the location
 lat = config['weather']['lat']
