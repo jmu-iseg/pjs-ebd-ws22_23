@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="row">
-  <div class="col">
+  <div class="col mb-3">
     <div class="card">
       <div class="card-header">
         Wetterbericht
@@ -14,7 +14,7 @@
             <div class="weather__card">
               <div class="d-flex flex-row justify-content-center align-items-center">
                 <div class="p-3">
-                  <h2>15&deg;</h2>
+                  <h2>{{ informations['Temp'][0] }}&deg;</h2>
                 </div>
                 <div class="p-3">
                   <img src="https://svgur.com/i/oKG.svg">
@@ -42,7 +42,6 @@
             </div>
           </div>
         </div>
-
         <!-- Weather Forecast -->
         <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
           <div class="p-4 d-flex flex-column justify-content-center align-items-center">
@@ -95,6 +94,8 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="col mb-3">
     <div class="card">
       <div class="card-header">
         Wetterbericht
