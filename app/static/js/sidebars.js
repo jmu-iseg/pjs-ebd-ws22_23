@@ -10,8 +10,8 @@ function sidebar_switch() {
       // Prüfen, ob noch von anderer Viewport-Size die Klasse zugewiesen ist
       $(".sidebar-toggle").removeClass("sidebarmin");
 
-      $("body").toggleClass("sidebarmax" + $(window).width());
-      console.log("Wechsel Mobil");
+      $("body").toggleClass("sidebarmax");
+      console.log("Wechsel Mobil"+ $(window).width());
       if (sessionStorage.getItem("key") != "min") {
         sessionStorage.setItem("sidebar", "min");
       } else {
