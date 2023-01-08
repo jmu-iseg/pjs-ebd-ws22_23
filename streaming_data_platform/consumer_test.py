@@ -35,8 +35,9 @@ for _, consumer_records in records.items():
 
 # Create a DataFrame for each topic and rename value and drop column "topic"
 #dfWeather = df[df['topic'] == "weather"].rename({'value': 'weather'}, axis=1).drop('topic', axis=1)
+df = df.reset_index()
 
 print(df)
 json_object = df.to_json()
-with open("dara.json", "w") as outfile:
+with open("data.json", "w") as outfile:
     outfile.write(json_object)
