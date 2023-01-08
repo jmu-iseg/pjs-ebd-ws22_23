@@ -4,7 +4,7 @@ $(window).on('resize', sidebar_switch);
 // Klappe das Menü auf und zu, wenn jemand auf den Button .sidebar-toggle klickt
 function sidebar_switch() {
   // Wenn Mobilansicht --> Aufklappen
-  if ($(window).width() > 992) {
+  if ($(window).width() < 992) {
      // Wechsle Klasse, die das Menü auf- und zuklappt
     $(".sidebar-toggle").on("click", function () {
       // Prüfen, ob noch von anderer Viewport-Size die Klasse zugewiesen ist
