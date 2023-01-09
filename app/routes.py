@@ -76,12 +76,12 @@ def weather():
     name = data['city']['name']
     for day in data['list']:
         timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%d.%m.%Y"))
-        temps.append(round(day['temp']['day'], 1))
+        temps.append(round(day['temp']['max'], 1))
         weather.append(day['weather'][0]['description'])
         pressure.append(day['pressure'])
         humidity.append(day['humidity'])
         clouds.append(day['clouds'])
-        night.append(round(day['temp']['night'], 1))
+        night.append(round(day['temp']['min'], 1))
         if 'rain' in day:
             rain.append(day['rain'])
         else:
