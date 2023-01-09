@@ -24,7 +24,7 @@ lon = config['weather']['lon']
 key = config['weather']['openweatherapikey']
 
 # Make the POST request
-response = requests.post('https://pro.openweathermap.org/data/2.5/forecast/climate?units=metric&lat='+lat+'&lon='+lon+'&appid='+key)
+response = requests.post('https://pro.openweathermap.org/data/2.5/forecast/climate?units=metric&lat='+lat+'&lon='+lon+'&appid='+key+'lang=DE')
 
 # Print the status code of the response
 print(response.status_code) # should return 200
