@@ -29,7 +29,7 @@ for _, consumer_records in records.items():
     # Parse records
     for consumer_record in consumer_records:
         # get information
-        varData = consumer_record.value.decode("utf-8")
+        varData = consumer_record.value.decode("utf-8").replace("'",'"')
 
 
 # save as json
