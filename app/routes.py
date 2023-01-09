@@ -19,6 +19,7 @@ import configparser
 from flask_login import login_required
 import requests
 import json
+from pathlib import Path
 
 ALLOWED_EXTENSIONS = {'png', 'jpg'}
 
@@ -52,30 +53,52 @@ def dashboard():
 @app.route('/weather')
 @login_required
 def weather():
-    lat = config['weather']['lat']
+    """lat = config['weather']['lat']
     lon = config['weather']['lon']
     key = config['weather']['openweatherapikey']
     resp = requests.get(f'https://pro.openweathermap.org/data/2.5/forecast/climate?lat={lat}&lon={lon}&appid={key}&units=metric&lang=de').json()
+    """
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), 'r') as openfile:
+        data = json.load(openfile)
     timestamp = []
+    clouds = []
+    rain = []
+    speed = []
+    sunrise = []
+    sunset = []
+    feel_temp = []
     temps = []
     weather = []
     pressure = []
     humidity = []
-    records = resp['cnt']
-    for day in resp['list']:
+    records = data['cnt']
+    name = data['city']['name']
+    for day in data['list']:
         timestamp.append(datetime.utcfromtimestamp(day['dt']).date())
         temps.append(day['temp']['day'])
         weather.append(day['weather'][0]['description'])
         pressure.append(day['pressure'])
         humidity.append(day['humidity'])
+        clouds.append(day['clouds'])
+        rain.append(day['rain'])
+        speed.append(day['speed'])
+        sunrise.append(datetime.utcfromtimestamp(day['sunrise']).time())
+        sunset.append(datetime.utcfromtimestamp(day['sunset']).time())
+        feel_temp.append(day['feels_like']['day'])
     informations = {
         'Tag': timestamp,
+        'Sonnenaufgang': sunrise,
+        'Sonnenuntergang': sunset,
         'Temp': temps,
         'Wetter': weather,
         'Druck': pressure,
-        'Feuchtigkeit': humidity
+        'Feuchtigkeit': humidity,
+        'Wolken': clouds,
+        'Regen': rain,
+        'Wind': speed,
+        'Feelslike': feel_temp
     }
-    return render_template('/pages/weather.html', records=records, informations=informations)
+    return render_template('/pages/weather.html', records=records, informations=informations, cityname=name)
 
 @app.route('/calendar')
 @login_required
