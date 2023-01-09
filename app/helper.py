@@ -14,19 +14,19 @@ def flash_errors(form):
             ), 'error')
 
 def get_weekday(day):
-    if day == 0:
+    if day == '0':
         return "So"
-    elif day == 1:
+    elif day == '1':
         return "Mo"
-    elif day == 2:
+    elif day == '2':
         return "Di"
-    elif day == 3:
+    elif day == '3':
         return "Mi"
-    elif day == 4:
+    elif day == '4':
         return "Do"
-    elif day == 5:
+    elif day == '5':
         return "Fr"
-    elif day == 6:
+    elif day == '6':
         return "Sa"
     else:
         return "Error"
