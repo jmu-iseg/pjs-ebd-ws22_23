@@ -87,7 +87,13 @@ def calendar():
     users = {}
     resp = requests.get('https://graph.microsoft.com/v1.0/users/', headers=head).json()
     for user in resp['value']:
-        users[user['displayName']] = user['id']
+        photo = requests.get(f"https://graph.microsoft.com/v1.0/users/{user['id']}/photo/$value").content
+        users[user['displayName']] = {
+            'id': user['id'],
+            'title': user['title'],
+            'photo': photo,
+            'mail': user['mail']
+            }
     return render_template('/pages/calendar.html', users=users)
 
 @app.route('/calendar/<id>')
