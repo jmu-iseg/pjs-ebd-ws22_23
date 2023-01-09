@@ -6,7 +6,6 @@ from kafka import KafkaConsumer
 import pandas as pd
 import functools as ft
 import datetime
-import random
 
 #cursor.execute("CREATE TABLE phData (datetime DATETIME, output FLOAT, basicConsumption FLOAT, managementConsumption FLOAT, productionConsumption FLOAT)")
 
@@ -15,7 +14,6 @@ df = pd.DataFrame()
 """ Consumer """
 consumer = KafkaConsumer(auto_offset_reset='earliest',
                          client_id='local-test',
-                         group_id=str(random.randint(1,1000000000)),
                          bootstrap_servers=['localhost:9092'])
 
 # empty set
@@ -48,23 +46,17 @@ print(max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-
 
 top_topic = "weather"+max(weather_topics, key=lambda x: datetime.datetime.strptime(x, '%y-%m-%d-%H-%M-%S'))
 
-# Subscribe to topics
-consumer2 = KafkaConsumer(top_topic,
-                         auto_offset_reset='earliest',
-                         client_id='local-test',
-                         group_id=str(random.randint(1,1000000000)),
-                         bootstrap_servers=['localhost:9092'])
-consumer2.subscribe(top_topic)
-
-
-print("Test")
-print(consumer.topics())
+# Second consumer
+consumer1 = KafkaConsumer(top_topic,
+                          auto_offset_reset='earliest',
+                          group_id='my-group',
+                          bootstrap_servers='localhost:9092')
 
 print('polling...')
-print(top_topic)
-records = consumer2.poll(timeout_ms=1000)
+records = consumer.poll(timeout_ms=1000)
 
-print(records)
+for msg in consumer1:
+    print (msg)
 
 #read items
 for _, consumer_records in records.items():
