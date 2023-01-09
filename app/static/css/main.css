@@ -10117,7 +10117,6 @@ main {
 .inner .content {
   height: calc(100vh - 66px);
   overflow-y: auto;
-  overflow-x: hidden;
   padding-top: 1rem; }
 
 .nav-pills .nav-link {
@@ -10149,11 +10148,21 @@ main {
   background: transparent;
   color: #5263b4; }
 
+label {
+  margin-top: 10px; }
+
+input {
+  border: 1px solid #dfe7ee; }
+
 @media (min-width: 1200px) {
   .fs-4 {
     font-size: 1.2rem !important; } }
-.profile-img-preview, .profile-pic {
+.profile-img-preview,
+.profile-pic {
   object-fit: cover; }
+
+#val_password {
+  display: block; }
 
 .table-wrapper {
   width: 700px;
@@ -10230,7 +10239,7 @@ table.table .chart-container {
   height: 100%;
   padding: 1rem .6rem;
   z-index: 1;
-  transition: width .2s ease;
+  transition: width .4s ease;
   overflow: hidden; }
 
 .inner {
@@ -10258,32 +10267,24 @@ table.table .chart-container {
     height: 20px; }
 
 .nav-text {
-  opacity: 0;
-  visibility: hidden;
-  display: none;
   margin-left: .5rem; }
 
 .sidebar-toggle {
   cursor: pointer; }
 
+.sidebar-toggle-icon {
+  transform: rotate(90deg) !important; }
+
 .nav-pills .nav-link.active {
   background-color: #5263b4; }
 
 .sidebarmax .sidebar {
-  width: 280px; }
+  width: 280px;
+  box-shadow: rgba(154, 161, 171, 0.75) 0px 0px 35px 0px; }
 .sidebarmax .sidebar-toggle-icon {
   transform: rotate(270deg) !important; }
-.sidebarmax .nav-text {
-  opacity: 1;
-  visibility: visible;
-  display: inline-block; }
 
-@media (min-width: 960px) {
-  .nav-text {
-    opacity: 1;
-    visibility: visible;
-    display: inline-block; }
-
+@media (min-width: 992px) {
   .sidebar {
     width: 280px; }
 
@@ -10299,11 +10300,6 @@ table.table .chart-container {
 
   .sidebarmin .sidebar {
     width: 60px; }
-
-  .sidebarmin .nav-text {
-    opacity: 0;
-    visibility: hidden;
-    display: none; }
 
   .inner .sidebar-toggle-icon {
     display: none; } }
@@ -10345,6 +10341,10 @@ table.table .chart-container {
 
 .scrollarea {
   overflow-y: auto; }
+
+.sidebar-inner {
+  width: 260px;
+  height: 100%; }
 
 .body-plain {
   background: #212529;
@@ -10398,5 +10398,75 @@ table.table .chart-container {
   color: #fff;
   padding: 6px 30px;
   margin-top: 5px; }
+
+/*--------------------------------------------------------------
+# Weather Card
+--------------------------------------------------------------*/
+.weather__card {
+  width: 800px;
+  padding: 40px 30px;
+  background-color: #EEEEEE;
+  border-radius: 20px;
+  color: #3C4048; }
+
+.weather__card h2, .weather__card .h2 {
+  font-size: 120px;
+  font-weight: 700;
+  color: #3C4048;
+  line-height: .8; }
+
+.weather__card h3, .weather__card .h3 {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: .8;
+  color: #3C4048; }
+
+.weather__card h5, .weather__card .h5 {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: .1;
+  color: #9D9D9D; }
+
+.weather__card img {
+  width: 120px;
+  height: 120px; }
+
+.weather__card .weather__description {
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 5px 13px;
+  border: 0;
+  outline: none;
+  color: #7F8487;
+  font-size: .956rem;
+  font-weight: 400; }
+
+/*--------------------------------------------------------------
+# Weather Status
+--------------------------------------------------------------*/
+.weather__status img {
+  height: 20px;
+  width: 20px;
+  vertical-align: middle; }
+
+.weather__status span {
+  font-weight: 500;
+  color: #3C4048;
+  font-size: .9rem;
+  padding-left: .5rem; }
+
+/*--------------------------------------------------------------
+# Weather Forecast
+--------------------------------------------------------------*/
+.weather__forecast img {
+  height: 25px;
+  width: 25px;
+  vertical-align: middle; }
+
+.weather__forecast span {
+  font-weight: 500;
+  color: #3C4048;
+  font-size: 1rem;
+  padding: 5px 10px; }
 
 /*# sourceMappingURL=main.css.map */

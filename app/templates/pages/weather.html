@@ -17,18 +17,34 @@
                   <h2>{{ informations['Temp'][0] }}&deg;</h2>
                 </div>
                 <div class="p-3">
-                  <img src="https://svgur.com/i/oKG.svg">
+                  {% if 200 <= informations['Wettercode'][0] < 300 %}
+                  <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+                  {% elif 300 <= informations['Wettercode'][0] < 400 %}
+                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+                  {% elif 500 <= informations['Wettercode'][0] < 600 %}
+                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+                  {% elif 600 <= informations['Wettercode'][0] < 700 %}
+                  <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+                  {% elif 700 <= informations['Wettercode'][0] < 800 %}
+                  <img src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+                  {% elif informations['Wettercode'][0] == 800 %}
+                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+                  {% elif informations['Wettercode'][0] > 800 %}
+                  <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+                  {% else %}
+                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+                  {% endif %}
                 </div>
                 <div class="p-3">
                   <h5>{{ informations['Tag'][0] }}</h5>
-                  <h3>San Francisco</h3>
+                  <h3>{{ cityname }}</h3>
                   <span class="weather__description">{{ informations['Wetter'][0] }}</span>
                 </div>
               </div>
               <div class="weather__status d-flex flex-row justify-content-center align-items-center mt-3">
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oHw.svg">
-                  <span>{{ informations['Feuchtigkeit'][0] }}%</span>
+                  <span>{{ informations['Feuchtigkeit'][0] }} %</span>
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oH_.svg">
@@ -36,7 +52,7 @@
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oKS.svg">
-                  <span>10 km/h</span>
+                  <span>{{ informations['Wind'][0] }} km/h</span>
                 </div>
               </div>
             </div>
@@ -45,53 +61,29 @@
         {{ informations[0] }}
         <!-- Weather Forecast -->
         <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
+          {% for i in range(1,9) %}
           <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Wed</span>
-            <img src="https://svgur.com/i/oJe.svg">
-            <span>{{ informations['Temp'][1] }}&deg;</span>
+            <span>{{ informations['Wochentag'][i] }}</span>
+            {% if 200 <= informations['Wettercode'][i] < 300 %}
+            <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+            {% elif 300 <= informations['Wettercode'][i] < 400 %}
+            <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif 500 <= informations['Wettercode'][i] < 600 %}
+            <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif 600 <= informations['Wettercode'][i] < 700 %}
+            <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+            {% elif 700 <= informations['Wettercode'][i] < 800 %}
+            <img src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+            {% elif informations['Wettercode'][i] == 800 %}
+            <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% elif informations['Wettercode'][i] > 800 %}
+            <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+            {% else %}
+            <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% endif %}
+            <span>{{ informations['Temp'][i] }}&deg;</span>
           </div>
-
-          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Thu</span>
-            <img src="https://svgur.com/i/oKG.svg">
-            <span>{{ informations['Temp'][2] }}&deg;</span>
-          </div>
-
-          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Wed</span>
-            <img src="https://svgur.com/i/oKG.svg">
-            <span>{{ informations['Temp'][3] }}&deg;</span>
-          </div>
-
-          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Fri</span>
-            <img src="https://svgur.com/i/oJe.svg">
-            <span>{{ informations['Temp'][4] }}&deg;</span>
-          </div>
-
-          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Sat</span>
-            <img src="https://svgur.com/i/oJx.svg">
-            <span>{{ informations['Temp'][5] }}&deg;</span>
-          </div>
-
-          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Sun</span>
-            <img src="https://svgur.com/i/oJU.svg">
-            <span>{{ informations['Temp'][6] }}&deg;</span>
-          </div>
-
-          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Mon</span>
-            <img src="https://svgur.com/i/oJU.svg">
-            <span>{{ informations['Temp'][7] }}&deg;</span>
-          </div>
-
-          <div class="p-4 d-flex flex-column justify-content-center align-items-center">
-            <span>Tue</span>
-            <img src="https://svgur.com/i/oJy.svg">
-            <span>{{ informations['Temp'][8] }}&deg;</span>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -108,16 +100,20 @@
               <th scope="col">Tag</th>
               <th scope="col">Temperatur</th>
               <th scope="col">Wetter</th>
+              <th scope="col">Sonne</th>
+              <th scope="col">Wolken</th>
               <th scope="col">Druck</th>
-              <th scope="col">Feuchtigkeit</th>
+              <th scope="col">Luftfeuchte</th>
             </tr>
           </thead>
           <tbody>
             {% for i in range(records-1) %}
             <tr>
               <th scope="row">{{ informations['Tag'][i] }}</th>
-              <td>{{ informations['Temp'][i] }}°C</td>
+              <td>{{ informations['Nacht'][i] }} - {{ informations['Temp'][i] }}°C</td>
               <td>{{ informations['Wetter'][i] }}</td>
+              <td>{{ informations['Sonnenaufgang'][i] }} - {{ informations['Sonnenuntergang'][i] }}</td>
+              <td>{{ informations['Wolken'][i] }} %</td>
               <td>{{ informations['Druck'][i] }} hPa</td>
               <td>{{ informations['Feuchtigkeit'][i] }} %</td>
             </tr>
