@@ -72,6 +72,7 @@ def weather():
     pressure = []
     humidity = []
     night = []
+    wochentag = []
     records = data['cnt']
     name = data['city']['name']
     for day in data['list']:
@@ -82,6 +83,7 @@ def weather():
         humidity.append(day['humidity'])
         clouds.append(day['clouds'])
         night.append(round(day['temp']['min'], 1))
+        wochentag.append(get_weekday(datetime.utcfromtimestamp(day['dt']).strftime("%W")))
         if 'rain' in day:
             rain.append(day['rain'])
         else:
@@ -102,7 +104,8 @@ def weather():
         'Regen': rain,
         'Wind': speed,
         'Feelslike': feel_temp,
-        'Nacht': night
+        'Nacht': night,
+        'Wochentag': wochentag
     }
     return render_template('/pages/weather.html', records=records, informations=informations, cityname=name)
 
