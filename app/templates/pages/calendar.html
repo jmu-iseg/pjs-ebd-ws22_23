@@ -10,22 +10,23 @@
         <h1>Wählen Sie einen Kalender aus, um die Events des Nutzers nächste Woche zu sehen!</h1>
         <div class="row">
           {% for user in users %}
-          <div class="col-3 me-3"></div>
-          <a href="{{ url_for('show_calendar', id=users[user]['id']) }}" class="list-group-item list-group-item-action">
-            <div class="card">
-              <img src="data:image/png;base64, {{ users[user]['photo'] }}" class="card-img-top" alt="{{ user }}">
-              <div class="card-body">
-                <h5 class="card-title">{{ user }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{ users[user]['title'] }}</h6>
-                <p class="card-text">{{ users[user]['mail'] }}</p>
+          <div class="col-3 me-3">
+            <a href="{{ url_for('show_calendar', id=users[user]['id']) }}"
+              class="list-group-item list-group-item-action">
+              <div class="card">
+                <img src="data:image/png;base64, {{ users[user]['photo'] }}" class="card-img-top" alt="{{ user }}">
+                <div class="card-body">
+                  <h5 class="card-title">{{ user }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{ users[user]['title'] }}</h6>
+                  <p class="card-text">{{ users[user]['mail'] }}</p>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
     </div>
   </div>
-</div>
 </div>
 {% endblock %}
