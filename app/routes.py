@@ -71,15 +71,17 @@ def weather():
     weather = []
     pressure = []
     humidity = []
+    night = []
     records = data['cnt']
     name = data['city']['name']
     for day in data['list']:
         timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%d.%m.%Y"))
-        temps.append(day['temp']['day'])
+        temps.append(round(day['temp']['day']), 1)
         weather.append(day['weather'][0]['description'])
         pressure.append(day['pressure'])
         humidity.append(day['humidity'])
         clouds.append(day['clouds'])
+        night.append(round(day['temp']['night']), 1)
         if 'rain' in day:
             rain.append(day['rain'])
         else:
@@ -87,7 +89,7 @@ def weather():
         speed.append(day['speed'])
         sunrise.append(datetime.utcfromtimestamp(day['sunrise']).strftime("%H:M"))
         sunset.append(datetime.utcfromtimestamp(day['sunset']).strftime("%H:M"))
-        feel_temp.append(day['feels_like']['day'])
+        feel_temp.append(round(day['feels_like']['day'], 1))
     informations = {
         'Tag': timestamp,
         'Sonnenaufgang': sunrise,
@@ -99,7 +101,8 @@ def weather():
         'Wolken': clouds,
         'Regen': rain,
         'Wind': speed,
-        'Feelslike': feel_temp
+        'Feelslike': feel_temp,
+        'Nacht': night
     }
     return render_template('/pages/weather.html', records=records, informations=informations, cityname=name)
 
