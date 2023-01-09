@@ -80,7 +80,10 @@ def weather():
         pressure.append(day['pressure'])
         humidity.append(day['humidity'])
         clouds.append(day['clouds'])
-        rain.append(day['rain'])
+        if 'rain' in day:
+            rain.append(day['rain'])
+        else:
+            rain.append(0)
         speed.append(day['speed'])
         sunrise.append(datetime.utcfromtimestamp(day['sunrise']).time())
         sunset.append(datetime.utcfromtimestamp(day['sunset']).time())
