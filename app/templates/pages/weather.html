@@ -116,10 +116,10 @@
             {% for i in range(records-1) %}
             <tr>
               <th scope="row">{{ informations['Tag'][i] }}</th>
-              <td>{{ informations['Temp'][i] }}</td>
+              <td>{{ informations['Temp'][i] }}°C</td>
               <td>{{ informations['Wetter'][i] }}</td>
-              <td>{{ informations['Druck'][i] }}</td>
-              <td>{{ informations['Feuchtigkeit'][i] }}</td>
+              <td>{{ informations['Druck'][i] }} hPa</td>
+              <td>{{ informations['Feuchtigkeit'][i] }} %</td>
             </tr>
             {% endfor %}
           </tbody>
