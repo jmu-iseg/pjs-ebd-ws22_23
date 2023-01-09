@@ -48,15 +48,15 @@
               <div class="weather__status d-flex flex-row justify-content-center align-items-center mt-3">
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oHw.svg">
-                  <span>{{ informations['Feuchtigkeit'][0] }} %</span>
+                  <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Niederschlag">{{ informations['Regen'][0] }} mm</span>
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oH_.svg">
-                  <span>{{ informations['Druck'][0] }} hPa</span>
+                  <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Luftdruck">{{ informations['Druck'][0] }} hPa</span>
                 </div>
                 <div class="p-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oKS.svg">
-                  <span>{{ informations['Wind'][0] }} km/h</span>
+                  <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Windgeschwindigkeit">{{ informations['Wind'][0] }} km/h</span>
                 </div>
               </div>
             </div>
@@ -69,25 +69,25 @@
           <div class="p-4 d-flex flex-column justify-content-center align-items-center">
             <span>{{ informations['Wochentag'][i] }}</span>
             {% if 200 <= informations['Wettercode'][i] < 300 %}
-            <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/storm.svg') }}">
             {% elif 300 <= informations['Wettercode'][i] < 400 %}
-            <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
             {% elif informations['Wettercode'][i] == 500 %}
-            <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
             {% elif 501 <= informations['Wettercode'][i] < 600 %}
-            <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
             {% elif informations['Wettercode'][i] == 616 %}
-            <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
             {% elif 600 <= informations['Wettercode'][i] < 700 %}
-            <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
             {% elif 700 <= informations['Wettercode'][i] < 800 %}
-            <img src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/foog.svg') }}">
             {% elif informations['Wettercode'][i] == 800 %}
-            <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
             {% elif informations['Wettercode'][i] > 800 %}
-            <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
             {% else %}
-            <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
             {% endif %}
             <span>{{ informations['Temp'][i] }}&deg;</span>
           </div>
@@ -108,8 +108,8 @@
               <th scope="col">Tag</th>
               <th scope="col">Temperatur</th>
               <th scope="col">Wetter</th>
-              <th scope="col">Sonne</th>
-              <th scope="col">Wolken</th>
+              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Zeitpunkte des Sonnenaufgangs und -untergangs.">Sonne</th>
+              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Anteil der Zeit am Tag, die bewölkt sein wird.">Wolken</th>
               <th scope="col">Druck</th>
               <th scope="col">Luftfeuchte</th>
             </tr>
@@ -132,4 +132,9 @@
     </div>
   </div>
 </div>
+
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 {% endblock %}
