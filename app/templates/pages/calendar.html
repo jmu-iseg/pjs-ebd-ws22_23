@@ -12,8 +12,8 @@
           {% for user in users %}
           <div class="col-3 mb-3">
             <a href="{{ url_for('show_calendar', id=users[user]['id']) }}"
-              class="list-group-item list-group-item-action">
-              <div class="card">
+              class="list-group-item list-group-item-action h-100">
+              <div class="card h-100">
                 <div class="card-body">
                   <h5 class="card-title">{{ user }}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">{{ users[user]['title'] }}</h6>
