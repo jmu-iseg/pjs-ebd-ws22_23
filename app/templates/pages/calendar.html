@@ -9,7 +9,7 @@
       <div class="card-body">
         <div class="row">
           {% for user in users %}
-          <div class="col-3 mb-3">
+          <div class="col-6 col-lg-3 mb-3">
             <a href="{{ url_for('show_calendar', id=users[user]['id']) }}"
               class="list-group-item list-group-item-action h-100">
               <div class="card h-100">
@@ -34,7 +34,7 @@
       <div class="card-body">
         <div class="row">
           {% for user in users %}
-          <div class="col-3 mb-3">
+          <div class="col-6 col-lg-3 mb-3">
             <a href="{{ url_for('show_calendar', id=users[user]['id']) }}"
               class="list-group-item list-group-item-action h-100">
               <div class="card h-100">
