@@ -5,3 +5,4 @@ migrations
 app/static/img/profile
 test.py
 streaming_data_platform/data.json
+app/graph_settings.json
