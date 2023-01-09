@@ -74,7 +74,7 @@ def weather():
     records = data['cnt']
     name = data['city']['name']
     for day in data['list']:
-        timestamp.append(datetime.utcfromtimestamp(day['dt']).date())
+        timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime"%d.%m.%Y")
         temps.append(day['temp']['day'])
         weather.append(day['weather'][0]['description'])
         pressure.append(day['pressure'])
@@ -85,8 +85,8 @@ def weather():
         else:
             rain.append(0)
         speed.append(day['speed'])
-        sunrise.append(datetime.utcfromtimestamp(day['sunrise']).time())
-        sunset.append(datetime.utcfromtimestamp(day['sunset']).time())
+        sunrise.append(datetime.utcfromtimestamp(day['sunrise']).strftime("%H:M"))
+        sunset.append(datetime.utcfromtimestamp(day['sunset']).strftime("%H:M"))
         feel_temp.append(day['feels_like']['day'])
     informations = {
         'Tag': timestamp,
