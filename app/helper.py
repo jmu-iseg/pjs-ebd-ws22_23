@@ -1,8 +1,4 @@
 from flask import flash
-from datetime import datetime, timedelta
-import requests
-import json
-import os
 
 def flash_errors(form):
     """Flashes form errors"""
