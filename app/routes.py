@@ -53,7 +53,7 @@ def dashboard():
 @app.route('/weather')
 @login_required
 def weather():
-    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), 'r') as openfile:
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
         data = json.load(openfile)
     timestamp = []
     clouds = []
