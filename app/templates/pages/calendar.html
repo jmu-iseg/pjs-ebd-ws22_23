@@ -4,17 +4,15 @@
   <div class="col">
     <div class="card">
       <div class="card-header">
-        Overview
+        Kalenderübersicht
       </div>
       <div class="card-body">
-        <h1>Willkommen zurück, {{username}}!</h1>
-        <p></p>
-        <h2>Energiebasierte Terminplanung</h2>
-        <p></p>
-        <p>Hier können Sie Ihre Energieverbräuche und -erzeugung über das Dashboard analysieren.</p>
-        <p>Über die Optimierungsfunktion können Sie ihre Showroom-Kundentermine möglichst energieeffizient planen.</p>
-        <p>Hier sollen verschiedene Cards angezeigt werden.</p>
-
+        <h1>Wählen Sie einen Kalender aus, um die Events des Nutzers nächste Woche zu sehen!</h1>
+        <div class="list-group">
+          {% for user in users %}
+          <a href="{{ url_for('show_calendar', id=users[user]) }}" class="list-group-item list-group-item-action">{{ user }}</a>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
