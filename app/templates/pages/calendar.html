@@ -10,7 +10,7 @@
         <h1>Wählen Sie einen Kalender aus, um die Events des Nutzers nächste Woche zu sehen!</h1>
         <div class="list-group">
           {% for user in users %}
-          <a href="{{ url_for('show_calendar', id=users[user]) }}" class="list-group-item list-group-item-action">{{ user }}</a>
+          <a href="{{ url_for('show_calendar', id=users[user]['id']) }}" class="list-group-item list-group-item-action">{{ user }}</a>
           {% endfor %}
         </div>
       </div>
