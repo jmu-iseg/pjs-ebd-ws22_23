@@ -87,8 +87,8 @@ def weather():
         else:
             rain.append(0)
         speed.append(day['speed'])
-        sunrise.append(datetime.utcfromtimestamp(day['sunrise']).strftime("%H:M"))
-        sunset.append(datetime.utcfromtimestamp(day['sunset']).strftime("%H:M"))
+        sunrise.append(datetime.utcfromtimestamp(day['sunrise']).strftime("%H:%M"))
+        sunset.append(datetime.utcfromtimestamp(day['sunset']).strftime("%H:%M"))
         feel_temp.append(round(day['feels_like']['day'], 1))
     informations = {
         'Tag': timestamp,
