@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 import json
 import requests
 from datetime import datetime, timedelta
+import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -47,7 +48,7 @@ def flash_errors(form):
             ), 'error')
 
 def get_graph_params():
-    with open('app/graph_settings.json', 'r') as openfile:
+    with open(os.path.join(app.root_path, 'graph_settings.json'), 'r') as openfile:
         params = json.load(openfile)
 
     if not ('token' in params and 'expiry' in params and datetime.utcnow() < datetime.strptime(params['expiry'], "%m/%d/%Y, %H:%M:%S")):
@@ -64,7 +65,7 @@ def get_graph_params():
         resp = requests.post(f"https://login.microsoftonline.com/{params['tenant']}/oauth2/v2.0/token", headers=headers, data=body).json()
         params['token'] = f"Bearer {resp['access_token']}"
         params['expiry'] = (datetime.utcnow() + timedelta(seconds=(resp['expires_in']) - 120)).strftime("%m/%d/%Y, %H:%M:%S")
-        with open('app/graph_settings.json', 'w') as outfile:
+        with open(os.path.join(app.root_path, 'graph_settings.json'), 'w') as outfile:
             json.dump(params, outfile)
 
     return params
