@@ -74,7 +74,7 @@ def weather():
     records = data['cnt']
     name = data['city']['name']
     for day in data['list']:
-        timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%d.%m.%Y")
+        timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%d.%m.%Y"))
         temps.append(day['temp']['day'])
         weather.append(day['weather'][0]['description'])
         pressure.append(day['pressure'])
