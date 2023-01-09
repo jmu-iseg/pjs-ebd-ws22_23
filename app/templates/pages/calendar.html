@@ -14,7 +14,7 @@
             <a href="{{ url_for('show_calendar', id=users[user]['id']) }}"
               class="list-group-item list-group-item-action">
               <div class="card">
-                <img src="{{ users[user]['photo'] }}" class="card-img-top" alt="{{ user }}">
+                <img src="data:image/jpg;base64, {{ users[user]['photo'] }}" class="card-img-top" alt="{{ user }}">
                 <div class="card-body">
                   <h5 class="card-title">{{ user }}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">{{ users[user]['title'] }}</h6>
