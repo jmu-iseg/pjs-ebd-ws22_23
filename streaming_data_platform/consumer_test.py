@@ -53,10 +53,9 @@ consumer1 = KafkaConsumer(top_topic,
                           bootstrap_servers='localhost:9092')
 
 print('polling...')
-records = consumer.poll(timeout_ms=1000)
+records = consumer1.poll(timeout_ms=1000)
 
-for msg in consumer1:
-    print (msg)
+print(records)
 
 #read items
 for _, consumer_records in records.items():
