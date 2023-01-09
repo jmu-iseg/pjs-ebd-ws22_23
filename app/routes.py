@@ -53,11 +53,6 @@ def dashboard():
 @app.route('/weather')
 @login_required
 def weather():
-    """lat = config['weather']['lat']
-    lon = config['weather']['lon']
-    key = config['weather']['openweatherapikey']
-    resp = requests.get(f'https://pro.openweathermap.org/data/2.5/forecast/climate?lat={lat}&lon={lon}&appid={key}&units=metric&lang=de').json()
-    """
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), 'r') as openfile:
         data = json.load(openfile)
     timestamp = []
@@ -69,6 +64,7 @@ def weather():
     feel_temp = []
     temps = []
     weather = []
+    weather_code = []
     pressure = []
     humidity = []
     night = []
@@ -79,6 +75,7 @@ def weather():
         timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%d.%m.%Y"))
         temps.append(round(day['temp']['max'], 1))
         weather.append(day['weather'][0]['description'])
+        weather_code.append(day['weather'][0]['id'])
         pressure.append(day['pressure'])
         humidity.append(day['humidity'])
         clouds.append(day['clouds'])
@@ -98,6 +95,7 @@ def weather():
         'Sonnenuntergang': sunset,
         'Temp': temps,
         'Wetter': weather,
+        'Wettercode': weather_code,
         'Druck': pressure,
         'Feuchtigkeit': humidity,
         'Wolken': clouds,
