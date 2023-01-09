@@ -83,7 +83,7 @@ def weather():
         humidity.append(day['humidity'])
         clouds.append(day['clouds'])
         night.append(round(day['temp']['min'], 1))
-        wochentag.append(get_weekday(datetime.utcfromtimestamp(day['dt']).strftime("%W")))
+        wochentag.append(get_weekday(datetime.utcfromtimestamp(day['dt']).strftime("%w")))
         if 'rain' in day:
             rain.append(day['rain'])
         else:
