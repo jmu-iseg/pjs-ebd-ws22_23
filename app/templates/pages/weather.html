@@ -21,8 +21,12 @@
                   <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
                   {% elif 300 <= informations['Wettercode'][0] < 400 %}
                   <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
-                  {% elif 500 <= informations['Wettercode'][0] < 600 %}
+                  {% elif informations['Wettercode'][0] == 500 %}
+                  <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+                  {% elif 501 <= informations['Wettercode'][0] < 600 %}
                   <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+                  {% elif informations['Wettercode'][0] == 616 %}
+                  <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
                   {% elif 600 <= informations['Wettercode'][0] < 700 %}
                   <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
                   {% elif 700 <= informations['Wettercode'][0] < 800 %}
@@ -68,8 +72,12 @@
             <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
             {% elif 300 <= informations['Wettercode'][i] < 400 %}
             <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
-            {% elif 500 <= informations['Wettercode'][i] < 600 %}
+            {% elif informations['Wettercode'][i] == 500 %}
+            <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+            {% elif 501 <= informations['Wettercode'][i] < 600 %}
             <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][i] == 616 %}
+            <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
             {% elif 600 <= informations['Wettercode'][i] < 700 %}
             <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
             {% elif 700 <= informations['Wettercode'][i] < 800 %}
