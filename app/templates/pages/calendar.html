@@ -4,10 +4,34 @@
   <div class="col">
     <div class="card">
       <div class="card-header">
-        Kalenderübersicht
+        Mitarbeiter
       </div>
       <div class="card-body">
-        <h1>Wählen Sie einen Kalender aus, um die Events des Nutzers nächste Woche zu sehen!</h1>
+        <div class="row">
+          {% for user in users %}
+          <div class="col-3 mb-3">
+            <a href="{{ url_for('show_calendar', id=users[user]['id']) }}"
+              class="list-group-item list-group-item-action h-100">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">{{ user }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{ users[user]['title'] }}</h6>
+                  <p class="card-text">{{ users[user]['mail'] }}</p>
+                </div>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        Maschinen
+      </div>
+      <div class="card-body">
         <div class="row">
           {% for user in users %}
           <div class="col-3 mb-3">
