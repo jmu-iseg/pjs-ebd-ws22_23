@@ -1,6 +1,4 @@
-from app import app, bcrypt, db, flash_errors
-import configparser
-import os
+from app import app, bcrypt, db, flash_errors, get_config, write_config
 import flask_login
 from flask_login import login_required
 from app.forms import WeatherForm, MachineForm, MailForm, RegisterForm
@@ -8,8 +6,7 @@ from app.models import User
 from flask import redirect, render_template, request
 
 # read settings
-config = configparser.ConfigParser()
-config.read(os.path.join(app.root_path,'settings.cfg'))
+config = get_config(app.root_path)
 
 # settings route
 @app.route('/settings', methods=['GET', 'POST'])
@@ -32,8 +29,7 @@ def settings():
         config['weather']['lat'] = weatherForm.lat.data
         config['weather']['lon'] = weatherForm.lon.data
         config['weather']['openweatherapikey'] = weatherForm.apikey.data
-        with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
-            config.write(configfile)
+        write_config(app.root_path, config)
         return redirect('/settings')
     elif request.method == "POST" and 'weatherForm' in request.form:
         flash_errors(weatherForm)
@@ -50,8 +46,7 @@ def settings():
         config['machines']['consumption_m1'] = machineForm.consumption_m1.data
         config['machines']['consumption_m2'] = machineForm.consumption_m2.data
         config['machines']['consumption_m3'] = machineForm.consumption_m3.data
-        with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
-            config.write(configfile)
+        write_config(app.root_path, config)
         return redirect('/settings')
     elif request.method == "POST" and 'weatherForm' in request.form:
         flash_errors(machineForm)
@@ -73,8 +68,7 @@ def settings():
         if mailForm.mail_pw.data:
             config['mail']['mail_pw'] = mailForm.mail_pw.data
         config['mail']['mail_sender'] = mailForm.mail_sender.data
-        with open(os.path.join(app.root_path,'settings.cfg'), 'w') as configfile:
-            config.write(configfile)
+        write_config(app.root_path, config)
         return redirect('/settings')
     elif request.method == "POST" and 'mailForm' in request.form:
         flash_errors(mailForm)

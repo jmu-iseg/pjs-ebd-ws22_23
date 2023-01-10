@@ -1,5 +1,4 @@
-from app import app, flash_errors
-import flask_login
+from app import app, flash_errors, create_file_object, get_config
 from flask_login import login_required
 from flask import request, Response, render_template, redirect, flash
 from app.forms import SendMailForm
@@ -8,18 +7,13 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.utils import formataddr
-import configparser
-import os
 from datetime import datetime, timedelta
-from icalendar import Calendar, Event, vCalAddress, vText
 import pandas as pd
 import mysql.connector as sql
 import gurobipy as gp
 from gurobipy import GRB
-import io
 
-config = configparser.ConfigParser()
-config.read(os.path.join(app.root_path,'settings.cfg'))
+config = get_config(app.root_path)
 
 termine = {}
 # optimization route
@@ -336,20 +330,3 @@ def optimization_table(start_date, end_date, sendMailForm):
             appointments['percent'] = appointments['percent'].round(2) 
             netzbezug_termine_percent = appointments.to_dict('records')
     return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
-
-def create_file_object(start, end, summary):
-    cal = Calendar()
-    event = Event()
-    event.add('summary', summary)
-    event.add('dtstart', start)
-    event.add('dtend', end)
-    organizer = vCalAddress('MAILTO:termine@pjs-termine.de')
-    organizer.params['cn'] = vText('Hannes Metz')
-    organizer.params['role'] = vText('CEO of Uni Wuerzburg') # ein Macher
-    event['organizer'] = organizer
-    event['location'] = vText('Würzburg, DE')
-    cal.add_component(event)
-    buf = io.BytesIO()
-    buf.write(cal.to_ical())
-    buf.seek(0)
-    return buf

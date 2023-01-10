@@ -3,7 +3,18 @@ import os
 import requests
 import json
 from datetime import datetime, timedelta
+import configparser
+from icalendar import Calendar, Event, vCalAddress, vText
+import io
 
+def get_config(root_path):
+    config = configparser.ConfigParser()
+    config.read(os.path.join(root_path,'settings.cfg'))
+    return config
+
+def write_config(root_path, config):
+    with open(os.path.join(root_path,'settings.cfg'), 'w') as configfile:
+        config.write(configfile)
 
 def flash_errors(form):
     """Flashes form errors"""
@@ -54,3 +65,20 @@ def get_graph_params(root_path):
             json.dump(params, outfile)
 
     return params
+
+def create_file_object(start, end, summary):
+    cal = Calendar()
+    event = Event()
+    event.add('summary', summary)
+    event.add('dtstart', start)
+    event.add('dtend', end)
+    organizer = vCalAddress('MAILTO:termine@pjs-termine.de')
+    organizer.params['cn'] = vText('Hannes Metz')
+    organizer.params['role'] = vText('CEO of Uni Wuerzburg') # ein Macher
+    event['organizer'] = organizer
+    event['location'] = vText('Würzburg, DE')
+    cal.add_component(event)
+    buf = io.BytesIO()
+    buf.write(cal.to_ical())
+    buf.seek(0)
+    return buf

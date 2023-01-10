@@ -5,10 +5,6 @@ from config import Config
 from flask_login import LoginManager
 import flask_login
 from flask_bcrypt import Bcrypt
-import json
-import requests
-from datetime import datetime, timedelta
-import os
 from app.helper import *
 
 app = Flask(__name__)
