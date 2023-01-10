@@ -110,7 +110,7 @@ def weather():
 @app.route('/calendar')
 @login_required
 def calendar():
-    params = get_graph_params()
+    params = get_graph_params(app.root_path)
     head = {
         'Authorization': params['token']
     }
@@ -127,7 +127,7 @@ def calendar():
 @app.route('/calendar/<id>')
 @login_required
 def show_calendar(id):
-    params = get_graph_params()
+    params = get_graph_params(app.root_path)
     head = {
         'Authorization': params['token']
     }

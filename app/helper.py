@@ -1,4 +1,9 @@
 from flask import flash
+import os
+import requests
+import json
+from datetime import datetime, timedelta
+
 
 def flash_errors(form):
     """Flashes form errors"""
@@ -26,3 +31,26 @@ def get_weekday(day):
         return "Sa"
     else:
         return "Error"
+
+def get_graph_params(root_path):
+    with open(os.path.join(root_path, 'graph_settings.json'), 'r') as openfile:
+        params = json.load(openfile)
+
+    if not ('token' in params and 'expiry' in params and datetime.utcnow() < datetime.strptime(params['expiry'], "%m/%d/%Y, %H:%M:%S")):
+        headers = {
+            'Host': 'login.microsoftonline.com',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        body = {
+            'client_id': params['client'],
+            'scope': 'https://graph.microsoft.com/.default',
+            'client_secret': params['secret'],
+            'grant_type': 'client_credentials'
+        }
+        resp = requests.post(f"https://login.microsoftonline.com/{params['tenant']}/oauth2/v2.0/token", headers=headers, data=body).json()
+        params['token'] = f"Bearer {resp['access_token']}"
+        params['expiry'] = (datetime.utcnow() + timedelta(seconds=(resp['expires_in']) - 120)).strftime("%m/%d/%Y, %H:%M:%S")
+        with open(os.path.join(root_path, 'graph_settings.json'), 'w') as outfile:
+            json.dump(params, outfile)
+
+    return params
