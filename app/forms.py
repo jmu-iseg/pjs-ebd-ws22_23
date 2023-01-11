@@ -164,19 +164,27 @@ class OptimizationForm(FlaskForm):
     addline = SubmitField('Neuer Termin')
 
     def validate(self):
-        success = True
-        for name, field in self._fields.items():
-            extra = tuple()
-            if not field.validate(self, extra):
-                success = False
-                print(name)
-        return success
+        if not FlaskForm.validate(self):
+            return False
+        if len(self.data['termine'] < 1):
+            self.termine.errors.append('Es wurde kein Termin hinzugefügt')
+            return False
+        # TO DO: startdate vor enddate
+        return True
 
     def update_self(self):
         read_form_data = self.data
         updated_list = read_form_data['termine']
         if read_form_data['addline']:
             updated_list.append({})
+        read_form_data['termine'] = updated_list
+
+        self.__init__(formdata=None, **read_form_data)
+
+    def delete_termin(self, termin):
+        read_form_data = self.data
+        updated_list = read_form_data['termine']
+        updated_list.remove(termin)
         read_form_data['termine'] = updated_list
 
         self.__init__(formdata=None, **read_form_data)

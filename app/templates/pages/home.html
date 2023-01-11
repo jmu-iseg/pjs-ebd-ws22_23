@@ -48,7 +48,9 @@
                     <td>{{ termin.terminbeschreibung }}</td>
                     <td>{{ termin.machines }}</td>
                     <td>{{ termin.duration }}</td>
-                    <td>{{ termin.delete }}</td>
+                    {% if form.termine|length > 1 %}
+                      <td>{{ termin.delete }}</td>
+                    {% endif %}
                   </tr>
                 {% endfor %}
               </tbody>

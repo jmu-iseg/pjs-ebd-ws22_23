@@ -1,4 +1,4 @@
-from app import app, create_file_object
+from app import app, create_file_object, flash_errors
 from flask import render_template, request, redirect, send_file
 from app.models import *
 from app.forms import *
@@ -20,7 +20,6 @@ from flask_login import login_required
 @login_required
 def home():
     form = OptimizationForm()
-    print(request.form)
     if form.validate_on_submit() and 'addline' in request.form:
         form.update_self()
         return render_template("/pages/home.html", form=form)
@@ -29,7 +28,11 @@ def home():
     elif form.validate_on_submit():
         for termin in form.data['termine']:
             if termin['delete'] == True:
-                print(termin['terminbeschreibung'])
+                form.delete_termin(termin)
+        return render_template("/pages/home.html", form=form)
+    elif request.method == "POST" and 'weatherForm' in request.form:
+        flash_errors(form)
+        return render_template("/pages/home.html", form=form)
     return render_template("/pages/home.html", form=form)
 
 def allowed_file(filename):
