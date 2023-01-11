@@ -16,10 +16,15 @@ from datetime import datetime, timedelta
 import subprocess
 from flask_login import login_required
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST', 'UPDATE'])
 @login_required
 def home():
-    return render_template("/pages/home.html")
+    form = OptimizationForm()
+    if 'addline' in request.form:
+        form.update_self()
+    elif form.validate_on_submit() and 'optimize' in request.form:
+        return redirect('/')
+    return render_template("/pages/home.html", form=form)
 
 def allowed_file(filename):
     return '.' in filename and \

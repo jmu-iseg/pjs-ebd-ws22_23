@@ -17,6 +17,35 @@
 
       </div>
     </div>
+
+    <div class="col mb-3">
+      <div class="card h-100">
+        <div class="card-header">
+          Test
+        </div>
+        <div class="card-body">
+          <form action="" method="post">
+            {{ form.hidden_tag() }}
+            {{ form.startdate.label }}
+            {{ form.startdate }}<br>
+            {{ form.enddate.label }}
+            {{ form.enddate }}<br>
+            {{ form.addline }}<br>
+            {% for termin in form.termine %}
+              <p> #{{ loop.index0 + 1 }} </p>
+              {{ termin.terminbeschreibung.label }}
+              {{ termin.terminbeschreibung }}<br>
+              {{ termin.machines.label }}
+              {{ termin.machines }}<br>
+              {{ termin.duration.label }}
+              {{ termin.duration }}<br>
+              {{ termin.delete }}<br>
+            {% endfor %}
+            {{ form.optimize }}
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
