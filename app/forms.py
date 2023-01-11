@@ -174,4 +174,4 @@ class OptimizationForm(FlaskForm):
         read_form_data['termine'] = updated_list
 
         self.__init__(formdata=None, **read_form_data)
-        self.validate()
+        print(self.validate())

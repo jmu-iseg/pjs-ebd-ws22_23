@@ -20,9 +20,10 @@ from flask_login import login_required
 @login_required
 def home():
     form = OptimizationForm()
-    if 'addline' in request.form:
+    if form.validate_on_submit() and 'addline' in request.form:
         form.update_self()
     elif form.validate_on_submit() and 'optimize' in request.form:
+        print('test')
         return redirect('/')
     return render_template("/pages/home.html", form=form)
 
