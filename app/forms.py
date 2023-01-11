@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, HiddenField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, HiddenField, TextAreaField, DateField, FieldList, SelectMultipleField, IntegerField, FormField
 from wtforms.validators import InputRequired, Length, ValidationError
 from app.models import User
 from app import bcrypt
@@ -133,3 +133,43 @@ class MailForm(FlaskForm):
         InputRequired()], label='Absendername')
 
     submit = SubmitField('Aktualisieren', name='mailForm', id='submit')
+
+
+class TerminOptimizationForm(FlaskForm):
+
+    terminbeschreibung = StringField(validators=[
+        InputRequired()])
+
+    machines = SelectMultipleField(u'Maschinen', choices=[('welle', 'Wellenlöt'), ('3x4', 'Lötbad 3/4'), ('5', 'Lötbad 5')], validators=[InputRequired()])
+
+    duration = IntegerField(validators=[
+        InputRequired()])
+
+    delete = SubmitField('Entfernen')
+
+
+class OptimizationForm(FlaskForm):
+    # see https://stackoverflow.com/questions/51817148/dynamically-add-new-wtforms-fieldlist-entries-from-user-interface
+
+    startdate = DateField(validators=[
+        InputRequired()], label='Beginn')
+
+    enddate = DateField(validators=[
+        InputRequired()], label='Ende')
+
+    termine = FieldList(FormField(TerminOptimizationForm), min_entries=1)
+
+    optimize = SubmitField('Optimieren')
+
+    addline = SubmitField('Neuer Termin')
+
+    def update_self(self):
+        read_form_data = self.data
+        self.termine.append_entry()
+        updated_list = read_form_data['termine']
+        #if read_form_data['addline']:
+        #updated_list.append({})
+        read_form_data['termine'] = updated_list
+
+        self.__init__(formdata=None, **self.data)
+        self.validate()
