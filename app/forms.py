@@ -147,9 +147,6 @@ class TerminOptimizationForm(FlaskForm):
 
     delete = SubmitField('Entfernen')
 
-    def validate(self):
-        return True
-
 
 class OptimizationForm(FlaskForm):
     # see https://stackoverflow.com/questions/51817148/dynamically-add-new-wtforms-fieldlist-entries-from-user-interface
@@ -166,6 +163,15 @@ class OptimizationForm(FlaskForm):
 
     addline = SubmitField('Neuer Termin')
 
+    def validate(self):
+        success = True
+        for name, field in self._fields.items():
+            extra = tuple()
+            if not field.validate(self, extra):
+                success = False
+                print(name)
+        return success
+
     def update_self(self):
         read_form_data = self.data
         updated_list = read_form_data['termine']
@@ -174,4 +180,3 @@ class OptimizationForm(FlaskForm):
         read_form_data['termine'] = updated_list
 
         self.__init__(formdata=None, **read_form_data)
-        print(self.validate())

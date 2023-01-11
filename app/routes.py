@@ -20,11 +20,16 @@ from flask_login import login_required
 @login_required
 def home():
     form = OptimizationForm()
+    print(request.form)
     if form.validate_on_submit() and 'addline' in request.form:
         form.update_self()
+        return render_template("/pages/home.html", form=form)
     elif form.validate_on_submit() and 'optimize' in request.form:
-        print('test')
         return redirect('/')
+    elif form.validate_on_submit():
+        for termin in form.data['termine']:
+            if termin['delete'] == True:
+                print(termin['terminbeschreibung'])
     return render_template("/pages/home.html", form=form)
 
 def allowed_file(filename):

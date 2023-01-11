@@ -25,22 +25,34 @@
         </div>
         <div class="card-body">
           <form action="" method="post">
-            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
             {{ form.startdate.label }}
             {{ form.startdate }}<br>
             {{ form.enddate.label }}
             {{ form.enddate }}<br>
             {{ form.addline }}<br>
-            {% for termin in form.termine %}
-              <p> #{{ loop.index0 + 1 }} </p>
-              {{ termin.terminbeschreibung.label }}
-              {{ termin.terminbeschreibung }}<br>
-              {{ termin.machines.label }}
-              {{ termin.machines }}<br>
-              {{ termin.duration.label }}
-              {{ termin.duration }}<br>
-              {{ termin.delete }}<br>
-            {% endfor %}
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Bezeichnung</th>
+                  <th>Maschinen</th>
+                  <th>Dauer (h)</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for termin in form.termine %}
+                  <tr>{{ termin.csrf_token }}
+                    <td>#{{ loop.index0 + 1 }}</td>
+                    <td>{{ termin.terminbeschreibung }}</td>
+                    <td>{{ termin.machines }}</td>
+                    <td>{{ termin.duration }}</td>
+                    <td>{{ termin.delete }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>            
             {{ form.optimize }}
           </form>
         </div>
