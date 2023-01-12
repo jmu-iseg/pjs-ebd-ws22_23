@@ -144,6 +144,33 @@ class KafkaForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren', name='kafkaForm', id='submit')
 
+class OpcForm(FlaskForm):
+    value_on = StringField(validators=[
+        InputRequired()], label='Einschalt-Wert')
+
+    value_off = StringField(validators=[
+        InputRequired()], label='Ausschalt-Wert')
+
+    url1 = StringField(validators=[
+        InputRequired()], label='Maschine 1 URL')
+
+    var1 = StringField(validators=[
+        InputRequired()], label='Maschine 1 Objekt')
+
+    url2 = StringField(validators=[
+        InputRequired()], label='Maschine 2 URL')
+
+    var2 = StringField(validators=[
+        InputRequired()], label='Maschine 2 Objekt')
+
+    url3 = StringField(validators=[
+        InputRequired()], label='Maschine 3 URL')
+
+    var3 = StringField(validators=[
+        InputRequired()], label='Maschine 3 Objekt')
+
+    submit = SubmitField('Aktualisieren', name='opcForm', id='submit')
+
 
 class TerminOptimizationForm(FlaskForm):
 

@@ -198,23 +198,51 @@
       </div>
       <div class="card-body">
         Status des Servers:<br>
-        {% if kafka_status == 0 %}
-          <span class="badge rounded-pill text-bg-info">Verbindungsaufbau</span>
-        {% elif kafka_status == 1 %}
-          <span class="badge rounded-pill text-bg-success">verbunden</span>
+        {% if client1_status == 1 %}
+          <span class="badge rounded-pill text-bg-success">Maschine 1</span>
         {% else %}
-          <span class="badge rounded-pill text-bg-danger">nicht verbunden</span>
+          <span class="badge rounded-pill text-bg-danger">Maschine 1</span>
+        {% endif %}
+
+        {% if client2_status == 1 %}
+          <span class="badge rounded-pill text-bg-success">Maschine 2</span>
+        {% else %}
+          <span class="badge rounded-pill text-bg-danger">Maschine 2</span>
+        {% endif %}
+
+        {% if client3_status == 1 %}
+          <span class="badge rounded-pill text-bg-success">Maschine 3</span>
+        {% else %}
+          <span class="badge rounded-pill text-bg-danger">Maschine 3</span>
         {% endif %}
 
         <form action="" method="post">
-          {{ kafkaForm.hidden_tag() }}
-          {{ kafkaForm.kafka_url.label }}<br>
-          {{ kafkaForm.kafka_url }}
+          {{ opcua.hidden_tag() }}
+          {{ opcua.value_on.label }}<br>
+          {{ opcua.value_on }}
           <br>
-          {{ kafkaForm.kafka_port.label }}<br>
-          {{ kafkaForm.kafka_port }}
+          {{ opcua.value_off.label }}<br>
+          {{ opcua.value_off }}
           <br>
-          {{ weatherForm.submit }}
+          {{ opcua.url1.label }}<br>
+          {{ opcua.url1 }}
+          <br>
+          {{ opcua.var1.label }}<br>
+          {{ opcua.var1 }}
+          <br>
+          {{ opcua.url2.label }}<br>
+          {{ opcua.url2 }}
+          <br>
+          {{ opcua.var2.label }}<br>
+          {{ opcua.var2 }}
+          <br>
+          {{ opcua.url3.label }}<br>
+          {{ opcua.url3 }}
+          <br>
+          {{ opcua.var3.label }}<br>
+          {{ opcua.var3 }}
+          <br>
+          {{ opcua.submit }}
         </form>
       </div>
     </div>
