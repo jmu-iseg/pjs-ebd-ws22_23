@@ -196,16 +196,14 @@ def optimization_table(start_date, end_date, sendMailForm):
     # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
 
-    print(df.head(40))
-
-    # TODO: Neue Spalte mit Formel pv output = ((MAX-MIN)*sun) + MIN
+    # neue Spalte mit Formel pv output = ((MAX-MIN)*sun) + MIN
     df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
 
-    print(df.head(40))
-
     # calculate netzbezug
-    df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
+    df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output_prediction']
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
+
+    print(df.head(40))
 
     # take termin input data 
     termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
