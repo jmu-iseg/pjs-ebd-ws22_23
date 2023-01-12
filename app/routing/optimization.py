@@ -129,7 +129,7 @@ def get_date():
         end = datetime.strptime(end_date, "%d.%m.%Y")
     except ValueError:
         errors['Endzeiterror'] = 'Bitte das Enddatum angeben.'
-    if end_date < start_date: 
+    if end < start: 
         errors['Startzeiterror'] = 'Das Startdatum muss vor dem Enddatum liegen.'
     if len(errors) > 0:
         termine.clear()
@@ -195,8 +195,10 @@ def optimization_table(start_date, end_date, sendMailForm):
     
     print(clouds.head(30))
     print(clouds.info())
+    print(df.head(30))
+    print(df.info())
 
-    
+
     # merge cloud data into energy data 
     df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
 
