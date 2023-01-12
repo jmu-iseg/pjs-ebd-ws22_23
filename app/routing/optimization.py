@@ -2,6 +2,9 @@ from app import app, flash_errors, create_file_object, get_config
 from flask_login import login_required
 from flask import request, Response, render_template, redirect, flash
 from app.forms import SendMailForm
+from pathlib import Path
+import os
+import json
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -124,15 +127,51 @@ def optimization_table(start_date, end_date, sendMailForm):
     end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
     
     # db query
-    db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
-    query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
-    df = pd.read_sql(query,db_connection)
-    db_connection.close()
+    #db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
+    #query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
+    #df = pd.read_sql(query,db_connection)
+    #db_connection.close()
+    #df['dateTime'] = pd.to_datetime(df.dateTime)  
+
+    # Übergangslösung, bis Daten von SEHO bereitstehen 
+
+    # read 2023 energy data
+    df = pd.read_csv('sensor_2023.csv')
     df['dateTime'] = pd.to_datetime(df.dateTime)  
+
+    # read 2023 solar data 
+    solar_data = pd.read_csv('solar_data.csv')
+    solar_data['datetime'] = pd.to_datetime(solar_data.datetime)
+
+    # merge solar data with df 
+    df = pd.merge(df, solar_data, how='left', left_on=['dateTime'], right_on=['datetime'])
+    df = df.drop('datetime', axis=1)
+
+    # get cloud data
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
+        data = json.load(openfile)
+    timestamp = []
+    clouds = []
+    for day in data['list']:
+        timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%Y-%m-%d %H:%M:%S"))
+        clouds.append(day['clouds'])
+    cloud_dict = {
+        'datetime': timestamp,
+        'clouds': clouds
+    }
+    clouds = pd.DataFrame.from_dict(cloud_dict, orient='index')
+    clouds['datetime'] = pd.to_datetime(clouds.datetime)
+
+    print(clouds)
+
+    # merge cloud data into energy data 
+    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['datetime'])
+
+    print(df)
+    
 
     # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
-    print(df)
 
     # calculate netzbezug
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
@@ -159,7 +198,7 @@ def optimization_table(start_date, end_date, sendMailForm):
     termine_df_neu['maschine2'].loc[(termine_df_neu['maschine2'].isnull())] = 0
     termine_df_neu['maschine3'].loc[(termine_df_neu['maschine3'].isnull())] = 0
 
-    # define energy consumption per machine (TODO: Later via user input data )    
+    # define energy consumption per machine 
     consumption_m1 = int(config['machines']['consumption_m1'])
     consumption_m2 = int(config['machines']['consumption_m2'])
     consumption_m3 = int(config['machines']['consumption_m3'])
