@@ -135,6 +135,16 @@ class MailForm(FlaskForm):
     submit = SubmitField('Aktualisieren', name='mailForm', id='submit')
 
 
+class KafkaForm(FlaskForm):
+    kafka_url = StringField(validators=[
+        InputRequired()], label='Server-URl')
+
+    kafka_port = StringField(validators=[
+        InputRequired()], label='Server-Port')
+
+    submit = SubmitField('Aktualisieren', name='kafkaForm', id='submit')
+
+
 class TerminOptimizationForm(FlaskForm):
 
     terminbeschreibung = StringField(validators=[

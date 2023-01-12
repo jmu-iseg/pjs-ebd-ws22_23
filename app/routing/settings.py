@@ -1,9 +1,10 @@
 from app import app, bcrypt, db, flash_errors, get_config, write_config
 import flask_login
 from flask_login import login_required
-from app.forms import WeatherForm, MachineForm, MailForm, RegisterForm
+from app.forms import WeatherForm, MachineForm, MailForm, RegisterForm, KafkaForm
 from app.models import User
 from flask import redirect, render_template, request
+from kafka import KafkaConsumer, KafkaProducer
 
 # read settings
 config = get_config(app.root_path)
@@ -102,5 +103,31 @@ def settings():
     # get list of every user
     userList = User.query.all()
 
+     # specify the kafka config
+    kafka_url = config['kafka']['kafka_url']
+    kafka_port = config['kafka']['kafka_port']
+
+    # set the kafkaForm
+    kafkaForm=KafkaForm(kafka_url=kafka_url,kafka_port=kafka_port)
+    if kafkaForm.validate_on_submit() and 'kafkaForm' in request.form:
+        config['kafka']['kafka_url'] = kafkaForm.kafka_url.data
+        config['kafka']['kafka_port'] = kafkaForm.kafka_port.data
+        write_config(app.root_path, config)
+        return redirect('/settings')
+    elif request.method == "POST" and 'kafkaForm' in request.form:
+        flash_errors(kafkaForm)
+        return redirect('/settings')
+
+    # Check the Kafka-Status
+    kafka_status = 0
+    
+    try:
+        consumer = KafkaConsumer(bootstrap_servers=[kafka_url+':'+kafka_port])
+        print("Kafka broker is running")
+        kafka_status = 1
+    except:
+        print("Kafka broker is not running or not reachable")
+        kafka_status = 2
+
     # Render the settings template
-    return render_template('/pages/settings.html', userList=userList, form=registerForm, weatherForm=weatherForm, machineForm=machineForm, mailForm=mailForm)
+    return render_template('/pages/settings.html', userList=userList, form=registerForm, weatherForm=weatherForm, machineForm=machineForm, mailForm=mailForm, kafkaForm=kafkaForm, kafka_status=kafka_status)
