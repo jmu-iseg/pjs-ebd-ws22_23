@@ -184,6 +184,11 @@ class TerminOptimizationForm(FlaskForm):
 
     delete = SubmitField('Entfernen')
 
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        return True
+
 
 class OptimizationForm(FlaskForm):
     # see https://stackoverflow.com/questions/51817148/dynamically-add-new-wtforms-fieldlist-entries-from-user-interface
@@ -196,6 +201,8 @@ class OptimizationForm(FlaskForm):
 
     termine = FieldList(FormField(TerminOptimizationForm), min_entries=1)
 
+    optimization_identifier = HiddenField(default='Identify')
+
     optimize = SubmitField('Optimieren')
 
     addline = SubmitField('Neuer Termin')
@@ -203,10 +210,16 @@ class OptimizationForm(FlaskForm):
     def validate(self):
         if not FlaskForm.validate(self):
             return False
-        if len(self.data['termine'] < 1):
+        if len(self.data['termine']) < 1:
             self.termine.errors.append('Es wurde kein Termin hinzugefügt')
             return False
-        # TO DO: startdate vor enddate
+        if self.startdate.data > self.enddate.data:
+            self.enddate.errors.append('Das Enddatum darf nicht vor dem Startdatum liegen')
+            return False
+        for index, termin in enumerate(self.termine.entries):
+            if not termin.validate(termin):
+                self.termine.errors.append(f'Es gibt ein Problem mit dem Termin {index+1} namens {termin.data["terminbeschreibung"]}')
+                return False
         return True
 
     def update_self(self):

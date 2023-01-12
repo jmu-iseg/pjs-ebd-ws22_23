@@ -20,17 +20,19 @@ from flask_login import login_required
 @login_required
 def home():
     form = OptimizationForm()
-    if form.validate_on_submit() and 'addline' in request.form:
-        form.update_self()
+    print(request.form)
+    if form.validate_on_submit():
+        if 'addline' in request.form:
+            form.update_self()
+        elif 'optimize' in request.form:
+            # form logic here
+            return redirect('/')
+        else:
+            for termin in form.data['termine']:
+                if termin['delete'] == True:
+                    form.delete_termin(termin)
         return render_template("/pages/home.html", form=form)
-    elif form.validate_on_submit() and 'optimize' in request.form:
-        return redirect('/')
-    elif form.validate_on_submit():
-        for termin in form.data['termine']:
-            if termin['delete'] == True:
-                form.delete_termin(termin)
-        return render_template("/pages/home.html", form=form)
-    elif request.method == "POST" and 'weatherForm' in request.form:
+    elif request.method == "POST" and 'optimization_identifier' in request.form:
         flash_errors(form)
         return render_template("/pages/home.html", form=form)
     return render_template("/pages/home.html", form=form)
