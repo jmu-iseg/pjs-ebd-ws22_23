@@ -145,11 +145,11 @@ def optimization_table(start_date, end_date, sendMailForm):
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'solar_data.csv'), mode='r', encoding='utf-8') as solar:
         solar_data = pd.read_csv(solar)
     #solar_data = pd.read_csv('solar_data.csv')
-    solar_data['datetime'] = pd.to_datetime(solar_data.datetime)
+    solar_data['dateTime'] = pd.to_datetime(solar_data.dateTime)
 
     # merge solar data with df 
     df = pd.merge(df, solar_data, how='left', left_on=['dateTime'], right_on=['datetime'])
-    df = df.drop('datetime', axis=1)
+    #df = df.drop('datetime', axis=1)
 
     # get cloud data
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
