@@ -163,6 +163,7 @@ def optimization_table(start_date, end_date, sendMailForm):
         'dateTime': timestamp,
         'clouds': clouds
     }
+    print(cloud_dict)
     clouds = pd.DataFrame.from_dict(cloud_dict, orient='index', columns=['dateTime', 'clouds'])
     print(clouds)
     clouds['dateTime'] = pd.to_datetime(clouds.dateTime)
