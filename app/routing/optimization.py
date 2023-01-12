@@ -136,13 +136,13 @@ def optimization_table(start_date, end_date, sendMailForm):
     # Übergangslösung, bis Daten von SEHO bereitstehen 
 
     # read 2023 energy data
-    with open(os.path.join(Path(app.root_path).parent.absolute(), 'sensor_2023,csv'), mode='r', encoding='utf-8') as sensor:
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'sensor_2023.csv'), mode='r', encoding='utf-8') as sensor:
         df = pd.read_csv(sensor)
     #df = pd.read_csv('sensor_2023.csv')
     df['dateTime'] = pd.to_datetime(df.dateTime)  
 
     # read 2023 solar data 
-    with open(os.path.join(Path(app.root_path).parent.absolute(), 'solar_data,csv'), mode='r', encoding='utf-8') as solar:
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'solar_data.csv'), mode='r', encoding='utf-8') as solar:
         solar_data = pd.read_csv(solar)
     #solar_data = pd.read_csv('solar_data.csv')
     solar_data['datetime'] = pd.to_datetime(solar_data.datetime)
