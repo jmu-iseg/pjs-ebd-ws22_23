@@ -27,7 +27,6 @@ def optimization():
     termine.clear()
     return render_template("/pages/optimization.html")
 
-print(response["choices"][0]["text"])
 # add termin to dictionary
 @app.route('/add_termin', methods=['GET', 'POST'])
 @login_required
@@ -59,7 +58,7 @@ def get_date():
     errors = {}
 
     # get invitation text
-    openai.api_key = "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"
+    openai.api_key = "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"
 
     response = openai.Completion.create(
         model="text-davinci-003",
