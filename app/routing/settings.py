@@ -5,7 +5,7 @@ from app.forms import WeatherForm, MachineForm, MailForm, RegisterForm, KafkaFor
 from app.models import User
 from flask import redirect, render_template, request
 from kafka import KafkaConsumer, KafkaProducer
-from opcua import Client
+from asyncua import Client
 
 # read settings
 config = get_config(app.root_path)
@@ -157,9 +157,9 @@ def settings():
 
     """ Check the OPC-UA status """
     # Connect to the OPC-UA server
-    client1 = Client(url1)
-    client2 = Client(url2)
-    client3 = Client(url3)
+    client1 = Client("url1")
+    client2 = Client("url2")
+    client3 = Client("url3")
     
     # Check connection to client 1
     try:
@@ -167,8 +167,8 @@ def settings():
         # Check if client 1 is connected
         if client1.is_connected():
             client1_status = 1
-        else:
-            client1_status = 2
+    except:
+        client1_status = 2
     finally:
         client1.disconnect()
         client1_status = 2
@@ -179,8 +179,8 @@ def settings():
         # Check if client 2 is connected
         if client2.is_connected():
             client2_status = 1
-        else:
-            client2_status = 2
+    except:
+        client2_status = 2
     finally:
         client2.disconnect()
         client2_status = 2
@@ -191,8 +191,8 @@ def settings():
         # Check if client 3 is connected
         if client3.is_connected():
             client3_status = 1
-        else:
-            client3_status = 2
+    except:
+        client3_status = 2
     finally:
         client3.disconnect()
         client3_status = 2
