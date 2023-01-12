@@ -141,8 +141,10 @@ def settings():
     var3 = config['opcua']['var3']
 
     # set the opcForm
-    opcForm=OpcForm(kafka_url=kafka_url,kafka_port=kafka_port)
+    opcForm=OpcForm(value_on=value_on,value_off=value_off,url1=url1,var1=var1,url2=url2,var2=var2,url3=url3,var3=var3)
     if opcForm.validate_on_submit() and 'kafkaForm' in request.form:
+        config['opcua']['value_on'] = opcForm.value_on.data
+        config['opcua']['value_off'] = opcForm.value_off.data
         config['opcua']['url1'] = opcForm.url1.data
         config['opcua']['var1'] = opcForm.url1.data
         config['opcua']['url2'] = opcForm.url2.data
