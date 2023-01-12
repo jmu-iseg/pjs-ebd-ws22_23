@@ -240,17 +240,17 @@ def optimization_table(start_date, end_date, sendMailForm):
 
             # calculate netzbezug of appointment
             for termin in termine_energy:
-                for datetime in df['dateTime']:
-                    if datetime.hour < 18:
+                for dateTime in df['dateTime']:
+                    if dateTime.hour < 18:
                         for i in range(0,termine_length[termin]):
-                            if float(netzbezug['balance'][netzbezug['dateTime'] == datetime + pd.Timedelta(hours=i)]) < 0:
-                                consumption[datetime,termin] = consumption[datetime,termin] + netzbezug['balance'][netzbezug['dateTime'] == datetime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
+                            if float(netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)]) < 0:
+                                consumption[dateTime,termin] = consumption[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
                             else: 
-                                consumption[datetime,termin] = consumption[datetime,termin] + termine_energy[termin]/termine_length[termin]
+                                consumption[dateTime,termin] = consumption[dateTime,termin] + termine_energy[termin]/termine_length[termin]
 
             # minimize netzbezug
-            obj = sum((consumption[datetime,termin]*start[datetime,termin])
-                        for datetime in df['dateTime'] for termin in termine_energy)
+            obj = sum((consumption[dateTime,termin]*start[dateTime,termin])
+                        for dateTime in df['dateTime'] for termin in termine_energy)
 
             # objective 
             model.setObjective(obj, GRB.MINIMIZE)
@@ -258,32 +258,32 @@ def optimization_table(start_date, end_date, sendMailForm):
             # constraints 
             # weekend constraint
             for termin in termine_energy:
-                for datetime in df['dateTime']:
-                    if datetime.weekday() in [5,6]:
-                        model.addConstr((start[datetime,termin])==0)
+                for dateTime in df['dateTime']:
+                    if dateTime.weekday() in [5,6]:
+                        model.addConstr((start[dateTime,termin])==0)
                             
             # only 1 start time per appointment
             for termin in termine_energy: 
-                model.addConstr(gp.quicksum(start[datetime,termin] 
-                                for datetime in df['dateTime']) == 1)
+                model.addConstr(gp.quicksum(start[dateTime,termin] 
+                                for dateTime in df['dateTime']) == 1)
 
             # no overlap constraint                
-            for datetime in df['dateTime']:
-                if datetime.hour < 18:
+            for dateTime in df['dateTime']:
+                if dateTime.hour < 18:
                         for t1 in termine_length: 
-                            model.addConstr((start[datetime,t1] == 1) >> (gp.quicksum(start[datetime + pd.Timedelta(hours=i),t2] 
+                            model.addConstr((start[dateTime,t1] == 1) >> (gp.quicksum(start[dateTime + pd.Timedelta(hours=i),t2] 
                                                                             for i in range(1,termine_length[t1])
                                                                             for t2 in termine_length)==0))                
 
             # no overlap of start times 
-            for datetime in df['dateTime']:
-                model.addConstr(gp.quicksum(start[datetime,termin] for termin in termine_energy) <= 1)
+            for dateTime in df['dateTime']:
+                model.addConstr(gp.quicksum(start[dateTime,termin] for termin in termine_energy) <= 1)
                         
             # save start hour and day of appointment 
             for termin in termine_energy: 
-                for datetime in df['dateTime']:
-                    model.addConstr((start[datetime,termin]==1) >> (start_day[termin]==datetime.day))
-                    model.addConstr((start[datetime,termin]==1) >> (start_hour[termin]==datetime.hour))
+                for dateTime in df['dateTime']:
+                    model.addConstr((start[dateTime,termin]==1) >> (start_day[termin]==dateTime.day))
+                    model.addConstr((start[dateTime,termin]==1) >> (start_hour[termin]==dateTime.hour))
 
             # set end time of appointment 
             for termin in termine_length:            
