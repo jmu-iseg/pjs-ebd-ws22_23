@@ -193,6 +193,10 @@ def optimization_table(start_date, end_date, sendMailForm):
     clouds['clouds'] = clouds['clouds'] / 100
     clouds['sun'] = 1 - clouds['clouds']
     
+    print(clouds.head(30))
+    print(clouds.info())
+
+    
     # merge cloud data into energy data 
     df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
 
