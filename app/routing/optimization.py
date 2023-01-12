@@ -56,7 +56,7 @@ def delete_termin():
 @login_required
 def get_date():
     errors = {}
-
+    """
     # get invitation text
     openai.api_key = "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"
 
@@ -74,7 +74,7 @@ def get_date():
         response_text = response["choices"][0]["text"]
     except:
         print("Falscher Key")
-
+    """
     # send mail
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
@@ -87,7 +87,7 @@ def get_date():
         msg['To'] = receiver
 
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
-        msg.attach(response_text)
+        msg.attach(msgText)
 
         starttime = "{} {}".format(sendMailForm.date.data, sendMailForm.time.data)
         starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
