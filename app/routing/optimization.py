@@ -157,27 +157,34 @@ def optimization_table(start_date, end_date, sendMailForm):
     timestamp = []
     clouds = []
     for day in data['list']:
-        timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%Y-%m-%d %H:%M:%S"))
+        timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%Y-%m-%d"))
         clouds.append(day['clouds'])
     cloud_dict = {
         'dateTime': timestamp,
         'clouds': clouds
     }
-    print(cloud_dict)
-    clouds = pd.DataFrame.from_dict(cloud_dict, orient='index', columns=['dateTime', 'clouds'])
-    print(clouds)
+    clouds = pd.DataFrame.from_dict(cloud_dict, orient='index').T
     clouds['dateTime'] = pd.to_datetime(clouds.dateTime)
+    clouds['clouds'] = clouds['clouds'].astype(int)
 
-    print(clouds)
-
-    # merge cloud data into energy data 
-    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])
-
-    print(df)
+    # interpolate cloud data from daily to hourly for next 30 days
+    clouds = clouds.set_index('dateTime')
+    clouds = clouds.resample("H").interpolate().reset_index()
+    clouds['clouds'] = clouds['clouds'] / 100
+    clouds['sun'] = 1 - clouds['clouds']
     
+    # merge cloud data into energy data 
+    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
 
     # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
+
+    print(df.head(40))
+
+    # TODO: Neue Spalte mit Formel pv output = ((MAX-MIN)*sun) + MIN
+    df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
+
+    print(df.head(40))
 
     # calculate netzbezug
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
