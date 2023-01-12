@@ -163,6 +163,34 @@
       </div>
     </div>
   </div>
+  <div class="col mb-3">
+    <div class="card h-100">
+      <div class="card-header">
+        Kafka Streaming-Server
+      </div>
+      <div class="card-body">
+        Status des Servers:<br>
+        {% if kafka_status == 0 %}
+          <span class="badge rounded-pill text-bg-info">Verbindungsaufbau</span>
+        {% elif kafka_status == 1 %}
+          <span class="badge rounded-pill text-bg-success">verbunden</span>
+        {% else %}
+          <span class="badge rounded-pill text-bg-danger">nicht verbunden</span>
+        {% endif %}
+
+        <form action="" method="post">
+          {{ kafkaForm.hidden_tag() }}
+          {{ kafkaForm.kafka_url.label }}<br>
+          {{ kafkaForm.kafka_url }}
+          <br>
+          {{ kafkaForm.kafka_port.label }}<br>
+          {{ kafkaForm.kafka_port }}
+          <br>
+          {{ weatherForm.submit }}
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% for user in userList %}

@@ -1,6 +1,3 @@
-###
-#    TODO: Diese Datei regelmäßig über einen Cron ausführen
-###
 from datetime import datetime
 from kafka import KafkaProducer
 import requests
@@ -32,14 +29,15 @@ print(response.status_code) # should return 200
 # Print the content of the response
 response_content = response.json()
 
+# get the kafka config values
+kafka_url = config['kafka']['kafka_url']
+kafka_port = config['kafka']['kafka_port']
+
 # Create a Kafka Producer
-producer = KafkaProducer(bootstrap_servers='localhost:9092')
+producer = KafkaProducer(bootstrap_servers=[kafka_url+':'+kafka_port])
 
 # get Datetime
 act_datetime = datetime.now()
-
-msg_topic = 'weather'+act_datetime.strftime("%y-%m-%d-%H-%M-%S")
-#print(response_content)
 
 # Error logging
 def on_send_success(record_metadata):
@@ -51,8 +49,7 @@ def on_send_error(excp):
     print('I am an errback', exc_info=excp)
     # handle exception
 
-# Push Date as Key and Weather as Value
-#producer.send(topic=msg_topic, value=bytes(str(response_content), 'utf-8'))
+# Push Weather as Value
 producer.send('weather_data', value=bytes(str(response_content), 'utf-8'))
 
 # Flush the message to send it
