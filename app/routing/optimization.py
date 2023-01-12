@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.utils import formataddr
 from datetime import datetime, timedelta
+import openai
 import pandas as pd
 import mysql.connector as sql
 import gurobipy as gp
@@ -26,6 +27,7 @@ def optimization():
     termine.clear()
     return render_template("/pages/optimization.html")
 
+print(response["choices"][0]["text"])
 # add termin to dictionary
 @app.route('/add_termin', methods=['GET', 'POST'])
 @login_required
@@ -56,7 +58,22 @@ def delete_termin():
 def get_date():
     errors = {}
 
-     # send mail
+    # get invitation text
+    openai.api_key = "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"
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt="Schreibe eine Termineinladung mit folgenden Daten: - Datum: 12.01.2023 - Uhrzeit: 12 Uhr - Dauer: 4 Stunden - Maschinen: Lötbad 5, Wellenlötanlage - Bezeichnung: Testtermin - Mitarbeiter: Hans Dieter, Klaus Müller",
+        temperature=0.4,
+        max_tokens=3435,
+        top_p=1,
+        frequency_penalty=1.0,
+        presence_penalty=1.0
+    )
+
+    response_text = response["choices"][0]["text"]
+
+    # send mail
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
         receiver = sendMailForm.mailAddress.data
@@ -68,7 +85,7 @@ def get_date():
         msg['To'] = receiver
 
         msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
-        msg.attach(msgText)
+        msg.attach(response_text)
 
         starttime = "{} {}".format(sendMailForm.date.data, sendMailForm.time.data)
         starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
