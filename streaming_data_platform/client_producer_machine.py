@@ -14,8 +14,7 @@ warnings.filterwarnings("ignore",category=matplotlib.cbook.mplDeprecation)
 from datetime import datetime
 from kafka import KafkaProducer
 
-# TODO Info ans Dashboard, ob connected oder nicht
-# TODO Dashboard: Vorheizzeit/Offset
+# add logging
 logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger('asyncua')
 
