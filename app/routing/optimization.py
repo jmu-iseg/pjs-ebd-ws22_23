@@ -148,7 +148,7 @@ def optimization_table(start_date, end_date, sendMailForm):
     solar_data['dateTime'] = pd.to_datetime(solar_data.dateTime)
 
     # merge solar data with df 
-    df = pd.merge(df, solar_data, how='left', left_on=['dateTime'], right_on=['datetime'])
+    df = pd.merge(df, solar_data, how='left', left_on=['dateTime'], right_on=['dateTime'])
     #df = df.drop('datetime', axis=1)
 
     # get cloud data
