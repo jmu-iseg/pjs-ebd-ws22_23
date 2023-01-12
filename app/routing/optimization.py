@@ -189,6 +189,7 @@ def optimization_table(start_date, end_date, sendMailForm):
     # interpolate cloud data from daily to hourly for next 30 days
     clouds = clouds.set_index('dateTime')
     clouds = clouds.resample("H").interpolate().reset_index()
+    clouds['dateTime'] = pd.to_datetime(clouds.dateTime)
     clouds['clouds'] = clouds['clouds'] / 100
     clouds['sun'] = 1 - clouds['clouds']
     
