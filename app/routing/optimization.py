@@ -160,16 +160,16 @@ def optimization_table(start_date, end_date, sendMailForm):
         timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%Y-%m-%d %H:%M:%S"))
         clouds.append(day['clouds'])
     cloud_dict = {
-        'datetime': timestamp,
+        'dateTime': timestamp,
         'clouds': clouds
     }
     clouds = pd.DataFrame.from_dict(cloud_dict, orient='index')
-    clouds['datetime'] = pd.to_datetime(clouds.datetime)
+    clouds['dateTime'] = pd.to_datetime(clouds.dateTime)
 
     print(clouds)
 
     # merge cloud data into energy data 
-    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['datetime'])
+    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])
 
     print(df)
     
