@@ -193,12 +193,6 @@ def optimization_table(start_date, end_date, sendMailForm):
     clouds['clouds'] = clouds['clouds'] / 100
     clouds['sun'] = 1 - clouds['clouds']
     
-    print(clouds.head(30))
-    print(clouds.info())
-    print(df.head(30))
-    print(df.info())
-
-
     # merge cloud data into energy data 
     df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
 
@@ -382,6 +376,13 @@ def optimization_table(start_date, end_date, sendMailForm):
 
             # save objective value of model
             obj_value = model.getAttr("ObjVal")
+
+            # change negative objective value to 0 (netzeinspeisung)
+            if obj_value < 0:
+                obj_value = 0
+
+            # change negative netzbezug of appointments to 0 
+            appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
 
             # get sum of energy consumption of all appointments 
             energy_consumption = termine_df_neu['energieverbrauch'].sum()
