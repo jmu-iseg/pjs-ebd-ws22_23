@@ -58,19 +58,22 @@ def get_date():
     errors = {}
 
     # get invitation text
-    openai.api_key = "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"
+    openai.api_key = "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"
 
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt="Schreibe eine Termineinladung mit folgenden Daten: - Datum: 12.01.2023 - Uhrzeit: 12 Uhr - Dauer: 4 Stunden - Maschinen: Lötbad 5, Wellenlötanlage - Bezeichnung: Testtermin - Mitarbeiter: Hans Dieter, Klaus Müller",
-        temperature=0.4,
-        max_tokens=3435,
-        top_p=1,
-        frequency_penalty=1.0,
-        presence_penalty=1.0
-    )
+    try:
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt="Schreibe eine Termineinladung mit folgenden Daten: - Datum: 12.01.2023 - Uhrzeit: 12 Uhr - Dauer: 4 Stunden - Maschinen: Lötbad 5, Wellenlötanlage - Bezeichnung: Testtermin - Mitarbeiter: Hans Dieter, Klaus Müller",
+            temperature=0.4,
+            max_tokens=3435,
+            top_p=1,
+            frequency_penalty=1.0,
+            presence_penalty=1.0
+        )
 
-    response_text = response["choices"][0]["text"]
+        response_text = response["choices"][0]["text"]
+    except:
+        print("Falscher Key")
 
     # send mail
     sendMailForm = SendMailForm()
