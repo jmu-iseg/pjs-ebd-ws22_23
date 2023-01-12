@@ -347,6 +347,9 @@ def optimization_table(start_date, end_date, sendMailForm):
                 date = pd.to_datetime(appointments['DateTime'][i])
                 termin_id = str(appointments['TerminID'][i])
                 appointments['netzbezug'][i] = round(consumption[date,termin_id].getValue(),2)
+
+            # change negative netzbezug of appointments to 0 
+            appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
             
             # drop unecessary columns
             appointments = appointments.drop('Termin', axis=1)
@@ -380,9 +383,6 @@ def optimization_table(start_date, end_date, sendMailForm):
             # change negative objective value to 0 (netzeinspeisung)
             if obj_value < 0:
                 obj_value = 0
-
-            # change negative netzbezug of appointments to 0 
-            appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
 
             # get sum of energy consumption of all appointments 
             energy_consumption = termine_df_neu['energieverbrauch'].sum()
