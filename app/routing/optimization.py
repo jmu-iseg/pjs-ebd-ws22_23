@@ -174,13 +174,17 @@ def optimization_table(start_date, end_date, sendMailForm):
     clouds['sun'] = 1 - clouds['clouds']
     
     # merge cloud data into energy data 
-    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])
-
-    print(df)
-    
+    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
 
     # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
+
+    print(df.head(40))
+
+    # TODO: Neue Spalte mit Formel pv output = ((MAX-MIN)*sun) + MIN
+    df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
+
+    print(df.head(40))
 
     # calculate netzbezug
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output']
