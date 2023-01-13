@@ -144,6 +144,33 @@ class KafkaForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren', name='kafkaForm', id='submit')
 
+class OpcForm(FlaskForm):
+    value_on = StringField(validators=[
+        InputRequired()], label='Einschalt-Wert')
+
+    value_off = StringField(validators=[
+        InputRequired()], label='Ausschalt-Wert')
+
+    url1 = StringField(validators=[
+        InputRequired()], label='Maschine 1 URL')
+
+    var1 = StringField(validators=[
+        InputRequired()], label='Maschine 1 Objekt')
+
+    url2 = StringField(validators=[
+        InputRequired()], label='Maschine 2 URL')
+
+    var2 = StringField(validators=[
+        InputRequired()], label='Maschine 2 Objekt')
+
+    url3 = StringField(validators=[
+        InputRequired()], label='Maschine 3 URL')
+
+    var3 = StringField(validators=[
+        InputRequired()], label='Maschine 3 Objekt')
+
+    submit = SubmitField('Aktualisieren', name='opcForm', id='submit')
+
 
 class TerminOptimizationForm(FlaskForm):
 
@@ -157,6 +184,11 @@ class TerminOptimizationForm(FlaskForm):
 
     delete = SubmitField('Entfernen')
 
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        return True
+
 
 class OptimizationForm(FlaskForm):
     # see https://stackoverflow.com/questions/51817148/dynamically-add-new-wtforms-fieldlist-entries-from-user-interface
@@ -169,6 +201,8 @@ class OptimizationForm(FlaskForm):
 
     termine = FieldList(FormField(TerminOptimizationForm), min_entries=1)
 
+    optimization_identifier = HiddenField(default='Identify')
+
     optimize = SubmitField('Optimieren')
 
     addline = SubmitField('Neuer Termin')
@@ -176,10 +210,16 @@ class OptimizationForm(FlaskForm):
     def validate(self):
         if not FlaskForm.validate(self):
             return False
-        if len(self.data['termine'] < 1):
+        if len(self.data['termine']) < 1:
             self.termine.errors.append('Es wurde kein Termin hinzugefügt')
             return False
-        # TO DO: startdate vor enddate
+        if self.startdate.data > self.enddate.data:
+            self.enddate.errors.append('Das Enddatum darf nicht vor dem Startdatum liegen')
+            return False
+        for index, termin in enumerate(self.termine.entries):
+            if not termin.validate(termin):
+                self.termine.errors.append(f'Es gibt ein Problem mit dem Termin {index+1} namens {termin.data["terminbeschreibung"]}')
+                return False
         return True
 
     def update_self(self):

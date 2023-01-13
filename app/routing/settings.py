@@ -1,10 +1,11 @@
 from app import app, bcrypt, db, flash_errors, get_config, write_config
 import flask_login
 from flask_login import login_required
-from app.forms import WeatherForm, MachineForm, MailForm, RegisterForm, KafkaForm
+from app.forms import WeatherForm, MachineForm, MailForm, RegisterForm, KafkaForm, OpcForm
 from app.models import User
 from flask import redirect, render_template, request
 from kafka import KafkaConsumer, KafkaProducer
+from asyncua import Client
 
 # read settings
 config = get_config(app.root_path)
@@ -103,7 +104,7 @@ def settings():
     # get list of every user
     userList = User.query.all()
 
-     # specify the kafka config
+    # specify the kafka config
     kafka_url = config['kafka']['kafka_url']
     kafka_port = config['kafka']['kafka_port']
 
@@ -129,5 +130,75 @@ def settings():
         print("Kafka broker is not running or not reachable")
         kafka_status = 2
 
+    # specify the OPC-UA config
+    value_on = config['opcua']['value_on']
+    value_off = config['opcua']['value_off']
+    url1 = config['opcua']['url1']
+    var1 = config['opcua']['var1']
+    url2 = config['opcua']['url2']
+    var2 = config['opcua']['var2']
+    url3 = config['opcua']['url3']
+    var3 = config['opcua']['var3']
+
+    # set the opcForm
+    opcForm=OpcForm(value_on=value_on,value_off=value_off,url1=url1,var1=var1,url2=url2,var2=var2,url3=url3,var3=var3)
+    if opcForm.validate_on_submit() and 'kafkaForm' in request.form:
+        config['opcua']['value_on'] = opcForm.value_on.data
+        config['opcua']['value_off'] = opcForm.value_off.data
+        config['opcua']['url1'] = opcForm.url1.data
+        config['opcua']['var1'] = opcForm.url1.data
+        config['opcua']['url2'] = opcForm.url2.data
+        config['opcua']['var2'] = opcForm.var2.data
+        config['opcua']['url3'] = opcForm.url3.data
+        config['opcua']['var3'] = opcForm.var3.data
+        write_config(app.root_path, config)
+        return redirect('/settings')
+    elif request.method == "POST" and 'opcForm' in request.form:
+        flash_errors(opcForm)
+        return redirect('/settings')
+
+    """ Check the OPC-UA status """
+    # Connect to the OPC-UA server
+    client1 = Client("url1")
+    client2 = Client("url2")
+    client3 = Client("url3")
+    
+    # Check connection to client 1
+    try:
+        client1.connect()
+        # Check if client 1 is connected
+        if client1.is_connected():
+            client1_status = 1
+    except:
+        client1_status = 2
+    finally:
+        client1.disconnect()
+        client1_status = 2
+
+    # Check connection to client 1
+    try:
+        client2.connect()
+        # Check if client 2 is connected
+        if client2.is_connected():
+            client2_status = 1
+    except:
+        client2_status = 2
+    finally:
+        client2.disconnect()
+        client2_status = 2
+
+    # Check connection to client 3
+    try:
+        client3.connect()
+        # Check if client 3 is connected
+        if client3.is_connected():
+            client3_status = 1
+    except:
+        client3_status = 2
+    finally:
+        client3.disconnect()
+        client3_status = 2
+
+
     # Render the settings template
-    return render_template('/pages/settings.html', userList=userList, form=registerForm, weatherForm=weatherForm, machineForm=machineForm, mailForm=mailForm, kafkaForm=kafkaForm, kafka_status=kafka_status)
+    return render_template('/pages/settings.html', userList=userList, form=registerForm, weatherForm=weatherForm, machineForm=machineForm, mailForm=mailForm, kafkaForm=kafkaForm, kafka_status=kafka_status, opcForm=opcForm, client1_status=client1_status, client2_status=client2_status, client3_status=client3_status)

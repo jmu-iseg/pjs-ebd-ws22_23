@@ -1,6 +1,8 @@
-from app import app, get_config
 from kafka import KafkaConsumer
 import pandas as pd
+import sys
+sys.path.append('..')
+from app import app, get_config
 
 # create empty dataframe
 df = pd.DataFrame()

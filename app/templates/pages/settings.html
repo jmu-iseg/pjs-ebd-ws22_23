@@ -198,23 +198,51 @@
       </div>
       <div class="card-body">
         Status des Servers:<br>
-        {% if kafka_status == 0 %}
-          <span class="badge rounded-pill text-bg-info">Verbindungsaufbau</span>
-        {% elif kafka_status == 1 %}
-          <span class="badge rounded-pill text-bg-success">verbunden</span>
+        {% if client1_status == 1 %}
+          <span class="badge rounded-pill text-bg-success">Maschine 1</span>
         {% else %}
-          <span class="badge rounded-pill text-bg-danger">nicht verbunden</span>
+          <span class="badge rounded-pill text-bg-danger">Maschine 1</span>
+        {% endif %}
+
+        {% if client2_status == 1 %}
+          <span class="badge rounded-pill text-bg-success">Maschine 2</span>
+        {% else %}
+          <span class="badge rounded-pill text-bg-danger">Maschine 2</span>
+        {% endif %}
+
+        {% if client3_status == 1 %}
+          <span class="badge rounded-pill text-bg-success">Maschine 3</span>
+        {% else %}
+          <span class="badge rounded-pill text-bg-danger">Maschine 3</span>
         {% endif %}
 
         <form action="" method="post">
-          {{ kafkaForm.hidden_tag() }}
-          {{ kafkaForm.kafka_url.label }}<br>
-          {{ kafkaForm.kafka_url }}
+          {{ opcForm.hidden_tag() }}
+          {{ opcForm.value_on.label }}<br>
+          {{ opcForm.value_on }}
           <br>
-          {{ kafkaForm.kafka_port.label }}<br>
-          {{ kafkaForm.kafka_port }}
+          {{ opcForm.value_off.label }}<br>
+          {{ opcForm.value_off }}
           <br>
-          {{ weatherForm.submit }}
+          {{ opcForm.url1.label }}<br>
+          {{ opcForm.url1 }}
+          <br>
+          {{ opcForm.var1.label }}<br>
+          {{ opcForm.var1 }}
+          <br>
+          {{ opcForm.url2.label }}<br>
+          {{ opcForm.url2 }}
+          <br>
+          {{ opcForm.var2.label }}<br>
+          {{ opcForm.var2 }}
+          <br>
+          {{ opcForm.url3.label }}<br>
+          {{ opcForm.url3 }}
+          <br>
+          {{ opcForm.var3.label }}<br>
+          {{ opcForm.var3 }}
+          <br>
+          {{ opcForm.submit }}
         </form>
       </div>
     </div>
