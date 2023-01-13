@@ -9,7 +9,7 @@ class RegisterForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
 
-    role = SelectField(choices=[('0', 'Admin'), ('1', 'Standard')], label='Rolle')
+    role = SelectField(choices=[('0', 'Admin'), ('1', 'Standard')], label='Rolle', render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
     password = PasswordField(validators=[
                              InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort')
