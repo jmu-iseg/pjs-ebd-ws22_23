@@ -179,6 +179,8 @@ class TerminOptimizationForm(FlaskForm):
 
     machines = SelectMultipleField(u'Maschinen', choices=[('welle', 'Wellenlöt'), ('3x4', 'Lötbad 3/4'), ('5', 'Lötbad 5')], validators=[InputRequired()])
 
+    mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=[('Mitarbeiter1', 'Mitarbeiter2', 'Mitarbeiter3')], validators=[InputRequired()])
+
     duration = IntegerField(validators=[
         InputRequired()])
 
@@ -199,7 +201,7 @@ class OptimizationForm(FlaskForm):
     enddate = DateField(validators=[
         InputRequired()], label='Ende')
 
-    termine = FieldList(FormField(TerminOptimizationForm), min_entries=1, max_entries=3)
+    termine = FieldList(FormField(TerminOptimizationForm), min_entries=1, max_entries=4)
 
     optimization_identifier = HiddenField(default='Identify')
 
