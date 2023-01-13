@@ -215,8 +215,8 @@ class OptimizationForm(FlaskForm):
         if len(self.data['termine']) < 1:
             self.termine.errors.append('Es wurde kein Termin hinzugefügt')
             return False
-        if len(self.data['termine']) > 3:
-            self.termine.errors.append('Es können nur drei Termine hinzugefügt werden')
+        if len(self.data['termine']) > 1:
+            self.termine.errors.append('Es kann nur ein Termin hinzugefügt werden')
             return False
         if self.startdate.data > self.enddate.data:
             self.enddate.errors.append('Das Enddatum darf nicht vor dem Startdatum liegen')

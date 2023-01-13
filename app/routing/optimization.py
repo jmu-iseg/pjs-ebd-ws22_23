@@ -1,6 +1,6 @@
 from app import app, flash_errors, create_file_object, get_config
 from flask_login import login_required
-from flask import request, Response, render_template, redirect, flash
+from flask import request, render_template, redirect, flash, session, url_for
 from app.forms import SendMailForm, OptimizationForm
 from pathlib import Path
 import os
@@ -22,7 +22,7 @@ config = get_config(app.root_path)
 
 termine = {}
 # optimization route
-@app.route('/optimization')
+@app.route('/optimization', methods=['GET', 'POST'])
 @login_required
 def optimization():
     form = OptimizationForm()
@@ -30,8 +30,10 @@ def optimization():
         if 'addline' in request.form:
             form.update_self()
         elif 'optimize' in request.form:
-            # form logic here
-            return redirect('/')
+            startdate = form.startdate.data.strftime("%Y-%m-%d 00:00:00")
+            enddate = form.enddate.data.strftime("%Y-%m-%d 23:59:59")
+            termin = form.termine.__getitem__(0)
+            return optimization_table(start_date=startdate, end_date=enddate, termin=termin)
         else:
             for termin in form.data['termine']:
                 if termin['delete'] == True:
@@ -42,145 +44,28 @@ def optimization():
         return render_template("/pages/optimization.html", form=form)
     return render_template("/pages/optimization.html", form=form)
 
-
-
-# add termin to dictionary
-@app.route('/add_termin', methods=['GET', 'POST'])
-@login_required
-def add_termin():
-    id = request.form['id']
-    bezeichnung = request.form['bezeichnung']
-    dauer = request.form['dauer']
-    maschinen_string = request.form['maschinen']
-    maschinen = maschinen_string.split(",") # split string maschinen into list 
-    
-    # new termin with user inputs
-    termine[id] = {'bezeichnung': bezeichnung, 'dauer': int(dauer), 'maschinen': maschinen}
-
-    return Response(status=204)
-
-# delete termin from dictionary 
-@app.route('/delete_termin', methods=['GET', 'POST'])
-@login_required
-def delete_termin():
-    id = request.form['id']
-    print(id)
-    termine.pop(id, None)
-    return Response(status=204)
-
-# take input of start & end date of optimization 
-@app.route('/optimization', methods=['POST'])
-@login_required
-def get_date():
-    errors = {}
-    """
-    # get invitation text
-    openai.api_key = "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"
-
-    try:
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt="Schreibe eine Termineinladung mit folgenden Daten: - Datum: 12.01.2023 - Uhrzeit: 12 Uhr - Dauer: 4 Stunden - Maschinen: Lötbad 5, Wellenlötanlage - Bezeichnung: Testtermin - Mitarbeiter: Hans Dieter, Klaus Müller",
-            temperature=0.4,
-            max_tokens=3435,
-            top_p=1,
-            frequency_penalty=1.0,
-            presence_penalty=1.0
-        )
-
-        response_text = response["choices"][0]["text"]
-    except:
-        print("Falscher Key")
-    """
-    # send mail
-    sendMailForm = SendMailForm()
-    if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
-        receiver = sendMailForm.mailAddress.data
-        sender = config['mail']['mail_user']
-        msg = MIMEMultipart()
-
-        msg['Subject'] = 'Termineinladung'
-        msg['From'] = formataddr((config['mail']['mail_sender'], config['mail']['mail_user']))
-        msg['To'] = receiver
-
-        msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
-        msg.attach(msgText)
-
-        starttime = "{} {}".format(sendMailForm.date.data, sendMailForm.time.data)
-        starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
-        endtime_formatted = starttime_formatted + timedelta(hours=float(sendMailForm.dauer.data))
-
-        calendar = create_file_object(starttime_formatted, endtime_formatted, sendMailForm.bezeichnung.data)
-        attachment = MIMEApplication(calendar.read())
-        attachment.add_header('Content-Disposition','attachment',filename='Termineinladung.ics')
-        msg.attach(attachment)
-
-        user = config['mail']['mail_user']
-        password = config['mail']['mail_pw']
-
-        # Set up connection to the SMTP server
-        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
-            server.login(user, password)
-            server.sendmail(sender, receiver, msg.as_string())
-            flash("Mail erfolgreich verschickt")
-        return redirect('/optimization')
-    elif request.method == "POST" and 'sendMailForm' in request.form:
-        flash_errors(sendMailForm)
-        return redirect('/optimization')
-
-    if len(termine) < 1: 
-        errors['Terminerror'] = 'Bitte mindestens einen Termin definieren.'
-    else:
-        for termin in termine:
-            d = termine[termin]['maschinen']
-            if "null" in d: 
-                errors['Terminerror'] = 'In jedem Termin müssen Maschinen gewählt werden.'
-                break
-    start_date = request.form['start_date']
-    end_date = request.form['end_date']
-    try:
-        start = datetime.strptime(start_date, "%d.%m.%Y")
-    except ValueError:
-        errors['Startzeiterror'] = 'Bitte das Startdatum angeben.'
-    try:
-        end = datetime.strptime(end_date, "%d.%m.%Y")
-    except ValueError:
-        errors['Endzeiterror'] = 'Bitte das Enddatum angeben.'
-    if end < start: 
-        errors['Startzeiterror'] = 'Das Startdatum muss vor dem Enddatum liegen.'
-    if len(errors) > 0:
-        termine.clear()
-        return render_template("pages/optimization.html", errors=errors)
-    else:    
-        return optimization_table(start_date, end_date,sendMailForm)
-
-# optimization route
-@app.route('/optimization_table', methods=['GET', 'POST'])
-@login_required
-def optimization_table(start_date, end_date, sendMailForm):
+def optimization_table(start_date, end_date, termin):
     # input date range
-    start_date = pd.to_datetime(start_date, format="%d.%m.%Y")
-    end_date = pd.to_datetime(end_date, format="%d.%m.%Y").replace(hour=23, minute=00) # set hour of end date to 23:00
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
     
     # db query
     #db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
     #query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
     #df = pd.read_sql(query,db_connection)
     #db_connection.close()
-    #df['dateTime'] = pd.to_datetime(df.dateTime)  
+    #df['dateTime'] = pd.to_datetime(df.dateTime)
 
     # Übergangslösung, bis Daten von SEHO bereitstehen 
 
     # read 2023 energy data
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'sensor_2023.csv'), mode='r', encoding='utf-8') as sensor:
         df = pd.read_csv(sensor)
-    #df = pd.read_csv('sensor_2023.csv')
     df['dateTime'] = pd.to_datetime(df.dateTime)  
 
     # read 2023 solar data 
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'solar_data.csv'), mode='r', encoding='utf-8') as solar:
         solar_data = pd.read_csv(solar)
-    #solar_data = pd.read_csv('solar_data.csv')
     solar_data['dateTime'] = pd.to_datetime(solar_data.dateTime)
 
     # merge solar data with df 
@@ -225,7 +110,9 @@ def optimization_table(start_date, end_date, sendMailForm):
 
     print(df.head(40))
 
-    # take termin input data 
+    # take termin input data
+    termine = {}
+    termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data}
     termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
@@ -239,9 +126,9 @@ def optimization_table(start_date, end_date, sendMailForm):
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace(" ","")
 
     # transform machines columns into binary column 
-    termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('Wellenlöt')] = 1
-    termine_df_neu['maschine2'].loc[termine_df_neu['maschinen'].str.contains('Lötbad3/4')] = 1
-    termine_df_neu['maschine3'].loc[termine_df_neu['maschinen'].str.contains('Lötbad5')] = 1
+    termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('welle')] = 1
+    termine_df_neu['maschine2'].loc[termine_df_neu['maschinen'].str.contains('3x4')] = 1
+    termine_df_neu['maschine3'].loc[termine_df_neu['maschinen'].str.contains('5')] = 1
     termine_df_neu['maschine1'].loc[(termine_df_neu['maschine1'].isnull())] = 0
     termine_df_neu['maschine2'].loc[(termine_df_neu['maschine2'].isnull())] = 0
     termine_df_neu['maschine3'].loc[(termine_df_neu['maschine3'].isnull())] = 0
@@ -423,4 +310,58 @@ def optimization_table(start_date, end_date, sendMailForm):
             appointments['percent'] = appointments['percent'].astype(float)
             appointments['percent'] = appointments['percent'].round(2) 
             netzbezug_termine_percent = appointments.to_dict('records')
+
+            session['appointments_dict'] = appointments_dict
+            session['obj_value'] = obj_value
+            session['renewable_percent'] = renewable_percent
+            session['energy_consumption'] = energy_consumption
+            session['energy_consumption_list'] = energy_consumption_list
+            session['termin_list'] = termin_list
+            session['netzbezug_termine'] = netzbezug_termine
+            session['netzbezug_termine_percent'] = netzbezug_termine_percent
+
+    return redirect(url_for('appointment_list'))
+
+
+@app.route('/appointments', methods=['GET', 'POST'])
+@login_required
+def appointment_list():
+    appointments_dict = session.get('appointments_dict')
+    obj_value = session.get('obj_value')
+    renewable_percent = session.get('renewable_percent')
+    energy_consumption = session.get('energy_consumption')
+    energy_consumption_list = session.get('energy_consumption_list')
+    termin_list = session.get('termin_list')
+    netzbezug_termine = session.get('netzbezug_termine')
+    netzbezug_termine_percent = session.get('netzbezug_termine_percent')
+
+    sendMailForm = SendMailForm()
+    if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
+        receiver = sendMailForm.mailAddress.data
+        sender = config['mail']['mail_user']
+        msg = MIMEMultipart()
+        msg['Subject'] = 'Termineinladung'
+        msg['From'] = formataddr((config['mail']['mail_sender'], config['mail']['mail_user']))
+        msg['To'] = receiver
+        msgText = MIMEText('<b>%s</b>' % (sendMailForm.mailText.data), 'html')
+        msg.attach(msgText)
+        starttime = "{} {}".format(sendMailForm.date.data, sendMailForm.time.data)
+        starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
+        endtime_formatted = starttime_formatted + timedelta(hours=float(sendMailForm.dauer.data))
+        calendar = create_file_object(starttime_formatted, endtime_formatted, sendMailForm.bezeichnung.data)
+        attachment = MIMEApplication(calendar.read())
+        attachment.add_header('Content-Disposition','attachment',filename='Termineinladung.ics')
+        msg.attach(attachment)
+        user = config['mail']['mail_user']
+        password = config['mail']['mail_pw']
+        # Set up connection to the SMTP server
+        with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
+            server.login(user, password)
+            server.sendmail(sender, receiver, msg.as_string())
+            flash("Mail erfolgreich verschickt")
+        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
+    elif request.method == "POST" and 'sendMailForm' in request.form:
+        flash_errors(sendMailForm)
+        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
+
     return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
