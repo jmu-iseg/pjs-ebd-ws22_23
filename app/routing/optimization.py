@@ -5,6 +5,7 @@ from app.forms import SendMailForm
 from pathlib import Path
 import os
 import json
+from app.forms import *
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -24,8 +25,24 @@ termine = {}
 @app.route('/optimization')
 @login_required
 def optimization():
-    termine.clear()
-    return render_template("/pages/optimization.html")
+    form = OptimizationForm()
+    if form.validate_on_submit():
+        if 'addline' in request.form:
+            form.update_self()
+        elif 'optimize' in request.form:
+            # form logic here
+            return redirect('/')
+        else:
+            for termin in form.data['termine']:
+                if termin['delete'] == True:
+                    form.delete_termin(termin)
+        return render_template("/pages/optimization.html", form=form)
+    elif request.method == "POST" and 'optimization_identifier' in request.form:
+        flash_errors(form)
+        return render_template("/pages/optimization.html", form=form)
+    return render_template("/pages/optimization.html", form=form)
+
+
 
 # add termin to dictionary
 @app.route('/add_termin', methods=['GET', 'POST'])
