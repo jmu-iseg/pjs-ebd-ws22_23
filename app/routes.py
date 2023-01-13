@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 import subprocess
 from flask_login import login_required
 
-@app.route('/', methods=['GET', 'POST', 'UPDATE'])
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
     form = OptimizationForm()
