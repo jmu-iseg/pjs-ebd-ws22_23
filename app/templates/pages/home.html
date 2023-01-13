@@ -17,7 +17,16 @@
         <p>Das Dashboard ist ein wertvolles Werkzeug für Unternehmen, die ihren CO2-Fußabdruck reduzieren und gleichzeitig Zeit und Ressourcen sparen möchten. Mit der energiebasierten Optimierung von Terminen können Sie nicht nur die Umwelt schonen, sondern auch die Produktivität und Effizienz Ihres Unternehmens steigern.</p>
         <p></p>
         <p>Hier sollen verschiedene Cards angezeigt werden.</p>
-
+        <div class="col-md-4">
+          <label for="validationTagsThreshold" class="form-label">Tags (allow clear + 0 threshold)</label>
+          <select class="form-select" id="validationTagsThreshold" name="tagsClearThreshold[]" multiple="" data-allow-clear="true" data-suggestions-threshold="0" style="display: none;">
+            
+            <option value="1" selected="selected" data-init="1">Apple</option>
+            <option value="2">Banana</option>
+            <option value="3">Orange</option>
+          </select><div class="form-control dropdown"><div><span class="badge bg-primary me-2" data-value="1"><button type="button" style="font-size:0.65em" class="me-2 btn-close btn-close-white" aria-label="Clear"></button>Apple</span><input type="text" autocomplete="off" aria-label="Type a value" placeholder="" size="1" style="border: 0px; outline: 0px; max-width: 100%;"></div><ul class="dropdown-menu p-0" style="max-height: 280px; overflow-y: auto; left: 88px;"><li style="display: none;"><a class="dropdown-item" data-value="1" href="#">Apple</a></li><li style="display: list-item;"><a class="dropdown-item is-active bg-primary text-white" data-value="2" href="#">Banana</a></li><li style="display: list-item;"><a class="dropdown-item" data-value="3" href="#">Orange</a></li></ul></div>
+          <div class="invalid-feedback">Please select a valid tag.</div>
+        </div>
       </div>
     </div>
 
