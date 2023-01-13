@@ -33,7 +33,9 @@
             {{ form.startdate }}<br>
             {{ form.enddate.label }}
             {{ form.enddate }}<br>
-            {{ form.addline }}<br>
+            {% if 3 > form.termine|length %}
+              {{ form.addline }}<br>
+            {% endif %}
             {{ form.optimization_identifier }}
             <table class="table table-bordered">
               <thead>

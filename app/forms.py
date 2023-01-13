@@ -199,7 +199,7 @@ class OptimizationForm(FlaskForm):
     enddate = DateField(validators=[
         InputRequired()], label='Ende')
 
-    termine = FieldList(FormField(TerminOptimizationForm), min_entries=1)
+    termine = FieldList(FormField(TerminOptimizationForm), min_entries=1, max_entries=3)
 
     optimization_identifier = HiddenField(default='Identify')
 
@@ -212,6 +212,9 @@ class OptimizationForm(FlaskForm):
             return False
         if len(self.data['termine']) < 1:
             self.termine.errors.append('Es wurde kein Termin hinzugefügt')
+            return False
+        if len(self.data['termine']) > 3:
+            self.termine.errors.append('Es können nur drei Termine hinzugefügt werden')
             return False
         if self.startdate.data > self.enddate.data:
             self.enddate.errors.append('Das Enddatum darf nicht vor dem Startdatum liegen')
