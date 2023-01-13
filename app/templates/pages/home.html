@@ -44,7 +44,9 @@
                   <th>Bezeichnung</th>
                   <th>Maschinen</th>
                   <th>Dauer (h)</th>
-                  <th>Aktionen</th>
+                  {% if form.termine|length > 1 %}
+                    <th>Aktionen</th>
+                  {% endif %}
                 </tr>
               </thead>
               <tbody>

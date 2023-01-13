@@ -20,7 +20,6 @@ from flask_login import login_required
 @login_required
 def home():
     form = OptimizationForm()
-    print(request.form)
     if form.validate_on_submit():
         if 'addline' in request.form:
             form.update_self()
