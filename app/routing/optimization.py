@@ -1,7 +1,7 @@
 from app import app, flash_errors, create_file_object, get_config
 from flask_login import login_required
 from flask import request, Response, render_template, redirect, flash
-from app.forms import SendMailForm
+from app.forms import SendMailForm, OptimizationForm
 from pathlib import Path
 import os
 import json
