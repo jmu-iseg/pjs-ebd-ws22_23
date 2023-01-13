@@ -201,7 +201,7 @@ class OptimizationForm(FlaskForm):
     enddate = DateField(validators=[
         InputRequired()], label='Ende')
 
-    termine = FieldList(FormField(TerminOptimizationForm), min_entries=1, max_entries=4)
+    termine = FieldList(FormField(TerminOptimizationForm), min_entries=1, max_entries=1)
 
     optimization_identifier = HiddenField(default='Identify')
 
