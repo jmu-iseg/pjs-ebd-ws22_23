@@ -95,10 +95,6 @@
         {{ form.startdate }}<br>
         {{ form.enddate.label }}
         {{ form.enddate }}<br>
-        {% if 3 > form.termine|length %}
-          {{ form.addline }}<br>
-        {% endif %}
-        {{ form.optimization_identifier }}
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -107,24 +103,9 @@
               <th>Maschinen</th>
               <th>Mitarbeiter</th>
               <th>Dauer (h)</th>
-              {% if form.termine|length > 1 %}
-                <th>Aktionen</th>
-              {% endif %}
             </tr>
           </thead>
           <tbody>
-            {% for termin in form.termine %}
-              <tr>{{ termin.csrf_token }}
-                <td>#{{ loop.index0 + 1 }}</td>
-                <td>{{ termin.terminbeschreibung }}</td>
-                <td>{{ termin.machines }}</td>
-                <td>Mitarbeiter </td>
-                <td>{{ termin.duration }}</td>
-                {% if form.termine|length > 1 %}
-                  <td>{{ termin.delete }}</td>
-                {% endif %}
-              </tr>
-            {% endfor %}
           </tbody>
         </table>            
         {{ form.optimize }}
