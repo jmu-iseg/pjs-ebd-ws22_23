@@ -2,236 +2,50 @@
 {% block content %}
 <!-- HTML Form (wrapped in a .bootstrap-iso div) -->
 <div class="row">
-  <div class="col">
-    <div class="card">
-      <div class="card-header">Optimization</div>
+  <div class="col mb-3">
+    <div class="card h-100">
+      <div class="card-header">
+        Optimization
+      </div>
       <div class="card-body">
-        <form class="form-horizontal" method="post">
-          <div class="col-sm-15">
-            <h4>Planungshorizont festlegen</h4>
-          </div>
-          <div class="form-group ">
-            <p>Die Terminplanung ist aufgrund des Wetterberichtes nur für die <b>nächsten 30 Tage</b> möglich.</p>
-            <div class="col-sm-4">
-              <div class="input-group">
-                <div class="input-group-addon">
-                  <i class="fa fa-calendar"></i>
-                </div>
-                <label class="control-label col-sm-2 requiredField" for="start_date">Beginn</label>
-                <input class="form-control" id="start_date" required name="start_date" placeholder="DD.MM.YYYY" type="text" />
-              </div>
-            </div>
-          </div>
-          <p></p>
-          <div class="form-group ">
-            <div class="col-sm-4">
-              <div class="input-group">
-                <div class="input-group-addon">
-                  <i class="fa fa-calendar">
-                  </i>
-                </div>
-                <label class="control-label col-sm-2 requiredField" for="end_date">Ende</label>
-                <input class="form-control" id="end_date" required name="end_date" placeholder="DD.MM.YYYY" type="text" />
-              </div>
-            </div>
-          </div>
-          <p></p>
-          <div class="col-sm-15">
-            <h4>Termine definieren</h4>
-          </div>
-          <div class="table-responsive">
-            <div class="table-wrapper">
-              <div class="table-title">
-                <div class="row">
-                  <div class="col-sm-8">
-                    <h2></h2>
-                  </div>
-                  <div class="col-sm-4">
-                    <button type="button" class="btn add-new"><i class="fa fa-plus"></i> Neuer Termin</button>
-                  </div>
-                </div>
-              </div>
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Bezeichnung</th>
-                    <th>Maschinen</th>
-                    <th>Dauer (h)</th>
-                    <th>Aktionen</th>
-                  </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-8 col-sm-offset-1">
-              <button class="btn" name="submit" type="submit">
-                Optimieren
-              </button>
-              {% for error in errors %}
-                     <p class=error><strong>{{ error }}:</strong> {{ errors[error] }}
+        <div class="col-sm-15">
+          <h4>Planungshorizont festlegen</h4>
+        </div>
+        <p>Die Terminplanung ist aufgrund des Wetterberichtes nur für die <b>nächsten 30 Tage</b> möglich.</p>
+        <form action="" method="post">
+          {{ form.csrf_token }}
+          {{ form.startdate.label }}
+          {{ form.startdate }}<br>
+          {{ form.enddate.label }}
+          {{ form.enddate }}<br>
+          {{ form.optimization_identifier }}
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Bezeichnung</th>
+                <th>Maschinen</th>
+                <th>Mitarbeiter</th>
+                <th>Dauer (h)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for termin in form.termine %}
+                <tr>{{ termin.csrf_token }}
+                  <td>#{{ loop.index0 + 1 }}</td>
+                  <td>{{ termin.terminbeschreibung }}</td>
+                  <td>{{ termin.machines }}</td>
+                  <td>{{ termin.mitarbeiter }}</td>
+                  <td>{{ termin.duration }}</td>
+                </tr>
               {% endfor %}
-            </div>
-          </div>
+            </tbody>
+          </table>            
+          {{ form.optimize }}
         </form>
       </div>
     </div>
   </div>
 </div>
 
-<div class="col mb-3">
-  <div class="card h-100">
-    <div class="card-header">
-      Test
-    </div>
-    <div class="card-body">
-      <form action="" method="post">
-        {{ form.csrf_token }}
-        {{ form.startdate.label }}
-        {{ form.startdate }}<br>
-        {{ form.enddate.label }}
-        {{ form.enddate }}<br>
-        {% if 3 > form.termine|length %}
-          {{ form.addline }}<br>
-        {% endif %}
-        {{ form.optimization_identifier }}
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Bezeichnung</th>
-              <th>Maschinen</th>
-              <th>Mitarbeiter</th>
-              <th>Dauer (h)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for termin in form.termine %}
-              <tr>{{ termin.csrf_token }}
-                <td>#{{ loop.index0 + 1 }}</td>
-                <td>{{ termin.terminbeschreibung }}</td>
-                <td>{{ termin.machines }}</td>
-                <td>{{ termin.mitarbeiter }}</td>
-                <td>{{ termin.duration }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>            
-        {{ form.optimize }}
-      </form>
-    </div>
-  </div>
-</div>
-
-<script>
-  $(document).ready(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-    //var actions = $("table td:last-child").html();
-    var actions =
-      '<a class="add" title="Termin hinzufügen" data-toggle="tooltip">+</a>' +
-      '<a class="delete" title="Termin löschen" data-toggle="tooltip">-</a>'
-
-      var count = 1;
-    // Append table with add row form on add new button click
-    $(".add-new").click(function(){
-      $(this).attr("disabled", "disabled");
-      var id = "count" + count.toString();
-      var index = $("table tbody tr:last-child").index();
-      var row = '<tr>' +
-            '<td><span id=' + id + '></span></td>' +
-            '<td><input type="text" class="form-control" name="bezeichnung" id="bezeichnung"></td>' +
-            '<td><select id="maschinen" name="maschinen" multiple><option value="null" selected>Bitte wählen ...</option><option value="Wellenlöt">Wellenlöt</option><option value="Lötbad3/4">Lötbad 3/4</option><option value="Lötbad5">Lötbad 5</option></td>' +
-            '<td><input type="text" class="form-control" name="dauer" id="dauer"></td>' +
-          '<td>' + actions + '</td>' +
-          '</tr>';
-        $("table").append(row);		
-        document.getElementById(id).innerHTML = "#" + count.toString();	
-        //$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
-        $('[data-toggle="tooltip"]').tooltip();
-      });
-
-    // Add row on add button click
-    $(document).on("click", ".add", function(){
-      var empty = false;
-      var input = $(this).parents("tr").find('input');
-      var input_maschinen = $(this).parents("tr").find('select');
-      
-      // error if input is not complete
-      input.each(function(){
-        if(!$(this).val()){
-          $(this).addClass("error");
-          empty = true;
-        } else{
-                  $(this).removeClass("error");
-              }
-      });
-
-      // get variable for adding to dictionary
-      var id = count;
-      var bezeichnung = $("#bezeichnung").val();
-      var dauer = $("#dauer").val();
-      var maschinen = $("#maschinen :selected").map((_, e) => e.value).get();
-      
-      $.post("/add_termin", {id: id, bezeichnung: bezeichnung, dauer: dauer, maschinen: maschinen.toString()}, function(add_termin) {}) 
-
-      // add data in frontend table
-      $(this).parents("tr").find(".error").first().focus();
-      if(!empty){
-        // adds type input to table
-        input.each(function(){
-            $(this).parent("td").html($(this).val());
-        });	
-        // adds type select to table
-        input_maschinen.each(function(){
-          machines = maschinen.toString().replaceAll(',', ', ');
-          $(this).parent("td").html(machines);
-        });			
-        $(this).parents("tr").find(".add, .edit").toggle();
-        $(".add-new").removeAttr("disabled");
-      }
-      count = count+1;
-    });
-
-
-    // Delete row on delete button click
-    $(document).on("click", ".delete", function () {
-      var $row = $(this).closest("tr"); // Finds the closest row <tr> 
-      var id = $row.find("td:nth-child(1)").text(); // Finds the 1st <td> element
-      id = id.replace('#', '')
-      
-      // delete in dictionary
-      $.post("/delete_termin", { id: id }, function (delete_termin) { })
-
-      // delete in frotend table
-      $(this).parents("tr").find("td:not(:last-child)")
-      $(this).parents("tr").remove();
-      $(".add-new").removeAttr("disabled");
-    });
-  });
-</script>
-
-
-<script>
-  $(document).ready(function () {
-    var start_date_input = $('input[name="start_date"]');
-    var end_date_input = $('input[name="end_date"]');
-    var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
-    var options = {
-      format: 'dd.mm.yyyy',
-      container: container,
-      todayHighlight: true,
-      autoclose: true,
-      startDate: '0d',
-      endDate: '+30d'
-    };
-    start_date_input.datepicker(options);
-    end_date_input.datepicker(options);
-  });
-</script>
-
-</div>
 {% endblock %}
