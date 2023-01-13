@@ -9,7 +9,11 @@
 <script src="{{ url_for('static', filename='js/chartjs-adapter-date-fns.bundle.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/sidebars.js') }}"></script>
-<script src="{{ url_for('static', filename='js/tags.min.js') }}"></script>
+
+<script type="module">
+    import Tags from "{{ url_for('static', filename='js/tags.min.js') }}";
+    Tags.init("select");
+</script>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <!-- {% endblock %} -->
