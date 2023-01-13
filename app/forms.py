@@ -179,7 +179,7 @@ class TerminOptimizationForm(FlaskForm):
 
     machines = SelectMultipleField(u'Maschinen', choices=[('welle', 'Wellenlöt'), ('3x4', 'Lötbad 3/4'), ('5', 'Lötbad 5')], validators=[InputRequired()])
 
-    mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=[('Mitarbeiter1', 'Mitarbeiter2', 'Mitarbeiter3')], validators=[InputRequired()])
+    mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=[('M1', 'Mitarbeiter1'), ('M2', 'Mitarbeiter2'), ('M3', 'Mitarbeiter3')], validators=[InputRequired()])
 
     duration = IntegerField(validators=[
         InputRequired()])
