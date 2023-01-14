@@ -133,7 +133,7 @@ def optimization_table(start_date, end_date, termin):
     termine_df_neu['mitarbeiter_string'] = mitarbeiter_string
 
     # define energy consumption per machine 
-    machine_consumption = {'m1': float(config['machines']['consumption_m1']), 'm2': float(config['machines']['consumption_m2']), 'm3': float(config['machines']['consumption_m3'])}
+    machine_consumption = {'welle': float(config['machines']['consumption_m1']), '3x4': float(config['machines']['consumption_m2']), '5': float(config['machines']['consumption_m3'])}
     
     # calculate energy consumption for each termin
     energie = 0
