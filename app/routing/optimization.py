@@ -112,11 +112,13 @@ def optimization_table(start_date, end_date, termin):
 
     # take termin input data
     termine = {}
-    termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data}
-    termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
+    termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data, 'mitarbeiter': termin.mitarbeiter.data}
+    termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'mitarbeiter', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
     # energy consumption based on machines 
+
+    print(termine_df_neu)
 
     # transform strings of machines 
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].astype('str') 
@@ -124,6 +126,8 @@ def optimization_table(start_date, end_date, termin):
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("]","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("'","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace(" ","")
+
+    print(termine_df_neu)
 
     # transform machines columns into binary column 
     termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('welle')] = 1
@@ -272,9 +276,10 @@ def optimization_table(start_date, end_date, termin):
             appointments_output['Date'] = appointments_output.Date.dt.strftime('%d.%m.%Y')
             appointments_output['Time'] = appointments_output.Time.dt.strftime('%H:%M')
 
-            # transform maschinen for better output 
+            # transform maschinen & mitarbeiter for better output 
             appointments_output['maschinen'] = appointments_output['maschinen'].str.replace(",",", ")
-            
+            appointments_output['mitarbeiter'] = appointments_output['mitarbeiter'].str.replace(",",", ")
+
             # df to dict as output for render template 
             appointments_dict = appointments_output.to_dict('records')
 
