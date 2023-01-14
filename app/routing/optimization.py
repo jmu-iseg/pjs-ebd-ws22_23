@@ -120,8 +120,9 @@ def optimization_table(start_date, end_date, termin):
 
     print(termine_df_neu)
 
-    # transform strings of machines 
+    # transform strings of machines & mitarbeiter
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].astype('str') 
+    termine_df_neu['mitarbeiter'] = termine_df_neu['mitarbeiter'].astype('str') 
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("[","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("]","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("'","")
@@ -266,7 +267,6 @@ def optimization_table(start_date, end_date, termin):
 
             # join appointments with termine_df_neu
             appointments_output = pd.merge(appointments, termine_df_neu, how='left', left_on=['TerminID'], right_on=['termin_id'])
-            #appointments_output.drop(['termin_id','energieverbrauch'], axis=1)
 
             # parse to datetime format
             appointments_output['Date'] = pd.to_datetime(appointments_output['Date'], format="%Y.%m.%d")
