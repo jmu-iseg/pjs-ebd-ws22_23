@@ -1,4 +1,4 @@
-from app import app, flash_errors, create_file_object, get_config
+from app import app, flash_errors, create_file_object, get_config, get_graph_params
 from flask_login import login_required
 from flask import request, render_template, redirect, flash, session, url_for
 from app.forms import SendMailForm, OptimizationForm
@@ -17,6 +17,7 @@ import pandas as pd
 import mysql.connector as sql
 import gurobipy as gp
 from gurobipy import GRB
+import requests
 
 config = get_config(app.root_path)
 
@@ -45,10 +46,14 @@ def optimization():
     return render_template("/pages/optimization.html", form=form)
 
 def optimization_table(start_date, end_date, termin):
+    graph_start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
+    graph_end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
+
     # input date range
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
-    
+
+
     # db query
     #db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
     #query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
@@ -114,26 +119,46 @@ def optimization_table(start_date, end_date, termin):
     termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'mitarbeiter', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
+    params = get_graph_params(app.root_path)
+    head = {
+        'Authorization': params['token']
+    }
+    resp = requests.get('https://graph.microsoft.com/v1.0/users/', headers=head).json()
+
     # transform machines for output
     machines_string = ""
     for machine in termine_df_neu['maschinen'].to_list()[0]:
+        displayName = ''
+        for user in resp['value']:
+            if machine==user['id']:
+                displayName = user['displayName']
+                break
         if machine == termine_df_neu['maschinen'].to_list()[0][-1]:
-            machines_string += machine 
+            machines_string += displayName 
         else: 
-            machines_string += machine + ", "
+            machines_string += displayName + ", "
     termine_df_neu['maschinen_string'] = machines_string
 
     # transform mitarbeiter for output
     mitarbeiter_string = ""
     for mitarbeiter in termine_df_neu['mitarbeiter'].to_list()[0]:
+        displayName = ''
+        for user in resp['value']:
+            if mitarbeiter==user['id']:
+                displayName = user['displayName']
+                break
         if mitarbeiter == termine_df_neu['mitarbeiter'].to_list()[0][-1]:
-            mitarbeiter_string += mitarbeiter 
+            mitarbeiter_string += displayName 
         else: 
-            mitarbeiter_string += mitarbeiter + ", "
+            mitarbeiter_string += displayName + ", "
     termine_df_neu['mitarbeiter_string'] = mitarbeiter_string
 
     # define energy consumption per machine 
-    machine_consumption = {'welle': float(config['machines']['consumption_m1']), '3x4': float(config['machines']['consumption_m2']), '5': float(config['machines']['consumption_m3'])}
+    machine_consumption = {
+        config['machines']['name_m1']: float(config['machines']['consumption_m1']), 
+        config['machines']['name_m2']: float(config['machines']['consumption_m2']), 
+        config['machines']['name_m3']: float(config['machines']['consumption_m3'])
+        }
     
     # calculate energy consumption for each termin
     energie = 0
@@ -141,12 +166,30 @@ def optimization_table(start_date, end_date, termin):
         energie += machine_consumption[maschine] * float(termine_df_neu['dauer'])
     termine_df_neu['energieverbrauch'] = energie
 
-    # TODO: Verfügbarkeitsdaten der Maschinen & Mitarbeiter ziehen 
+    # TODO: Verfügbarkeitsdaten der Maschinen & Mitarbeiter ziehen
+    machine_appointments = {}
+    mitarbeiter_appointments = {}
+    for machine in termine_df_neu['maschinen'].to_list()[0]:
+        cal_url = f"https://graph.microsoft.com/v1.0/users/{machine}/calendarView?startDateTime={graph_start_date}&endDateTime={graph_end_date}&$select=start,end"
+        resp = requests.get(cal_url, headers=head).json()
+        appointments = []
+        for appointment in resp['value']:
+            appointments.append({
+                'start': datetime.fromisoformat(appointment['start']['dateTime'].rsplit('.', 1)[0]).strftime("%Y-%m-%d %H:%M:%S"),
+                'end': datetime.fromisoformat(appointment['end']['dateTime'].rsplit('.', 1)[0]).strftime("%Y-%m-%d %H:%M:%S")
+            })
+        machine_appointments[machine] = appointments
 
-    
-
-
-
+    for mitarbeiter in termine_df_neu['mitarbeiter'].to_list()[0]:
+        cal_url = f"https://graph.microsoft.com/v1.0/users/{mitarbeiter}/calendarView?startDateTime={graph_start_date}&endDateTime={graph_end_date}&$select=start,end"
+        resp = requests.get(cal_url, headers=head).json()
+        appointments = []
+        for appointment in resp['value']:
+            appointments.append({
+                'start': datetime.fromisoformat(appointment['start']['dateTime'].rsplit('.', 1)[0]).strftime("%Y-%m-%d %H:%M:%S"),
+                'end': datetime.fromisoformat(appointment['end']['dateTime'].rsplit('.', 1)[0]).strftime("%Y-%m-%d %H:%M:%S")
+            })
+        mitarbeiter_appointments[mitarbeiter] = appointments
     
     # generate dicts of termin data 
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
