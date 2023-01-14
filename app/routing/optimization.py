@@ -144,6 +144,7 @@ def optimization_table(start_date, end_date, termin):
     # TODO: Verfügbarkeitsdaten der Maschinen & Mitarbeiter ziehen 
 
     
+    
 
 
 
