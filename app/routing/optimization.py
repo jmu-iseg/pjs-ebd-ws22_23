@@ -114,7 +114,7 @@ def optimization_table(start_date, end_date, termin):
     termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'mitarbeiter', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
-    # transform machines 
+    # transform machines for output
     machines_string = ""
     for machine in termine_df_neu['maschinen'].to_list()[0]:
         if machine == termine_df_neu['maschinen'].to_list()[0][-1]:
@@ -123,7 +123,7 @@ def optimization_table(start_date, end_date, termin):
             machines_string += machine + ", "
     termine_df_neu['maschinen_string'] = machines_string
 
-    # transform mitarbeiter 
+    # transform mitarbeiter for output
     mitarbeiter_string = ""
     for mitarbeiter in termine_df_neu['mitarbeiter'].to_list()[0]:
         if mitarbeiter == termine_df_neu['mitarbeiter'].to_list()[0][-1]:
@@ -140,14 +140,13 @@ def optimization_table(start_date, end_date, termin):
     for maschine in termine_df_neu['maschinen'].to_list()[0]: 
         energie += machine_consumption[maschine] * float(termine_df_neu['dauer'])
     termine_df_neu['energieverbrauch'] = energie
-    
-    # define energy consumption per machine 
-    #consumption_m1 = int(config['machines']['consumption_m1'])
-    #consumption_m2 = int(config['machines']['consumption_m2'])
-    #consumption_m3 = int(config['machines']['consumption_m3'])
 
-    # calculate energy consumption for each termin
-    #termine_df_neu['energieverbrauch'] = ((termine_df_neu['maschine1'] * consumption_m1) + (termine_df_neu['maschine2'] * consumption_m2) + (termine_df_neu['maschine3'] * consumption_m3)) * termine_df_neu['dauer'] 
+    # TODO: Verfügbarkeitsdaten der Maschinen & Mitarbeiter ziehen 
+
+    
+
+
+
     
     # generate dicts of termin data 
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
