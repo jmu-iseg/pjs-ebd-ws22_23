@@ -122,14 +122,24 @@ def optimization_table(start_date, end_date, termin):
 
     # transform strings of machines & mitarbeiter
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].astype('str') 
-    termine_df_neu['mitarbeiter'] = termine_df_neu['mitarbeiter'].astype('str') 
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("[","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("]","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("'","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace(" ","")
 
+    # transform mitarbeiter 
+    #termine_df_neu['mitarbeiter'] = termine_df_neu['mitarbeiter'].astype('str') 
+    mitarbeiter_string = ""
+    for mitarbeiter in termine_df_neu['mitarbeiter'].to_list()[0]:
+        if mitarbeiter == termine_df_neu['mitarbeiter'].to_list()[0][-1]:
+            mitarbeiter_string += mitarbeiter 
+        else: 
+            mitarbeiter_string += mitarbeiter + ", "
+            
+    termine_df_neu['mitarbeiter_string'] = mitarbeiter_string
 
-
+    
+    
     print(termine_df_neu)
 
     # transform machines columns into binary column 
