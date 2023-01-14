@@ -2,8 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, HiddenField, TextAreaField, DateField, FieldList, SelectMultipleField, IntegerField, FormField
 from wtforms.validators import InputRequired, Length, ValidationError
 from app.models import User
-from app import bcrypt
+from app import bcrypt, get_graph_params, app
 from flask_login import login_user
+import requests
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
@@ -176,13 +177,23 @@ class TerminOptimizationForm(FlaskForm):
 
     terminbeschreibung = StringField(validators=[
         InputRequired()])
-
-
     
+    params = get_graph_params(app.root_path)
+    head = {
+        'Authorization': params['token']
+    }
+    resp = requests.get('https://graph.microsoft.com/v1.0/users/', headers=head).json()
+    mitarbeiterlist = []
+    machinelist = []
+    for user in resp['value']:
+        if user['jobTitle'] == 'pjs_machine':
+            machinelist.append((user['id'], user['displayName']))
+        else:
+            mitarbeiterlist.append((user['id'], user['displayName']))
 
-    machines = SelectMultipleField(u'Maschinen', choices=[('welle', 'Wellenlöt'), ('3x4', 'Lötbad 3/4'), ('5', 'Lötbad 5')], validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
+    machines = SelectMultipleField(u'Maschinen', choices=machinelist, validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
-    mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=[('M1', 'Mitarbeiter1'), ('M2', 'Mitarbeiter2'), ('M3','Mitarbeiter3')], validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
+    mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=mitarbeiterlist, validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
     duration = IntegerField(validators=[
         InputRequired()])
