@@ -108,39 +108,33 @@ def optimization_table(start_date, end_date, termin):
     df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output_prediction']
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
-    print(df.head(40))
-
     # take termin input data
     termine = {}
     termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data, 'mitarbeiter': termin.mitarbeiter.data}
     termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'mitarbeiter', 'maschine1', 'maschine2', 'maschine3', 'energieverbrauch'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
-    # energy consumption based on machines 
-
-    print(termine)
-
-    # transform strings of machines & mitarbeiter
-    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].astype('str') 
-    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("[","")
-    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("]","")
-    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("'","")
-    termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace(" ","")
+    # transform machines 
+    machines_string = ""
+    for machine in termine_df_neu['maschinen'].to_list()[0]:
+        if machine == termine_df_neu['maschinen'].to_list()[0][-1]:
+            machines_string += machine 
+        else: 
+            machines_string += machine + ", "
+    termine_df_neu['maschinen_string'] = machines_string
 
     # transform mitarbeiter 
-    #termine_df_neu['mitarbeiter'] = termine_df_neu['mitarbeiter'].astype('str') 
     mitarbeiter_string = ""
     for mitarbeiter in termine_df_neu['mitarbeiter'].to_list()[0]:
         if mitarbeiter == termine_df_neu['mitarbeiter'].to_list()[0][-1]:
             mitarbeiter_string += mitarbeiter 
         else: 
             mitarbeiter_string += mitarbeiter + ", "
-            
     termine_df_neu['mitarbeiter_string'] = mitarbeiter_string
 
     
     
-    print(termine_df_neu)
+
 
     # transform machines columns into binary column 
     termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('welle')] = 1
