@@ -118,7 +118,7 @@ def optimization_table(start_date, end_date, termin):
 
     # energy consumption based on machines 
 
-    print(termine_df_neu)
+    print(termine)
 
     # transform strings of machines & mitarbeiter
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].astype('str') 
@@ -127,6 +127,8 @@ def optimization_table(start_date, end_date, termin):
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("]","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace("'","")
     termine_df_neu['maschinen'] = termine_df_neu['maschinen'].str.replace(" ","")
+
+
 
     print(termine_df_neu)
 
