@@ -132,25 +132,22 @@ def optimization_table(start_date, end_date, termin):
             mitarbeiter_string += mitarbeiter + ", "
     termine_df_neu['mitarbeiter_string'] = mitarbeiter_string
 
-    
-    
-
-
-    # transform machines columns into binary column 
-    termine_df_neu['maschine1'].loc[termine_df_neu['maschinen'].str.contains('welle')] = 1
-    termine_df_neu['maschine2'].loc[termine_df_neu['maschinen'].str.contains('3x4')] = 1
-    termine_df_neu['maschine3'].loc[termine_df_neu['maschinen'].str.contains('5')] = 1
-    termine_df_neu['maschine1'].loc[(termine_df_neu['maschine1'].isnull())] = 0
-    termine_df_neu['maschine2'].loc[(termine_df_neu['maschine2'].isnull())] = 0
-    termine_df_neu['maschine3'].loc[(termine_df_neu['maschine3'].isnull())] = 0
-
     # define energy consumption per machine 
-    consumption_m1 = int(config['machines']['consumption_m1'])
-    consumption_m2 = int(config['machines']['consumption_m2'])
-    consumption_m3 = int(config['machines']['consumption_m3'])
+    machine_consumption = {'m1': float(config['machines']['consumption_m1']), 'm2': float(config['machines']['consumption_m2']), 'm3': float(config['machines']['consumption_m3'])}
+    
+    # calculate energy consumption for each termin
+    energie = 0
+    for maschine in termine_df_neu['maschinen'].to_list()[0]: 
+        energie += machine_consumption[maschine] * float(termine_df_neu['dauer'])
+    termine_df_neu['energieverbrauch'] = energie
+    
+    # define energy consumption per machine 
+    #consumption_m1 = int(config['machines']['consumption_m1'])
+    #consumption_m2 = int(config['machines']['consumption_m2'])
+    #consumption_m3 = int(config['machines']['consumption_m3'])
 
     # calculate energy consumption for each termin
-    termine_df_neu['energieverbrauch'] = ((termine_df_neu['maschine1'] * consumption_m1) + (termine_df_neu['maschine2'] * consumption_m2) + (termine_df_neu['maschine3'] * consumption_m3)) * termine_df_neu['dauer'] 
+    #termine_df_neu['energieverbrauch'] = ((termine_df_neu['maschine1'] * consumption_m1) + (termine_df_neu['maschine2'] * consumption_m2) + (termine_df_neu['maschine3'] * consumption_m3)) * termine_df_neu['dauer'] 
     
     # generate dicts of termin data 
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
