@@ -143,7 +143,7 @@ def optimization_table(start_date, end_date, termin):
 
     # TODO: Verfügbarkeitsdaten der Maschinen & Mitarbeiter ziehen 
 
-    
+
     
 
 
@@ -234,7 +234,22 @@ def optimization_table(start_date, end_date, termin):
                 
             # start time constraint 
             for termin in termine_length:            
-                model.addConstr(start_hour[termin] >= 8)      
+                model.addConstr(start_hour[termin] >= 8)  
+
+            # TODO: maschinen verfügbarkeit constraint
+
+
+
+
+
+
+            # TODO: mitarbeiter verfügbarkeit constraint
+            
+         
+             
+                 
+
+
 
             # optimize 
             model.optimize()
