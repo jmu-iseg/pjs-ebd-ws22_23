@@ -10,7 +10,7 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col">
-                <h3>Hier sind die optimalen Zeitpunkte für Ihre Termine:</h3>
+                <h3>Hier sind <b>3 Vorschläge</b> für optimalen Zeitpunkte Ihres Termins:</h3>
                 <p></p>
               </div>
             </div>
@@ -37,7 +37,7 @@
                   <tbody>
                     {% for item in my_list %}
                     <tr>
-                      <td>#{{ item.TerminID }}</td>
+                      <td>Vorschlag #{{ loop.index0 }}</td>
                       <td>{{ item.bezeichnung }}</td>
                       <td>{{ item.maschinen_string }}</td>
                       <td>{{ item.mitarbeiter_string }}</td>
@@ -100,7 +100,7 @@
     <div class="card">
       <div class="card-header">Stromverbrauch der Termine</div>
       <div class="card-body">
-        <p class="card-text">Die Planung aller Termine führt zu einem Stromverbrauch in Höhe von
+        <p class="card-text">Die Planung des Termins führt zu einem Stromverbrauch in Höhe von
           <b>{{energy_consumption}} kWh</b>.
         </p>
         <p></p>
@@ -126,7 +126,7 @@
             <tbody>
               {% for item in netzbezug_termine_percent %}
               <tr>
-                <td style="width: 1px; white-space: nowrap;">#{{ item.TerminID }}</td>
+                <td style="width: 1px; white-space: nowrap;">Vorschlag #{{ item.TerminID }}</td>
                 <td style="width: 1px; white-space: nowrap;"><b>{{ item.percent }} %</b></td>
               </tr>
               {% endfor %}
@@ -135,7 +135,7 @@
         </div>
         <div class="col-md-5">
           <div class="card-body">
-            <p class="card-text">Es werden <b>{{obj_value}} kWh</b> aus dem Stromnetz bezogen.</p>
+            <p class="card-text">Es werden im Durchschnitt <b>{{obj_value}} kWh</b> aus dem Stromnetz bezogen.</p>
             <p></p>
             <div class="chart-container" style="position: relative">
               <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="175" height="175"></canvas>

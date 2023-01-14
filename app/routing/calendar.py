@@ -34,8 +34,8 @@ def show_calendar(id):
     resp = requests.get(cal_url, headers=head).json()
     events = []
     for entry in resp['value']:
-        startdate = datetime.strptime(entry['start']['dateTime'].rsplit('.', 1)[0], "%Y-%m-%dT%H:%M:%S")
-        enddate = datetime.strptime(entry['end']['dateTime'].rsplit('.', 1)[0], "%Y-%m-%dT%H:%M:%S")
+        startdate = datetime.strptime(entry['start']['dateTime'].rsplit('.', 1)[0], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=1)
+        enddate = datetime.strptime(entry['end']['dateTime'].rsplit('.', 1)[0], "%Y-%m-%dT%H:%M:%S") + timedelta(hours=1)
         event = {
             'subject': entry['subject'],
             'body': entry['bodyPreview'],
