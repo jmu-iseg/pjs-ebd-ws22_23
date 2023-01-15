@@ -115,36 +115,41 @@
     <div class="card">
       <div class="card-header">Netzbezug der Terminvorschläge</div>
       <div class="row">
-        <div class="col-md-6">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Terminvorschlag</th>
-                <th scope="col">PV-Strom</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for item in netzbezug_termine_percent %}
-              <tr>
-                <td style="width: 1px; white-space: nowrap;">#{{ item.Termin_ID }}</td>
-                <td style="width: 1px; white-space: nowrap;"><b>{{ item.percent }} %</b></td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-5">
-          <div class="card-body">
-            <p class="card-text">So unterscheiden sich die Terminvorschläge hinsichtlich des <b>Netzbezugs</b>:</p>
-            <p></p>
-            <div class="chart-container" style="position: relative">
-              <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="240" height="200"></canvas>
+          <div class="col-md-6">
+            <div class="card-body">
+              <p class="card-text">Die Planung des Termins führt zu einem Stromverbrauch in Höhe von <b>{{energy_consumption}} kWh</b>.</p>
+              <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Terminvorschlag</th>
+                    <th scope="col">PV-Strom</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in netzbezug_termine_percent %}
+                  <tr>
+                    <td style="width: 1px; white-space: nowrap;">#{{ item.Termin_ID }}</td>
+                    <td style="width: 1px; white-space: nowrap;"><b>{{ item.percent }} %</b></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      </div>
+          <div class="col-md-6">
+            <div class="card-body">
+              <p class="card-text">So unterscheiden sich die Terminvorschläge hinsichtlich des <b>Netzbezugs</b>:</p>
+              <p></p>
+              <div class="chart-container" style="position: relative">
+                <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="260" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+          </div>
+        
     </div>
   </div>
+    
 
   <div class="col col-lg-3 d-flex align-items-stretch">
     <div class="card">
