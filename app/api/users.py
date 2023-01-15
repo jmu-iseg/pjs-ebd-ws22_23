@@ -1,6 +1,6 @@
 from app.api import bp
 from app.models import User
-from flask import jsonify, request, url_for, abort
+from flask import jsonify, request, url_for
 from app.api.auth import token_auth
 from app.api.errors import bad_request
 from app import db

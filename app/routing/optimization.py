@@ -34,7 +34,7 @@ def optimization():
             startdate = form.startdate.data.strftime("%Y-%m-%d 00:00:00")
             enddate = form.enddate.data.strftime("%Y-%m-%d 23:59:59")
             termin = form.termine.__getitem__(0)
-            return optimization_table(start_date=startdate, end_date=enddate, termin=termin)
+            return optimization_table(start_date=startdate, end_date=enddate, termin=termin, api=False)
         else:
             for termin in form.data['termine']:
                 if termin['delete'] == True:
@@ -45,7 +45,7 @@ def optimization():
         return render_template("/pages/optimization.html", form=form)
     return render_template("/pages/optimization.html", form=form)
 
-def optimization_table(start_date, end_date, termin):
+def optimization_table(start_date, end_date, termin, api=False):
     graph_start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
     graph_end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
 
@@ -115,7 +115,10 @@ def optimization_table(start_date, end_date, termin):
 
     # take termin input data
     termine = {}
-    termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data, 'mitarbeiter': termin.mitarbeiter.data}
+    if api:
+        termine['0'] = termin
+    else:
+        termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data, 'mitarbeiter': termin.mitarbeiter.data}
     termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'mitarbeiter', 'energieverbrauch'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
@@ -419,16 +422,23 @@ def optimization_table(start_date, end_date, termin):
             appointments = appointments.sort_values(by="percent",ascending=False)
             netzbezug_termine_percent = appointments.to_dict('records')
 
-            session['appointments_dict'] = appointments_dict
-            session['obj_value'] = obj_value
-            session['renewable_percent'] = renewable_percent
-            session['energy_consumption'] = energy_consumption
-            session['energy_consumption_list'] = energy_consumption_list
-            session['termin_list'] = termin_list
-            session['netzbezug_termine'] = netzbezug_termine
-            session['netzbezug_termine_percent'] = netzbezug_termine_percent
+    if api:
+        optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y")
+        return {
+            'Optimierungszeitpunkt': optimierungszeitpunkt,
+            'Termine': appointments_dict
+        }
+    else:
+        session['appointments_dict'] = appointments_dict
+        session['obj_value'] = obj_value
+        session['renewable_percent'] = renewable_percent
+        session['energy_consumption'] = energy_consumption
+        session['energy_consumption_list'] = energy_consumption_list
+        session['termin_list'] = termin_list
+        session['netzbezug_termine'] = netzbezug_termine
+        session['netzbezug_termine_percent'] = netzbezug_termine_percent
 
-    return redirect(url_for('appointment_list'))
+        return redirect(url_for('appointment_list'))
 
 
 @app.route('/appointments', methods=['GET', 'POST'])
