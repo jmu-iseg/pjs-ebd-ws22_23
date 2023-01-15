@@ -24,26 +24,26 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">ID</th>
+                      <th scope="col">Terminvorschläge</th>
                       <th scope="col">Bezeichnung</th>
                       <th scope="col">Maschinen</th>
                       <th scope="col">Mitarbeiter</th>
                       <th scope="col">Datum</th>
                       <th scope="col">Uhrzeit</th>
-                      <th scope="col">Dauer (h)</th>
+                      <th scope="col">Dauer</th>
                       <th scope="col">Einladung</th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for item in my_list %}
                     <tr>
-                      <td>Vorschlag #{{ loop.index0 }}</td>
+                      <td>#{{ item.Termin_ID }}</td>
                       <td>{{ item.bezeichnung }}</td>
                       <td>{{ item.maschinen_string }}</td>
                       <td>{{ item.mitarbeiter_string }}</td>
                       <td>{{ item.Date }}</td>
                       <td>{{ item.Time }}</td>
-                      <td>{{ item.dauer }}</td>
+                      <td>{{ item.dauer }}h</td>
                       <td>
                         <div class="btn-group" role="group" aria-label="Basic example">
                           <a type="button"
@@ -98,7 +98,7 @@
 <div class="row">
   <div class="col-12 col-lg-3 d-flex align-items-stretch">
     <div class="card">
-      <div class="card-header">Stromverbrauch der Termine</div>
+      <div class="card-header">Stromverbrauch des Termins</div>
       <div class="card-body">
         <p class="card-text">Die Planung des Termins führt zu einem Stromverbrauch in Höhe von
           <b>{{energy_consumption}} kWh</b>.
@@ -113,20 +113,20 @@
 
   <div class="col-12 col-lg-6 d-flex align-items-stretch">
     <div class="card">
-      <div class="card-header">Netzbezug der Termine</div>
+      <div class="card-header">Netzbezug der Terminvorschläge</div>
       <div class="row">
         <div class="col-md-7">
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Termin ID</th>
+                <th scope="col">Terminvorschlag</th>
                 <th scope="col">Strom durch PV</th>
               </tr>
             </thead>
             <tbody>
               {% for item in netzbezug_termine_percent %}
               <tr>
-                <td style="width: 1px; white-space: nowrap;">Vorschlag #{{ item.TerminID }}</td>
+                <td style="width: 1px; white-space: nowrap;">#{{ item.Termin_ID }}</td>
                 <td style="width: 1px; white-space: nowrap;"><b>{{ item.percent }} %</b></td>
               </tr>
               {% endfor %}
@@ -135,7 +135,7 @@
         </div>
         <div class="col-md-5">
           <div class="card-body">
-            <p class="card-text">Es werden im Durchschnitt <b>{{obj_value}} kWh</b> aus dem Stromnetz bezogen.</p>
+            <p class="card-text">So unterscheiden sich die Terminvorschläge hinsichtlich des <b>Netzbezugs</b>:</p>
             <p></p>
             <div class="chart-container" style="position: relative">
               <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="175" height="175"></canvas>
@@ -150,8 +150,8 @@
     <div class="card">
       <div class="card-header">Anteil PV-Strom</div>
       <div class="card-body">
-        <p class="card-text">Es kann <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die
-          Photovoltaikanlage gedeckt werden.</p>
+        <p class="card-text">Beim optimalen <b>Terminvorschlag #1</b> wird voraussichtlich <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die
+          PV-Anlage gedeckt.</p>
         <p></p>
         <div class="chart-container">
           <canvas id="pv_percentage" style="margin: 0 auto;" width="175" height="175"></canvas>
@@ -163,6 +163,7 @@
 <script>
   var ctx1 = document.getElementById('netzbezug').getContext('2d');
   var energy_consumption_list = {{ energy_consumption_list }};
+  var energy_consumption = {{ energy_consumption }};
   var termin_list = {{ termin_list }};
   var termin_list_new = termin_list.map(String);
 
@@ -170,10 +171,10 @@
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
-      labels: termin_list_new,
+      labels: ['Termin'],
       datasets: [{
         label: 'Stromverbrauch',
-        data: energy_consumption_list,
+        data: [energy_consumption],
         backgroundColor: [
           'rgba(15, 120, 120, 0.6)',
           'rgba(15, 90, 150, 0.6)',
@@ -230,7 +231,7 @@
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
-      labels: termin_list_new,
+      labels: ['Terminvorschlag #1', 'Terminvorschlag #2', 'Terminvorschlag #3',],
       datasets: [{
         label: 'Netzbezug',
         data: netzbezug_termine,
@@ -282,8 +283,9 @@
 
 <script>
   var ctx2 = document.getElementById('pv_percentage').getContext('2d');
-  var energy_consumption = {{ energy_consumption }}
-  var netzbezug = {{ obj_value }}
+  var energy_consumption = {{ energy_consumption }};
+  var netzbezug =  {{ netzbezug_termine }};
+  var netzbezug_min = netzbezug[0];
 
   var percentage_chart = new Chart(ctx2, {
     plugins: [ChartDataLabels],
@@ -291,9 +293,7 @@
     data: {
       labels: ['Solarstrom', 'Netzbezug'],
       datasets: [{
-        //label: 'Solarstrom (kWh)',
-        //label: 'Netzbezug (kWh)',
-        data: [energy_consumption - netzbezug, netzbezug],
+        data: [energy_consumption - netzbezug_min, netzbezug_min],
         backgroundColor: [
           'rgba(10, 150, 20, 0.6)',
           'rgba(250, 10, 20, 0.6)'

@@ -203,6 +203,7 @@ def optimization_table(start_date, end_date, termin):
     # select amount of terminvorschlägen for appointments
     termine_df_neu = pd.concat([termine_df_neu] * 3,ignore_index=True)
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id', 'termin_id': 'del'}).drop('del',axis=1)
+    termine_df_neu['termin_id'] = termine_df_neu['termin_id'] + 1
     
     # generate dicts of termin data 
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
@@ -229,7 +230,6 @@ def optimization_table(start_date, end_date, termin):
             # create variables 
             # energy consumption per appointment
             consumption = model.addVars(df['dateTime'],termine_energy,vtype=GRB.CONTINUOUS,name="consumption")
-            print(consumption)
 
             # planned start of appointment 
             start = model.addVars(consumption, vtype=GRB.BINARY, name="start")
@@ -340,8 +340,6 @@ def optimization_table(start_date, end_date, termin):
             for v in model.getVars():
                 if v.X >= 1:
                     if v.VarName.startswith("start["): 
-                        print(v.VarName)
-                        print(v.X)
                         appointments = appointments.append({'Termin':v.VarName}, ignore_index=True)                
                 
             # reformat dataframe
@@ -361,10 +359,16 @@ def optimization_table(start_date, end_date, termin):
             # change negative netzbezug of appointments to 0 
             appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
             
+            # generate new termin id based on ordered netzbezug
+            appointments = appointments.rename(columns={'level_0': 'del'})
+            appointments = appointments.sort_values(by="netzbezug")
+            appointments = appointments.reset_index().reset_index()
+            appointments = appointments.rename(columns={'level_0': 'Termin_ID'})
+            appointments['Termin_ID'] = appointments['Termin_ID'] + 1
+
             # drop unecessary columns
             appointments = appointments.drop('Termin', axis=1)
             appointments = appointments.drop('DateTime', axis=1)
-            appointments = appointments.sort_values(by="TerminID")
 
             # join appointments with termine_df_neu
             appointments_output = pd.merge(appointments, termine_df_neu, how='left', left_on=['TerminID'], right_on=['termin_id'])
@@ -377,32 +381,29 @@ def optimization_table(start_date, end_date, termin):
             appointments_output['Date'] = appointments_output.Date.dt.strftime('%d.%m.%Y')
             appointments_output['Time'] = appointments_output.Time.dt.strftime('%H:%M')
 
-            # transform maschinen & mitarbeiter for better output 
-            appointments_output['maschinen'] = appointments_output['maschinen'].str.replace(",",", ")
-            appointments_output['mitarbeiter'] = appointments_output['mitarbeiter'].str.replace(",",", ")
-
             # df to dict as output for render template 
             appointments_dict = appointments_output.to_dict('records')
 
             # TODO: die optimierten Termine in DB speichern
 
 
-            # save objective value of model
+            # save average objective value of model
             obj_value = model.getAttr("ObjVal")
+            #obj_value = obj_value/int(config['optimization']['anzahl_terminvorschläge'])
 
             # change negative objective value to 0 (netzeinspeisung)
             if obj_value < 0:
                 obj_value = 0
 
             # get sum of energy consumption of all appointments 
-            energy_consumption = termine_df_neu['energieverbrauch'].sum()
+            energy_consumption = termine_df_neu['energieverbrauch'][0]
 
             # list of energy consumption & termin id of appointments
             energy_consumption_list = termine_df_neu['energieverbrauch'].tolist()
             termin_list = termine_df_neu['termin_id'].astype(int).tolist()
 
-            # percent of renewable energy for appointments
-            renewable_percent = (1-(obj_value/energy_consumption)) * 100
+            # percent of renewable energy for best terminvorschlag
+            renewable_percent = (1-(appointments['netzbezug'].min()/energy_consumption)) * 100
 
             # round output data
             renewable_percent = round(renewable_percent, 2)
@@ -415,6 +416,7 @@ def optimization_table(start_date, end_date, termin):
             appointments['percent'] = appointments['percent'] * 100
             appointments['percent'] = appointments['percent'].astype(float)
             appointments['percent'] = appointments['percent'].round(2) 
+            appointments = appointments.sort_values(by="percent",ascending=False)
             netzbezug_termine_percent = appointments.to_dict('records')
 
             session['appointments_dict'] = appointments_dict

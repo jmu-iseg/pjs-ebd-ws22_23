@@ -32,7 +32,7 @@
             <tbody>
               {% for termin in form.termine %}
                 <tr>{{ termin.csrf_token }}
-                  <td>#{{ loop.index0 }}</td>
+                  <td>#{{ loop.index0 + 1 }}</td>
                   <td>{{ termin.terminbeschreibung }}</td>
                   <td>{{ termin.machines }}</td>
                   <td>{{ termin.mitarbeiter }}</td>
