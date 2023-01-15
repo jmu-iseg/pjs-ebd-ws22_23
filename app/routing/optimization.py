@@ -201,7 +201,7 @@ def optimization_table(start_date, end_date, termin):
         mitarbeiter_appointments[mitarbeiter] = appointments
     
     # select amount of terminvorschlägen for appointments
-    termine_df_neu = pd.concat([termine_df_neu] * int(config['optimization']['anzahl_terminvorschläge']),ignore_index=True)
+    termine_df_neu = pd.concat([termine_df_neu] * 3,ignore_index=True)
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id', 'termin_id': 'del'}).drop('del',axis=1)
     termine_df_neu['termin_id'] = termine_df_neu['termin_id'] + 1
     
@@ -389,7 +389,7 @@ def optimization_table(start_date, end_date, termin):
 
             # save average objective value of model
             obj_value = model.getAttr("ObjVal")
-            obj_value = obj_value/int(config['optimization']['anzahl_terminvorschläge'])
+            #obj_value = obj_value/int(config['optimization']['anzahl_terminvorschläge'])
 
             # change negative objective value to 0 (netzeinspeisung)
             if obj_value < 0:
