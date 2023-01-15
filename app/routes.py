@@ -19,25 +19,7 @@ from flask_login import login_required
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    form = OptimizationForm()
-    for termin in form.termine:
-        print(termin.data)
-        print(type(termin.machines.data))
-    if form.validate_on_submit():
-        if 'addline' in request.form:
-            form.update_self()
-        elif 'optimize' in request.form:
-            # form logic here
-            return redirect('/')
-        else:
-            for termin in form.data['termine']:
-                if termin['delete'] == True:
-                    form.delete_termin(termin)
-        return render_template("/pages/home.html", form=form)
-    elif request.method == "POST" and 'optimization_identifier' in request.form:
-        flash_errors(form)
-        return render_template("/pages/home.html", form=form)
-    return render_template("/pages/home.html", form=form)
+    return render_template("/pages/home.html")
 
 def allowed_file(filename):
     return '.' in filename and \
