@@ -12,14 +12,22 @@ def calendar():
         'Authorization': params['token']
     }
     users = {}
+    machines = {}
     resp = requests.get('https://graph.microsoft.com/v1.0/users/', headers=head).json()
     for user in resp['value']:
-        users[user['displayName']] = {
-            'id': user['id'],
-            'title': user['jobTitle'],
-            'mail': user['mail']
-            }
-    return render_template('/pages/calendar.html', users=users)
+        if user['jobTitle'] == 'pjs_machine':
+            machines[user['displayName']] = {
+                'id': user['id'],
+                'title': user['jobTitle'],
+                'mail': user['mail']
+                }
+        else:
+            users[user['displayName']] = {
+                'id': user['id'],
+                'title': user['jobTitle'],
+                'mail': user['mail']
+                }
+    return render_template('/pages/calendar.html', users=users, machines=machines)
 
 @app.route('/calendar/<id>')
 @login_required
