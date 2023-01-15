@@ -1,7 +1,6 @@
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from app.models import User
 from app.api.errors import error_response
-from flask_httpauth import HTTPTokenAuth
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
@@ -11,7 +10,6 @@ def verify_password(username, password):
     print(username + "   " + password)
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
-        print("user check password passt")
         return user
 
 @basic_auth.error_handler
