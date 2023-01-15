@@ -9,7 +9,7 @@ import io
 
 def get_config(root_path):
     config = configparser.ConfigParser()
-    config.read(os.path.join(root_path,'settings.cfg'))
+    config.read(os.path.join(root_path,'settings.cfg'), encoding='utf-8')
     return config
 
 def write_config(root_path, config):
