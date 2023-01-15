@@ -115,12 +115,12 @@
     <div class="card">
       <div class="card-header">Netzbezug der Terminvorschläge</div>
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
           <table class="table">
             <thead>
               <tr>
                 <th scope="col">Terminvorschlag</th>
-                <th scope="col">Strom durch PV</th>
+                <th scope="col">PV-Strom</th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +138,7 @@
             <p class="card-text">So unterscheiden sich die Terminvorschläge hinsichtlich des <b>Netzbezugs</b>:</p>
             <p></p>
             <div class="chart-container" style="position: relative">
-              <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="175" height="175"></canvas>
+              <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="240" height="200"></canvas>
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@
           PV-Anlage gedeckt.</p>
         <p></p>
         <div class="chart-container">
-          <canvas id="pv_percentage" style="margin: 0 auto;" width="175" height="175"></canvas>
+          <canvas id="pv_percentage" style="margin: 0 auto;" width="190" height="175"></canvas>
         </div>
       </div>
     </div>
@@ -195,16 +195,6 @@
         animateRotate: true,
         duration: 2000
       },
-      datalabels: {
-        display: 'auto',
-        align: 'bottom',
-        backgroundColor: '#ccc',
-        borderRadius: 3,
-        font: {
-          size: 18,
-        },
-        formatter: function (value, context) { return value || null; },
-      },
       plugins: {
         legend: {
           display: false,
@@ -215,7 +205,22 @@
               return 'kWh';
             }
           }
-        }
+        },
+        datalabels: {
+        display: 'auto',
+        align: 'center',
+        borderRadius: 4,
+        color: 'black',
+        font: {
+          size: 14,
+          weight: 'bold',
+          color: '#fff',
+          family: 'nunito'
+        },
+        formatter: function (value, context) { 
+          return value + " kWh" || null; 
+        },
+      }
       }
     }
   });
@@ -229,41 +234,32 @@
 
   var netzbezug_chart = new Chart(ctx3, {
     plugins: [ChartDataLabels],
-    type: 'doughnut',
+    type: 'bar',
     data: {
-      labels: ['Terminvorschlag #1', 'Terminvorschlag #2', 'Terminvorschlag #3',],
+      labels: ['#1', '#2', '#3',],
       datasets: [{
         label: 'Netzbezug',
         data: netzbezug_termine,
         backgroundColor: [
-          'rgba(15, 120, 120, 0.6)',
-          'rgba(15, 90, 150, 0.6)',
-          'rgba(15, 90, 250, 0.6)'
+          'rgba(15, 150, 50, 0.6)',
+          'rgba(250, 180, 30, 0.6)',
+          'rgba(250, 80, 30, 0.6)'
         ]
       }]
     },
     options: {
       responsive: false,
       maintainAspectRatio: false,
-      aspectRatio: 2,
-      cutoutPercentage: 50,
-      legend: {
-        display: false
-      },
+      barThickness: 20,
       animation: {
-        animateScale: true,
-        animateRotate: true,
         duration: 2000
       },
-      datalabels: {
-        display: 'auto',
-        align: 'bottom',
-        backgroundColor: '#ccc',
-        borderRadius: 3,
-        font: {
-          size: 18,
-        },
-        formatter: function (value, context) { return value || null; },
+      scales: {
+        x: {
+          ticks: {
+            display: true
+          }
+        }
       },
       plugins: {
         legend: {
@@ -275,7 +271,25 @@
               return 'kWh';
             }
           }
+        },
+        datalabels: {
+          align: 'top',
+          borderRadius: 2,
+          color: 'black',
+          font: {
+            size: 12,
+            weight: 'bold',
+            color: '#fff',
+            family: 'nunito'
+          },
+          formatter: function (value, context) { 
+            if (value == 0){
+              return null;
+          } else {
+            return value + " kWh"; 
+          }
         }
+      }
       }
     }
   });
@@ -313,16 +327,6 @@
         animateRotate: true,
         duration: 2000
       },
-      datalabels: {
-        display: 'auto',
-        align: 'bottom',
-        backgroundColor: '#ccc',
-        borderRadius: 3,
-        font: {
-          size: 18,
-        },
-        formatter: function (value, context) { return value || null; },
-      },
       plugins: {
         legend: {
           display: false
@@ -333,7 +337,26 @@
               return 'kWh';
             }
           }
+        },
+        datalabels: {
+          display: 'auto',
+          align: 'center',
+          borderRadius: 4,
+          color: 'black',
+          font: {
+            size: 14,
+            weight: 'bold',
+            color: '#fff',
+            family: 'nunito'
+          },
+          formatter: function (value, context) { 
+          if (value == 0){
+            return null;
+        } else {
+          return value + " kWh"; 
         }
+        }
+      }
       }
     }
   });
