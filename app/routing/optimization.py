@@ -423,7 +423,7 @@ def optimization_table(start_date, end_date, termin, api=False):
             netzbezug_termine_percent = appointments.to_dict('records')
 
     if api:
-        optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y")
+        optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y %H:%M")
         return {
             'Optimierungszeitpunkt': optimierungszeitpunkt,
             'Termine': appointments_dict
