@@ -72,9 +72,9 @@ def home():
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
     # generate outputs for visualisation
-    pv_prediction_labels = netzbezug['dateTime'].dt.strftime("%d.%m.%Y").to_list()
     pv_prediction = netzbezug.set_index('dateTime')
-    pv_prediction = pv_prediction.resample("D").sum()
+    pv_prediction = pv_prediction.resample("D").sum().reset_index()
+    pv_prediction_labels = pv_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list()
     pv_prediction = pv_prediction['output_prediction'].to_list()
 
     # gespeicherte historische termine abfragen

@@ -226,14 +226,17 @@ def optimization_table(start_date, end_date, termin, api=False):
     
 
     for i in range(1,5):
+        # try 2 vorschläge
         if i==2: 
             termine_energy.popitem()
             termine_length.popitem()
+        # try 1 vorschlag
         if i==3: 
             termine_energy.popitem()
             termine_length.popitem()
+        # 1 terminvorschlag führt zu infeasible model 
         if i==4:
-            flash("Es konnte kein mögliche Terminvorschlag in dem Zeitraum gefunden werden.")
+            flash("Es konnte kein möglicher Terminvorschlag im Planungshorizont gefunden werden.")
             return redirect(url_for("optimization"))
 
         # gurobi model
@@ -326,6 +329,7 @@ def optimization_table(start_date, end_date, termin, api=False):
                         prohibited_times_machines.append(termin)
 
                 duration = int(termine_length[1])
+
                 # machines verfügbarkeit constraint
                 for prohibited_time in prohibited_times_machines:
                     start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
@@ -340,7 +344,7 @@ def optimization_table(start_date, end_date, termin, api=False):
                 for mitarbeiter in mitarbeiter_appointments:
                     for termin in mitarbeiter_appointments[mitarbeiter]:
                         prohibited_times_mitarbeiter.append(termin)
-                print(prohibited_times_mitarbeiter)
+
                 # mitarbeiter verfügbarkeit constraint
                 for prohibited_time in prohibited_times_mitarbeiter:
                     start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
@@ -356,17 +360,21 @@ def optimization_table(start_date, end_date, termin, api=False):
                 # generate output
                 # save planned appointments
                 appointments = pd.DataFrame(columns=['Termin'])
-                for v in model.getVars():
-                    try:
+
+                # catch errors 
+                try:
+                    for v in model.getVars():
                         if v.X >= 1:
                             if v.VarName.startswith("start["): 
                                 appointments = appointments.append({'Termin':v.VarName}, ignore_index=True)                
-                    except AttributeError:
-                        continue
+                except AttributeError:
+                    continue
 
                 # reformat dataframe
                 appointments['Termin'] = appointments['Termin'].map(lambda x: x.lstrip('start_hourday[').rstrip(']'))
                 appointments = appointments.groupby(by="Termin").sum().reset_index()
+
+                print(appointments)
                 appointments[['DateTime', 'TerminID']] = appointments['Termin'].str.split(',', 1, expand=True)
                 appointments[['Date', 'Time']] = appointments['DateTime'].str.split(' ', 1, expand=True)
                 appointments['TerminID'] = appointments['TerminID'].astype(int)
@@ -407,12 +415,8 @@ def optimization_table(start_date, end_date, termin, api=False):
                 # df to dict as output for render template 
                 appointments_dict = appointments_output.to_dict('records')
 
-                # TODO: die optimierten Termine in DB speichern
-
-
                 # save average objective value of model
                 obj_value = model.getAttr("ObjVal")
-                #obj_value = obj_value/int(config['optimization']['anzahl_terminvorschläge'])
 
                 # change negative objective value to 0 (netzeinspeisung)
                 if obj_value < 0:
