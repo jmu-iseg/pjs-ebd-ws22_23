@@ -1,6 +1,7 @@
 from app import app, flash_errors, create_file_object, get_config, get_graph_params, db
 from app.models import Termin
 from flask_login import login_required
+import flask_login
 from flask import request, render_template, redirect, flash, session, url_for
 from app.forms import SendMailForm, OptimizationForm
 from pathlib import Path
@@ -27,6 +28,7 @@ termine = {}
 @app.route('/optimization', methods=['GET', 'POST'])
 @login_required
 def optimization():
+    [session.pop(key) for key in list(session.keys()) if key == str(flask_login.current_user.id)]
     form = OptimizationForm()
     if form.validate_on_submit():
         if 'addline' in request.form:
@@ -213,6 +215,8 @@ def optimization_table(start_date, end_date, termin, api=False):
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
     termine_length = dict(termine_df_neu[['termin_id','dauer']].values)
 
+    print(termine_length)
+
     # change float key to int
     for k in termine_energy.keys():
         int_key = int(k)
@@ -311,9 +315,10 @@ def optimization_table(start_date, end_date, termin, api=False):
                 for termin in machine_appointments[machine]:
                     prohibited_times_machines.append(termin)
 
+            duration = int(termine_length[1])
             # machines verfügbarkeit constraint
             for prohibited_time in prohibited_times_machines:
-                start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S')
+                start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
                 end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
                 for termin in termine_energy:
                     for dateTime in df['dateTime']:
@@ -325,10 +330,10 @@ def optimization_table(start_date, end_date, termin, api=False):
             for mitarbeiter in mitarbeiter_appointments:
                 for termin in mitarbeiter_appointments[mitarbeiter]:
                     prohibited_times_mitarbeiter.append(termin)
-            
+            print(prohibited_times_mitarbeiter)
             # mitarbeiter verfügbarkeit constraint
             for prohibited_time in prohibited_times_mitarbeiter:
-                start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S')
+                start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
                 end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
                 for termin in termine_energy:
                     for dateTime in df['dateTime']:
@@ -428,27 +433,6 @@ def optimization_table(start_date, end_date, termin, api=False):
             output_prediction = output_prediction.resample("D").sum().reset_index()
             output_prediction['dateTime'] = pd.to_datetime(output_prediction.dateTime)
 
-    termin_db = {}
-    for trm in appointments_dict:
-        if trm["Termin_ID"] == 1:
-            termin_db = trm
-            break
-    dt_str = f"{termin_db['Date']}T{termin_db['Time']}"
-    termin_dt = datetime.strptime(dt_str, "%d.%m.%YT%H:%M")
-    # save termin to database
-    new_termin = Termin(
-        dateTime=termin_dt,
-        description=termin_db['bezeichnung'],
-        duration=termin_db['dauer'],
-        energyconsumption=termin_db['energieverbrauch'],
-        gridenergy=termin_db['netzbezug'],
-        machines=termin_db['maschinen_string'],
-        employees=termin_db['mitarbeiter_string'],
-        creationTimeUTC = datetime.utcnow()
-        )
-    db.session.add(new_termin)
-    db.session.commit()
-
     if api:
         optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y %H:%M")
         return {
@@ -456,16 +440,18 @@ def optimization_table(start_date, end_date, termin, api=False):
             'Termine': appointments_dict
         }
     else:
-        session['appointments_dict'] = appointments_dict
-        session['obj_value'] = obj_value
-        session['renewable_percent'] = renewable_percent
-        session['energy_consumption'] = energy_consumption
-        session['energy_consumption_list'] = energy_consumption_list
-        session['termin_list'] = termin_list
-        session['netzbezug_termine'] = netzbezug_termine
-        session['netzbezug_termine_percent'] = netzbezug_termine_percent
-        session['output_prediction_list'] = output_prediction['output_prediction'].round(1).to_list()
-        session['output_prediction_dates'] = output_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list()
+        session[str(flask_login.current_user.id)] = {
+            'appointments_dict': appointments_dict,
+            'obj_value': obj_value,
+            'renewable_percent': renewable_percent,
+            'energy_consumption': energy_consumption,
+            'energy_consumption_list': energy_consumption_list,
+            'termin_list': termin_list,
+            'netzbezug_termine': netzbezug_termine,
+            'netzbezug_termine_percent': netzbezug_termine_percent,
+            'output_prediction_list': output_prediction['output_prediction'].round(1).to_list(),
+            'output_prediction_dates': output_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list()
+        }
 
         return redirect(url_for('appointment_list'))
 
@@ -473,16 +459,19 @@ def optimization_table(start_date, end_date, termin, api=False):
 @app.route('/appointments', methods=['GET', 'POST'])
 @login_required
 def appointment_list():
-    appointments_dict = session.get('appointments_dict')
-    obj_value = session.get('obj_value')
-    renewable_percent = session.get('renewable_percent')
-    energy_consumption = session.get('energy_consumption')
-    energy_consumption_list = session.get('energy_consumption_list')
-    termin_list = session.get('termin_list')
-    netzbezug_termine = session.get('netzbezug_termine')
-    netzbezug_termine_percent = session.get('netzbezug_termine_percent')
-    output_prediction_list = session.get('output_prediction_list')
-    output_prediction_dates = session.get('output_prediction_dates')
+    user_id = str(flask_login.current_user.id)
+    if session.get(user_id) is None:
+        return redirect(url_for('optimization'))
+    appointments_dict = session.get(user_id).get('appointments_dict')
+    obj_value = session.get(user_id).get('obj_value')
+    renewable_percent = session.get(user_id).get('renewable_percent')
+    energy_consumption = session.get(user_id).get('energy_consumption')
+    energy_consumption_list = session.get(user_id).get('energy_consumption_list')
+    termin_list = session.get(user_id).get('termin_list')
+    netzbezug_termine = session.get(user_id).get('netzbezug_termine')
+    netzbezug_termine_percent = session.get(user_id).get('netzbezug_termine_percent')
+    output_prediction_list = session.get(user_id).get('output_prediction_list')
+    output_prediction_dates = session.get(user_id).get('output_prediction_dates')
 
     print(output_prediction_dates)
 
@@ -516,3 +505,71 @@ def appointment_list():
         return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
 
     return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
+
+@app.route('/save-optimization', methods=['GET'])
+@login_required
+def save_termin():
+    # get the termin dict
+    terminId = request.args.get('id')
+    if terminId is None:
+        return redirect(url_for('optimization'))
+    appointments_dict = session.get(str(flask_login.current_user.id)).get('appointments_dict')
+    termin_db = {}
+    for trm in appointments_dict:
+        if trm["Termin_ID"] == int(terminId):
+            termin_db = trm
+            break
+    dt_str = f"{termin_db['Date']}T{termin_db['Time']}"
+    termin_dt = datetime.strptime(dt_str, "%d.%m.%YT%H:%M")
+
+    # save termin to database
+    new_termin = Termin(
+        dateTime=termin_dt,
+        description=termin_db['bezeichnung'],
+        duration=termin_db['dauer'],
+        energyconsumption=termin_db['energieverbrauch'],
+        gridenergy=termin_db['netzbezug'],
+        machines=termin_db['maschinen_string'],
+        employees=termin_db['mitarbeiter_string'],
+        creationTimeUTC = datetime.utcnow()
+        )
+    db.session.add(new_termin)
+    db.session.commit()
+
+    # create caledar event for all employees and machines in their calendar
+    params = get_graph_params(app.root_path)
+    head = {
+        'Authorization': params['token'],
+        'Content-type': 'application/json'
+    }
+
+    calendars = termin_db['maschinen'] + termin_db['mitarbeiter']
+
+    for calendar in calendars:
+        url = f"https://graph.microsoft.com/v1.0/users/{calendar}/calendar/events"
+        graph_start_dt = termin_dt.strftime("%Y-%m-%dT%H:%M")
+        graph_end_dt = (termin_dt + timedelta(hours=termin_db['dauer'])).strftime("%Y-%m-%dT%H:%M")
+
+        payload = {
+            "subject": termin_db['bezeichnung'],
+            "body": {
+                "contentType": "HTML",
+                "content": "Dieser Termin wurde von https://ebt-pjs.de generiert und blockiert die Maschine / den Mitarbeiter für einen Kundentermin"
+            },
+            "start": {
+                "dateTime": graph_start_dt,
+                "timeZone": "Europe/Berlin"
+            },
+            "end": {
+                "dateTime": graph_end_dt,
+                "timeZone": "Europe/Berlin"
+            },
+            "location":{
+                "displayName":f"Seho Systems GmbH Showroom, Maschinen: {termin_db['maschinen_string']}"
+            }
+        }
+
+        requests.post(url=url, headers=head, data=json.dumps(payload))
+
+    [session.pop(key) for key in list(session.keys()) if key == str(flask_login.current_user.id)]
+    return redirect(url_for('optimization'))

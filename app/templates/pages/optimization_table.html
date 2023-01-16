@@ -50,9 +50,10 @@
                             href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
                             class="btn btn-outline-primary">herunterladen</a>
                           <button type="button" data-bs-toggle="modal" data-bs-target="#mailModal{{ item.TerminID }}" class="btn btn-outline-primary">senden</button>
+                          <button type="button" data-bs-toggle="modal" data-bs-target="#saveModal{{ item.TerminID }}" class="btn btn-outline-primary">speichern</button>
                         </div>
 
-                        <!-- Modal -->
+                        <!-- Modals -->
                         <div class="modal fade" id="mailModal{{ item.TerminID }}" tabindex="-1" aria-labelledby="mailModalLabel{{ item.TerminID }}"
                           aria-hidden="true">
                           <div class="modal-dialog">
@@ -81,6 +82,26 @@
                             </div>
                           </div>
                         </div>
+
+                        <div class="modal fade" id="saveModal{{ item.TerminID }}" tabindex="-1" aria-labelledby="saveModalLabel{{ item.TerminID }}"
+                          aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="saveModalLabel{{ item.TerminID }}">Termin speichern</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                  aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <p>TO DO: TEXT EINFÜGEN</p>
+                                <a type="button"
+                                  href="{{ url_for('save_termin', id=item.Termin_ID) }}"
+                                  class="btn btn-outline-primary">Speichern</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                       </td>
                     </tr>
                     {% endfor %}

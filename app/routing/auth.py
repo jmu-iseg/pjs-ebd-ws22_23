@@ -55,6 +55,6 @@ def profilepage():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
-    [session.pop(key) for key in list(session.keys()) if key != '_flashes']
+    [session.pop(key) for key in list(session.keys()) if key == str(flask_login.current_user.id)]
     logout_user()
     return redirect(url_for('login'))
