@@ -13,6 +13,7 @@ class Termin(db.Model):
     gridenergy = db.Column(db.Float)
     machines = db.Column(db.String(2000))
     employees = db.Column(db.String(2000))
+    creationTimeUTC = db.Column(db.DateTime)
 
 
     def __repr__(self):

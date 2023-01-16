@@ -443,7 +443,8 @@ def optimization_table(start_date, end_date, termin, api=False):
         energyconsumption=termin_db['energieverbrauch'],
         gridenergy=termin_db['netzbezug'],
         machines=termin_db['maschinen_string'],
-        employees=termin_db['mitarbeiter_string']
+        employees=termin_db['mitarbeiter_string'],
+        creationTimeUTC = datetime.utcnow()
         )
     db.session.add(new_termin)
     db.session.commit()
