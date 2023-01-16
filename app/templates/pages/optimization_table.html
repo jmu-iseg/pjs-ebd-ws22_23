@@ -4,7 +4,7 @@
 <div class="row">
   <div class="col">
     <div class="card">
-      <div class="card-header">Optimization</div>
+      <div class="card-header">Optimierung</div>
       <div class="card-body">
         <div class="bootstrap-iso">
           <div class="container-fluid">
@@ -96,16 +96,18 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-12 col-lg-3 d-flex align-items-stretch">
+  <div class="col col-lg-3 d-flex align-items-stretch">
     <div class="card">
-      <div class="card-header">Stromverbrauch des Termins</div>
+      <div class="card-header">Anteil PV-Strom</div>
       <div class="card-body">
-        <p class="card-text">Die Planung des Termins führt zu einem Stromverbrauch in Höhe von
-          <b>{{energy_consumption}} kWh</b>.
-        </p>
+        <p class="card-text">Beim optimalen <b>Terminvorschlag #1</b> wird voraussichtlich <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die
+          PV-Anlage gedeckt.</p>
         <p></p>
         <div class="chart-container">
-          <canvas id="netzbezug" style="margin: 0 auto;" width="175" height="175"></canvas>
+          <canvas id="pv_percentage" style="margin: 0 auto;" width="190" height="175"></canvas>
+          <div class="donut-inner" style="margin-top: -100px; margin-bottom: 100px;">
+            <span>{{energy_consumption}} kWh</span>
+          </div>
         </div>
       </div>
     </div>
@@ -117,7 +119,7 @@
       <div class="row">
           <div class="col-md-6">
             <div class="card-body">
-              <p class="card-text">Die Planung des Termins führt zu einem Stromverbrauch in Höhe von <b>{{energy_consumption}} kWh</b>.</p>
+              <p class="card-text">Die Planung des Termins führt zu einem <b>Stromverbrauch</b> in Höhe von <b>{{energy_consumption}} kWh</b>.</p>
               <table class="table">
                 <thead>
                 <tr>
@@ -149,55 +151,42 @@
         
     </div>
   </div>
-    
 
-  <div class="col col-lg-3 d-flex align-items-stretch">
+  <div class="col-12 col-lg-3 d-flex align-items-stretch">
     <div class="card">
-      <div class="card-header">Anteil PV-Strom</div>
+      <div class="card-header">PV-Energie im Planungshorizont</div>
       <div class="card-body">
-        <p class="card-text">Beim optimalen <b>Terminvorschlag #1</b> wird voraussichtlich <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die
-          PV-Anlage gedeckt.</p>
+        <p class="card-text">Im Planungshorizont wird folgende erzeugte <b>Solarenergie</b> erwartet:</p>
         <p></p>
         <div class="chart-container">
-          <canvas id="pv_percentage" style="margin: 0 auto;" width="190" height="175"></canvas>
+          <canvas id="netzbezug" style="margin: 0 auto;" width="280" height="220"></canvas>
         </div>
       </div>
     </div>
   </div>
+
 </div>
 <script>
-  var ctx1 = document.getElementById('netzbezug').getContext('2d');
-  var energy_consumption_list = {{ energy_consumption_list }};
-  var energy_consumption = {{ energy_consumption }};
-  var termin_list = {{ termin_list }};
-  var termin_list_new = termin_list.map(String);
+  var ctx1 = document.getElementById('netzbezug').getContext('2d');  
+  var output_prediction_list = {{ output_prediction_list }};
+  var output_prediction_dates = {{ output_prediction_dates | safe }};
 
   var netzbezug_chart = new Chart(ctx1, {
-    plugins: [ChartDataLabels],
-    type: 'doughnut',
+    type: 'line',
     data: {
-      labels: ['Termin'],
+      labels: output_prediction_dates,
       datasets: [{
-        label: 'Stromverbrauch',
-        data: [energy_consumption],
-        backgroundColor: [
-          'rgba(15, 120, 120, 0.6)',
-          'rgba(15, 90, 150, 0.6)',
-          'rgba(15, 90, 250, 0.6)'
-        ]
+        label: 'PV-Erzeugung',
+        data: output_prediction_list
       }]
     },
     options: {
       responsive: false,
       maintainAspectRatio: false,
-      aspectRatio: 2,
-      cutoutPercentage: 50,
       legend: {
         display: false
       },
       animation: {
-        animateScale: true,
-        animateRotate: true,
         duration: 2000
       },
       plugins: {
@@ -210,22 +199,7 @@
               return 'kWh';
             }
           }
-        },
-        datalabels: {
-        display: 'auto',
-        align: 'center',
-        borderRadius: 4,
-        color: 'black',
-        font: {
-          size: 14,
-          weight: 'bold',
-          color: '#fff',
-          family: 'nunito'
-        },
-        formatter: function (value, context) { 
-          return value + " kWh" || null; 
-        },
-      }
+        }
       }
     }
   });

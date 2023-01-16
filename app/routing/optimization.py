@@ -358,6 +358,7 @@ def optimization_table(start_date, end_date, termin):
 
             # change negative netzbezug of appointments to 0 
             appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
+            appointments['netzbezug'] = appointments['netzbezug'].round(1)
             
             # generate new termin id based on ordered netzbezug
             appointments = appointments.rename(columns={'level_0': 'del'})
@@ -396,7 +397,7 @@ def optimization_table(start_date, end_date, termin):
                 obj_value = 0
 
             # get sum of energy consumption of all appointments 
-            energy_consumption = termine_df_neu['energieverbrauch'][0]
+            energy_consumption = int(termine_df_neu['energieverbrauch'][0])
 
             # list of energy consumption & termin id of appointments
             energy_consumption_list = termine_df_neu['energieverbrauch'].tolist()
@@ -406,8 +407,7 @@ def optimization_table(start_date, end_date, termin):
             renewable_percent = (1-(appointments['netzbezug'].min()/energy_consumption)) * 100
 
             # round output data
-            renewable_percent = round(renewable_percent, 2)
-            energy_consumption = round(energy_consumption, 2)
+            renewable_percent = int(round(renewable_percent, 2))
             obj_value = round(obj_value, 2)
 
             # netzbezug für jeden einzelnen termin 
@@ -415,10 +415,16 @@ def optimization_table(start_date, end_date, termin):
             appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
             appointments['percent'] = appointments['percent'] * 100
             appointments['percent'] = appointments['percent'].astype(float)
-            appointments['percent'] = appointments['percent'].round(2) 
+            appointments['percent'] = appointments['percent'].round(2).astype(int)
             appointments = appointments.sort_values(by="percent",ascending=False)
             netzbezug_termine_percent = appointments.to_dict('records')
 
+            # output prediction visualization 
+            output_prediction = netzbezug.set_index('dateTime')
+            output_prediction = output_prediction.resample("D").sum().reset_index()
+            output_prediction['dateTime'] = pd.to_datetime(output_prediction.dateTime)
+
+            # save session variables 
             session['appointments_dict'] = appointments_dict
             session['obj_value'] = obj_value
             session['renewable_percent'] = renewable_percent
@@ -427,6 +433,8 @@ def optimization_table(start_date, end_date, termin):
             session['termin_list'] = termin_list
             session['netzbezug_termine'] = netzbezug_termine
             session['netzbezug_termine_percent'] = netzbezug_termine_percent
+            session['output_prediction_list'] = output_prediction['output_prediction'].round(1).to_list()
+            session['output_prediction_dates'] = output_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list()   
 
     return redirect(url_for('appointment_list'))
 
@@ -442,6 +450,10 @@ def appointment_list():
     termin_list = session.get('termin_list')
     netzbezug_termine = session.get('netzbezug_termine')
     netzbezug_termine_percent = session.get('netzbezug_termine_percent')
+    output_prediction_list = session.get('output_prediction_list')
+    output_prediction_dates = session.get('output_prediction_dates')
+
+    print(output_prediction_dates)
 
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
@@ -467,9 +479,9 @@ def appointment_list():
             server.login(user, password)
             server.sendmail(sender, receiver, msg.as_string())
             flash("Mail erfolgreich verschickt")
-        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
+        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
     elif request.method == "POST" and 'sendMailForm' in request.form:
         flash_errors(sendMailForm)
-        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
+        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
 
-    return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, sendMailForm=sendMailForm)
+    return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
