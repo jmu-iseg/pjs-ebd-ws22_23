@@ -19,6 +19,9 @@ from flask_login import login_required
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
+    termine = Termin.query.all()
+    for termin in termine:
+        print(termin.dateTime)
     return render_template("/pages/home.html")
 
 def allowed_file(filename):

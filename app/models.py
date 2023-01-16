@@ -4,6 +4,21 @@ import base64
 from datetime import datetime, timedelta
 import os
 
+class Termin(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    dateTime = db.Column(db.DateTime)
+    description = db.Column(db.String(2000))
+    duration = db.Column(db.Float)
+    energyconsumption = db.Column(db.Float)
+    gridenergy = db.Column(db.Float)
+    machines = db.Column(db.String(2000))
+    employees = db.Column(db.String(2000))
+
+
+    def __repr__(self):
+        return f'<Termin {self.id}>'
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)

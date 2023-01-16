@@ -1,4 +1,5 @@
-from app import app, flash_errors, create_file_object, get_config, get_graph_params
+from app import app, flash_errors, create_file_object, get_config, get_graph_params, db
+from app.models import Termin
 from flask_login import login_required
 from flask import request, render_template, redirect, flash, session, url_for
 from app.forms import SendMailForm, OptimizationForm
@@ -426,6 +427,26 @@ def optimization_table(start_date, end_date, termin, api=False):
             output_prediction = netzbezug.set_index('dateTime')
             output_prediction = output_prediction.resample("D").sum().reset_index()
             output_prediction['dateTime'] = pd.to_datetime(output_prediction.dateTime)
+
+    termin_db = {}
+    for trm in appointments_dict:
+        if trm["Termin_ID"] == 1:
+            termin_db = trm
+            break
+    dt_str = f"{termin_db['Date']}T{termin_db['Time']}"
+    termin_dt = datetime.strptime(dt_str, "%d.%m.%YT%H:%M")
+    # save termin to database
+    new_termin = Termin(
+        dateTime=termin_dt,
+        description=termin_db['bezeichnung'],
+        duration=termin_db['dauer'],
+        energyconsumption=termin_db['energieverbrauch'],
+        gridenergy=termin_db['netzbezug'],
+        machines=termin_db['maschinen_string'],
+        employees=termin_db['mitarbeiter_string']
+        )
+    db.session.add(new_termin)
+    db.session.commit()
 
     if api:
         optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y %H:%M")
