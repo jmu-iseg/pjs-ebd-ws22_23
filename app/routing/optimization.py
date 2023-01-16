@@ -510,6 +510,7 @@ def save_termin():
     # get the termin dict
     terminId = request.args.get('id')
     if terminId is None:
+        flash("Invalid")
         return redirect(url_for('optimization'))
     appointments_dict = session.get(str(flask_login.current_user.id)).get('appointments_dict')
     termin_db = {}
@@ -570,4 +571,6 @@ def save_termin():
         requests.post(url=url, headers=head, data=json.dumps(payload))
 
     [session.pop(key) for key in list(session.keys()) if key == str(flask_login.current_user.id)]
+
+    flash("Ihr Termin wurde im Outlook-Kalender für die involvierten Maschinen & Mitarbeiter gespeichert!")
     return redirect(url_for('optimization'))
