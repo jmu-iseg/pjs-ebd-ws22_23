@@ -19,10 +19,71 @@ from flask_login import login_required
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
+     # read 2023 energy data
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'sensor_2023.csv'), mode='r', encoding='utf-8') as sensor:
+        df = pd.read_csv(sensor)
+    df['dateTime'] = pd.to_datetime(df.dateTime)  
+
+    # read 2023 solar data 
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'solar_data.csv'), mode='r', encoding='utf-8') as solar:
+        solar_data = pd.read_csv(solar)
+    solar_data['dateTime'] = pd.to_datetime(solar_data.dateTime)
+
+    # merge solar data with df 
+    df = pd.merge(df, solar_data, how='left', left_on=['dateTime'], right_on=['dateTime'])
+    #df = df.drop('datetime', axis=1)
+
+    # get cloud data
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
+        data = json.load(openfile)
+    timestamp = []
+    clouds = []
+    for day in data['list']:
+        timestamp.append(datetime.utcfromtimestamp(day['dt']).strftime("%Y-%m-%d"))
+        clouds.append(day['clouds'])
+    cloud_dict = {
+        'dateTime': timestamp,
+        'clouds': clouds
+    }
+    clouds = pd.DataFrame.from_dict(cloud_dict, orient='index').T
+    clouds['dateTime'] = pd.to_datetime(clouds.dateTime)
+    clouds['clouds'] = clouds['clouds'].astype(int)
+
+    # interpolate cloud data from daily to hourly for next 30 days
+    clouds = clouds.set_index('dateTime')
+    clouds = clouds.resample("H").interpolate().reset_index()
+    clouds['dateTime'] = pd.to_datetime(clouds.dateTime)
+    clouds['clouds'] = clouds['clouds'] / 100
+    clouds['sun'] = 1 - clouds['clouds']
+    
+    # merge cloud data into energy data 
+    df = pd.merge(df, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
+
+    # select time period
+    start_date = pd.to_datetime(datetime.utcnow()+timedelta(hours=1))
+    end_date = pd.to_datetime(datetime.utcnow()+timedelta(days=14, hours=1))
+    df = df[(df['dateTime'] >= start_date.replace(hour=0)) & (df['dateTime'] <= end_date.replace(hour=23))]
+
+    # neue Spalte mit Formel pv output = ((MAX-MIN)*sun) + MIN
+    df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
+
+    # calculate netzbezug
+    df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output_prediction']
+    netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
+
+    # generate outputs for visualisation
+    pv_prediction_labels = netzbezug['dateTime'].dt.strftime("%d.%m.%Y").to_list()
+    pv_prediction = netzbezug.set_index('dateTime')
+    pv_prediction = pv_prediction.resample("D").sum()
+    pv_prediction = pv_prediction['output_prediction'].to_list()
+
+    # gespeicherte historische termine abfragen
     termine = Termin.query.all()
     for termin in termine:
         print(termin.dateTime)
-    return render_template("/pages/home.html")
+
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels)
+
 
 def allowed_file(filename):
     return '.' in filename and \

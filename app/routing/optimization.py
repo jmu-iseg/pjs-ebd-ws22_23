@@ -484,8 +484,6 @@ def appointment_list():
     output_prediction_list = session.get('output_prediction_list')
     output_prediction_dates = session.get('output_prediction_dates')
 
-    print(output_prediction_dates)
-
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
         receiver = sendMailForm.mailAddress.data
