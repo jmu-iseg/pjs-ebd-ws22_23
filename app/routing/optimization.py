@@ -215,8 +215,6 @@ def optimization_table(start_date, end_date, termin, api=False):
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
     termine_length = dict(termine_df_neu[['termin_id','dauer']].values)
 
-    print(termine_length)
-
     # change float key to int
     for k in termine_energy.keys():
         int_key = int(k)
@@ -226,212 +224,229 @@ def optimization_table(start_date, end_date, termin, api=False):
         int_key = int(k)
         termine_length[int_key] = termine_length.pop(k)
     
-    # gurobi model
-    with gp.Env(empty=True) as env:
-        env.start()
-        
-        with gp.Model(env=env) as model:
 
-            # create model 
-            model = gp.Model("energy based scheduling")
+    for i in range(1,5):
+        if i==2: 
+            termine_energy.popitem()
+            termine_length.popitem()
+        if i==3: 
+            termine_energy.popitem()
+            termine_length.popitem()
+        if i==4:
+            flash("Es konnte kein mögliche Terminvorschlag in dem Zeitraum gefunden werden.")
+            return redirect(url_for("optimization"))
 
-            # create variables 
-            # energy consumption per appointment
-            consumption = model.addVars(df['dateTime'],termine_energy,vtype=GRB.CONTINUOUS,name="consumption")
+        # gurobi model
+        with gp.Env(empty=True) as env:
+            env.start()
+            
+            with gp.Model(env=env) as model:
 
-            # planned start of appointment 
-            start = model.addVars(consumption, vtype=GRB.BINARY, name="start")
-            end = model.addVars(consumption, vtype=GRB.BINARY, name="end")
+                # create model 
+                model = gp.Model("energy based scheduling")
 
-            # save start day und hour as numerical value
-            start_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="start_hour")
-            start_day = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="start_day")
+                # create variables 
+                # energy consumption per appointment
+                consumption = model.addVars(df['dateTime'],termine_energy,vtype=GRB.CONTINUOUS,name="consumption")
 
-            # save end hour as numerical value 
-            end_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="end_hour")
+                # planned start of appointment 
+                start = model.addVars(consumption, vtype=GRB.BINARY, name="start")
+                end = model.addVars(consumption, vtype=GRB.BINARY, name="end")
 
-            # calculate netzbezug of appointment
-            for termin in termine_energy:
+                # save start day und hour as numerical value
+                start_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="start_hour")
+                start_day = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="start_day")
+
+                # save end hour as numerical value 
+                end_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="end_hour")
+
+                # calculate netzbezug of appointment
+                for termin in termine_energy:
+                    for dateTime in df['dateTime']:
+                        if dateTime.hour < 18:
+                            for i in range(0,termine_length[termin]):
+                                if float(netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)]) < 0:
+                                    consumption[dateTime,termin] = consumption[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
+                                else: 
+                                    consumption[dateTime,termin] = consumption[dateTime,termin] + termine_energy[termin]/termine_length[termin]
+
+                # minimize netzbezug
+                obj = sum((consumption[dateTime,termin]*start[dateTime,termin])
+                            for dateTime in df['dateTime'] for termin in termine_energy)
+
+                # objective 
+                model.setObjective(obj, GRB.MINIMIZE)
+
+                # constraints 
+                # weekend constraint
+                for termin in termine_energy:
+                    for dateTime in df['dateTime']:
+                        if dateTime.weekday() in [5,6]:
+                            model.addConstr((start[dateTime,termin])==0)
+                                
+                # generate 3 possible apppointments
+                for termin in termine_energy: 
+                    model.addConstr(gp.quicksum(start[dateTime,termin] 
+                                    for dateTime in df['dateTime']) == 1)
+
+                # no overlap constraint                
                 for dateTime in df['dateTime']:
                     if dateTime.hour < 18:
-                        for i in range(0,termine_length[termin]):
-                            if float(netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)]) < 0:
-                                consumption[dateTime,termin] = consumption[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
-                            else: 
-                                consumption[dateTime,termin] = consumption[dateTime,termin] + termine_energy[termin]/termine_length[termin]
+                            for t1 in termine_length: 
+                                model.addConstr((start[dateTime,t1] == 1) >> (gp.quicksum(start[dateTime + pd.Timedelta(hours=i),t2] 
+                                                                                for i in range(1,termine_length[t1])
+                                                                                for t2 in termine_length)==0))                
 
-            # minimize netzbezug
-            obj = sum((consumption[dateTime,termin]*start[dateTime,termin])
-                        for dateTime in df['dateTime'] for termin in termine_energy)
-
-            # objective 
-            model.setObjective(obj, GRB.MINIMIZE)
-
-            # constraints 
-            # weekend constraint
-            for termin in termine_energy:
+                # no overlap of start times 
                 for dateTime in df['dateTime']:
-                    if dateTime.weekday() in [5,6]:
-                        model.addConstr((start[dateTime,termin])==0)
+                    model.addConstr(gp.quicksum(start[dateTime,termin] for termin in termine_energy) <= 1)
                             
-            # generate 3 possible apppointments
-            for termin in termine_energy: 
-                model.addConstr(gp.quicksum(start[dateTime,termin] 
-                                for dateTime in df['dateTime']) == 1)
-
-            # no overlap constraint                
-            for dateTime in df['dateTime']:
-                if dateTime.hour < 18:
-                        for t1 in termine_length: 
-                            model.addConstr((start[dateTime,t1] == 1) >> (gp.quicksum(start[dateTime + pd.Timedelta(hours=i),t2] 
-                                                                            for i in range(1,termine_length[t1])
-                                                                            for t2 in termine_length)==0))                
-
-            # no overlap of start times 
-            for dateTime in df['dateTime']:
-                model.addConstr(gp.quicksum(start[dateTime,termin] for termin in termine_energy) <= 1)
-                        
-            # save start hour and day of appointment 
-            for termin in termine_energy: 
-                for dateTime in df['dateTime']:
-                    model.addConstr((start[dateTime,termin]==1) >> (start_day[termin]==dateTime.day))
-                    model.addConstr((start[dateTime,termin]==1) >> (start_hour[termin]==dateTime.hour))
-
-            # set end time of appointment 
-            for termin in termine_length:            
-                model.addConstr(end_hour[termin]==start_hour[termin]+termine_length[termin])      
-
-            # end time constraint
-            for termin in termine_length:            
-                model.addConstr(end_hour[termin] <= 18)      
-                
-            # start time constraint 
-            for termin in termine_length:            
-                model.addConstr(start_hour[termin] >= 8)  
-            
-            # get list of all appointments of involved machines
-            prohibited_times_machines = []
-            for machine in machine_appointments:
-                for termin in machine_appointments[machine]:
-                    prohibited_times_machines.append(termin)
-
-            duration = int(termine_length[1])
-            # machines verfügbarkeit constraint
-            for prohibited_time in prohibited_times_machines:
-                start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
-                end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
-                for termin in termine_energy:
+                # save start hour and day of appointment 
+                for termin in termine_energy: 
                     for dateTime in df['dateTime']:
-                        if start_time <= dateTime < end_time:
-                            model.addConstr((start[dateTime,termin])==0)
-   
-            # get list of all appointments of involved mitarbeiter
-            prohibited_times_mitarbeiter = []
-            for mitarbeiter in mitarbeiter_appointments:
-                for termin in mitarbeiter_appointments[mitarbeiter]:
-                    prohibited_times_mitarbeiter.append(termin)
-            print(prohibited_times_mitarbeiter)
-            # mitarbeiter verfügbarkeit constraint
-            for prohibited_time in prohibited_times_mitarbeiter:
-                start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
-                end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
-                for termin in termine_energy:
-                    for dateTime in df['dateTime']:
-                        if start_time <= dateTime < end_time:
-                            model.addConstr((start[dateTime,termin])==0)
+                        model.addConstr((start[dateTime,termin]==1) >> (start_day[termin]==dateTime.day))
+                        model.addConstr((start[dateTime,termin]==1) >> (start_hour[termin]==dateTime.hour))
 
-            # optimize 
-            model.optimize()
+                # set end time of appointment 
+                for termin in termine_length:            
+                    model.addConstr(end_hour[termin]==start_hour[termin]+termine_length[termin])      
 
-            # generate output
-            # save planned appointments
-            appointments = pd.DataFrame(columns=['Termin'])
-            for v in model.getVars():
-                if v.X >= 1:
-                    if v.VarName.startswith("start["): 
-                        appointments = appointments.append({'Termin':v.VarName}, ignore_index=True)                
+                # end time constraint
+                for termin in termine_length:            
+                    model.addConstr(end_hour[termin] <= 18)      
+                    
+                # start time constraint 
+                for termin in termine_length:            
+                    model.addConstr(start_hour[termin] >= 8)  
                 
-            # reformat dataframe
-            appointments['Termin'] = appointments['Termin'].map(lambda x: x.lstrip('start_hourday[').rstrip(']'))
-            appointments = appointments.groupby(by="Termin").sum().reset_index()
-            appointments[['DateTime', 'TerminID']] = appointments['Termin'].str.split(',', 1, expand=True)
-            appointments[['Date', 'Time']] = appointments['DateTime'].str.split(' ', 1, expand=True)
-            appointments['TerminID'] = appointments['TerminID'].astype(int)
+                # get list of all appointments of involved machines
+                prohibited_times_machines = []
+                for machine in machine_appointments:
+                    for termin in machine_appointments[machine]:
+                        prohibited_times_machines.append(termin)
 
-             # calculate netzbezug (objective value) for every appointment
-            appointments['netzbezug'] = 0
-            for i in range(0,len(appointments)):
-                date = pd.to_datetime(appointments['DateTime'][i])
-                termin_id = int(appointments['TerminID'][i])
-                appointments['netzbezug'][i] = round(consumption[date,termin_id].getValue(),2)
+                duration = int(termine_length[1])
+                # machines verfügbarkeit constraint
+                for prohibited_time in prohibited_times_machines:
+                    start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
+                    end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
+                    for termin in termine_energy:
+                        for dateTime in df['dateTime']:
+                            if start_time <= dateTime < end_time:
+                                model.addConstr((start[dateTime,termin])==0)
+    
+                # get list of all appointments of involved mitarbeiter
+                prohibited_times_mitarbeiter = []
+                for mitarbeiter in mitarbeiter_appointments:
+                    for termin in mitarbeiter_appointments[mitarbeiter]:
+                        prohibited_times_mitarbeiter.append(termin)
+                print(prohibited_times_mitarbeiter)
+                # mitarbeiter verfügbarkeit constraint
+                for prohibited_time in prohibited_times_mitarbeiter:
+                    start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
+                    end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
+                    for termin in termine_energy:
+                        for dateTime in df['dateTime']:
+                            if start_time <= dateTime < end_time:
+                                model.addConstr((start[dateTime,termin])==0)
 
-            # change negative netzbezug of appointments to 0 
-            appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
-            appointments['netzbezug'] = appointments['netzbezug'].round(1)
-            
-            # generate new termin id based on ordered netzbezug
-            appointments = appointments.rename(columns={'level_0': 'del'})
-            appointments = appointments.sort_values(by="netzbezug")
-            appointments = appointments.reset_index().reset_index()
-            appointments = appointments.rename(columns={'level_0': 'Termin_ID'})
-            appointments['Termin_ID'] = appointments['Termin_ID'] + 1
+                # optimize 
+                model.optimize()
 
-            # drop unecessary columns
-            appointments = appointments.drop('Termin', axis=1)
-            appointments = appointments.drop('DateTime', axis=1)
+                # generate output
+                # save planned appointments
+                appointments = pd.DataFrame(columns=['Termin'])
+                for v in model.getVars():
+                    try:
+                        if v.X >= 1:
+                            if v.VarName.startswith("start["): 
+                                appointments = appointments.append({'Termin':v.VarName}, ignore_index=True)                
+                    except AttributeError:
+                        continue
 
-            # join appointments with termine_df_neu
-            appointments_output = pd.merge(appointments, termine_df_neu, how='left', left_on=['TerminID'], right_on=['termin_id'])
+                # reformat dataframe
+                appointments['Termin'] = appointments['Termin'].map(lambda x: x.lstrip('start_hourday[').rstrip(']'))
+                appointments = appointments.groupby(by="Termin").sum().reset_index()
+                appointments[['DateTime', 'TerminID']] = appointments['Termin'].str.split(',', 1, expand=True)
+                appointments[['Date', 'Time']] = appointments['DateTime'].str.split(' ', 1, expand=True)
+                appointments['TerminID'] = appointments['TerminID'].astype(int)
 
-            # parse to datetime format
-            appointments_output['Date'] = pd.to_datetime(appointments_output['Date'], format="%Y.%m.%d")
-            appointments_output['Time'] = pd.to_datetime(appointments_output['Time'], format="%H:%M:%S")
+                # calculate netzbezug (objective value) for every appointment
+                appointments['netzbezug'] = 0
+                for i in range(0,len(appointments)):
+                    date = pd.to_datetime(appointments['DateTime'][i])
+                    termin_id = int(appointments['TerminID'][i])
+                    appointments['netzbezug'][i] = round(consumption[date,termin_id].getValue(),2)
 
-            # change format of date and time 
-            appointments_output['Date'] = appointments_output.Date.dt.strftime('%d.%m.%Y')
-            appointments_output['Time'] = appointments_output.Time.dt.strftime('%H:%M')
+                # change negative netzbezug of appointments to 0 
+                appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
+                appointments['netzbezug'] = appointments['netzbezug'].round(1)
+                
+                # generate new termin id based on ordered netzbezug
+                appointments = appointments.rename(columns={'level_0': 'del'})
+                appointments = appointments.sort_values(by="netzbezug")
+                appointments = appointments.reset_index().reset_index()
+                appointments = appointments.rename(columns={'level_0': 'Termin_ID'})
+                appointments['Termin_ID'] = appointments['Termin_ID'] + 1
 
-            # df to dict as output for render template 
-            appointments_dict = appointments_output.to_dict('records')
+                # drop unecessary columns
+                appointments = appointments.drop('Termin', axis=1)
+                appointments = appointments.drop('DateTime', axis=1)
 
-            # TODO: die optimierten Termine in DB speichern
+                # join appointments with termine_df_neu
+                appointments_output = pd.merge(appointments, termine_df_neu, how='left', left_on=['TerminID'], right_on=['termin_id'])
+
+                # parse to datetime format
+                appointments_output['Date'] = pd.to_datetime(appointments_output['Date'], format="%Y.%m.%d")
+                appointments_output['Time'] = pd.to_datetime(appointments_output['Time'], format="%H:%M:%S")
+
+                # change format of date and time 
+                appointments_output['Date'] = appointments_output.Date.dt.strftime('%d.%m.%Y')
+                appointments_output['Time'] = appointments_output.Time.dt.strftime('%H:%M')
+
+                # df to dict as output for render template 
+                appointments_dict = appointments_output.to_dict('records')
+
+                # TODO: die optimierten Termine in DB speichern
 
 
-            # save average objective value of model
-            obj_value = model.getAttr("ObjVal")
-            #obj_value = obj_value/int(config['optimization']['anzahl_terminvorschläge'])
+                # save average objective value of model
+                obj_value = model.getAttr("ObjVal")
+                #obj_value = obj_value/int(config['optimization']['anzahl_terminvorschläge'])
 
-            # change negative objective value to 0 (netzeinspeisung)
-            if obj_value < 0:
-                obj_value = 0
+                # change negative objective value to 0 (netzeinspeisung)
+                if obj_value < 0:
+                    obj_value = 0
 
-            # get sum of energy consumption of all appointments 
-            energy_consumption = int(termine_df_neu['energieverbrauch'][0])
+                # get sum of energy consumption of all appointments 
+                energy_consumption = int(termine_df_neu['energieverbrauch'][0])
 
-            # list of energy consumption & termin id of appointments
-            energy_consumption_list = termine_df_neu['energieverbrauch'].tolist()
-            termin_list = termine_df_neu['termin_id'].astype(int).tolist()
+                # list of energy consumption & termin id of appointments
+                energy_consumption_list = termine_df_neu['energieverbrauch'].tolist()
+                termin_list = termine_df_neu['termin_id'].astype(int).tolist()
 
-            # percent of renewable energy for best terminvorschlag
-            renewable_percent = (1-(appointments['netzbezug'].min()/energy_consumption)) * 100
+                # percent of renewable energy for best terminvorschlag
+                renewable_percent = (1-(appointments['netzbezug'].min()/energy_consumption)) * 100
 
-            # round output data
-            renewable_percent = int(round(renewable_percent, 2))
-            obj_value = round(obj_value, 2)
+                # round output data
+                renewable_percent = int(round(renewable_percent, 2))
+                obj_value = round(obj_value, 2)
 
-            # netzbezug für jeden einzelnen termin 
-            netzbezug_termine = appointments['netzbezug'].to_list()
-            appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
-            appointments['percent'] = appointments['percent'] * 100
-            appointments['percent'] = appointments['percent'].astype(float)
-            appointments['percent'] = appointments['percent'].round(2).astype(int)
-            appointments = appointments.sort_values(by="percent",ascending=False)
-            netzbezug_termine_percent = appointments.to_dict('records')
+                # netzbezug für jeden einzelnen termin 
+                netzbezug_termine = appointments['netzbezug'].to_list()
+                appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
+                appointments['percent'] = appointments['percent'] * 100
+                appointments['percent'] = appointments['percent'].astype(float)
+                appointments['percent'] = appointments['percent'].round(2).astype(int)
+                appointments = appointments.sort_values(by="percent",ascending=False)
+                netzbezug_termine_percent = appointments.to_dict('records')
 
-             # output prediction visualization 
-            output_prediction = netzbezug.set_index('dateTime')
-            output_prediction = output_prediction.resample("D").sum().reset_index()
-            output_prediction['dateTime'] = pd.to_datetime(output_prediction.dateTime)
+                # output prediction visualization 
+                output_prediction = netzbezug.set_index('dateTime')
+                output_prediction = output_prediction.resample("D").sum().reset_index()
+                output_prediction['dateTime'] = pd.to_datetime(output_prediction.dateTime)
+
+                break
 
     if api:
         optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y %H:%M")
