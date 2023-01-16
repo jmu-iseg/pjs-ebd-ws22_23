@@ -3,7 +3,7 @@ from app.forms import LoginForm, RegisterForm, ProfileForm
 from app.models import User
 import flask_login
 from flask_login import login_required, logout_user
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, session
 from werkzeug.utils import secure_filename
 import os
 
@@ -55,5 +55,6 @@ def profilepage():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
+    [session.pop(key) for key in list(session.keys()) if key != '_flashes']
     logout_user()
     return redirect(url_for('login'))
