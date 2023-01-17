@@ -79,10 +79,30 @@ def home():
 
     # gespeicherte historische termine abfragen
     termine = Termin.query.all()
-    for termin in termine:
-        print(termin.dateTime)
+    termin_daten = {}
+    wochentage_kuerzel = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+    for termin in termine: 
+        endtime = termin.dateTime + timedelta(hours=termin.duration)
+        termin_daten[termin.id] = {
+            'creationTime': pd.to_datetime(termin.creationTimeUTC),
+            'machines': termin.machines,
+            'employees': termin.employees,
+            'date': termin.dateTime.date().strftime('%d.%m.'),
+            'weekday': wochentage_kuerzel[termin.dateTime.weekday()],
+            'starttime': termin.dateTime.time().strftime('%H:%M'),
+            'endtime': endtime.time().strftime('%H:%M'),
+            'duration': termin.duration, 
+            'description': termin.description,
+            'energy_consumption': termin.energyconsumption,
+            'gridenergy': termin.gridenergy,
+            'pv_energy': termin.energyconsumption - termin.gridenergy,
+            'pv_energy_prcnt': round((1-(termin.gridenergy/termin.energyconsumption)) * 100,1)
+            } 
+    
+    # order by date 
+    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['date'])}
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten)
 
 
 def allowed_file(filename):

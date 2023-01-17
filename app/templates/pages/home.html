@@ -31,7 +31,7 @@
         <p class="card-text">In den kommenden <b>14 Tagen</b> wird folgende erzeugte <b>Solarenergie</b> erwartet:</p>
         <p></p>
         <div class="chart-container">
-          <canvas id="netzbezug" style="margin: 0 auto;" width="350" height="220"></canvas>
+          <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
         </div>
       </div>
     </div>
@@ -40,26 +40,37 @@
 </div>
 <div class="row">
   
-  <div class="col-12 col-lg-4 d-flex align-items-stretch">
+  <div class="col-12 col-lg-6 d-flex align-items-stretch">
     <div class="card">
       <div class="card-header">Analyse der geplanten Termine</div>
       <div class="card-body">
-        <p class="card-text">Hier soll eine Analyse über die bisher geplanten Termine hin.</p>
-        <p></p>
-        <div class="chart-container">
-          <canvas id="netzbezug" style="margin: 0 auto;" width="350" height="220"></canvas>
-        </div>
+        <p>Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit dem EnOp-System optimiert.</p>
+        <table class="table">
+          <thead>
+          <tr>
+              <th scope="col">Datum & Uhrzeit</th>
+              <th scope="col">Maschinen</th>
+              <th scope="col">Mitarbeiter</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in termin_daten %}
+            <tr>
+              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{ termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }} </td>
+              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
+              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['employees'] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-
-
-
 </div>
 
 <script>
-  var ctx1 = document.getElementById('netzbezug').getContext('2d');  
+  var ctx1 = document.getElementById('pv_prediction').getContext('2d');  
   var pv_prediction = {{ pv_prediction }};
   var pv_prediction_labels = {{ pv_prediction_labels | safe }};
 
@@ -96,5 +107,46 @@
     }
   });
 </script>
+
+<script>
+  var ctx1 = document.getElementById('historic_termine').getContext('2d');  
+  var pv_prediction = {{ pv_prediction }};
+  var pv_prediction_labels = {{ pv_prediction_labels | safe }};
+
+  var netzbezug_chart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: pv_prediction_labels,
+      datasets: [{
+        label: 'PV-Erzeugung',
+        data: pv_prediction
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+      animation: {
+        duration: 2000
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            afterLabel: function (context) {
+              return 'kWh';
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
+
 
 {% endblock %}
