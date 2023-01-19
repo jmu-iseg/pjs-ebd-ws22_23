@@ -167,6 +167,13 @@ def optimization_table(start_date, end_date, termin, api=False):
         config['machines']['name_m3']: float(config['machines']['consumption_m3'])
         }
     
+    # define heating energy consumption per machine 
+    machine_heating = {
+        config['machines']['name_m1']: float(config['machines']['consumption_m1']), 
+        config['machines']['name_m2']: float(config['machines']['consumption_m2']), 
+        config['machines']['name_m3']: float(config['machines']['consumption_m3'])
+        }
+    
     # calculate energy consumption for each termin
     energie = 0
     for maschine in termine_df_neu['maschinen'].to_list()[0]: 
@@ -177,7 +184,7 @@ def optimization_table(start_date, end_date, termin, api=False):
     machine_appointments = {}
     mitarbeiter_appointments = {}
     for machine in termine_df_neu['maschinen'].to_list()[0]:
-        cal_url = f"https://graph.microsoft.com/v1.0/users/{machine}/calendarView?startDateTime={graph_start_date}&endDateTime={graph_end_date}&$select=start,end"
+        cal_url = f"https://graph.microsoft.com/v1.0/users/{machine}/calendarView?startDateTime={graph_start_date+timedelta(days=-1)}&endDateTime={graph_end_date}&$select=start,end"
         resp = requests.get(cal_url, headers=head).json()
         appointments = []
         for appointment in resp['value']:
@@ -213,6 +220,7 @@ def optimization_table(start_date, end_date, termin, api=False):
     
     # generate dicts of termin data 
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
+    termine_machines = dict(termine_df_neu[['termin_id','maschinen']].values) 
     termine_length = dict(termine_df_neu[['termin_id','dauer']].values)
 
     # change float key to int
@@ -223,8 +231,11 @@ def optimization_table(start_date, end_date, termin, api=False):
     for k in termine_length.keys():
         int_key = int(k)
         termine_length[int_key] = termine_length.pop(k)
-    
 
+    for k in termine_machines.keys():
+        int_key = int(k)
+        termine_machines[int_key] = termine_machines.pop(k)
+    
     for i in range(1,5):
         # try 2 vorschläge
         if i==2: 
@@ -238,6 +249,23 @@ def optimization_table(start_date, end_date, termin, api=False):
         if i==4:
             flash("Es konnte kein möglicher Terminvorschlag im Planungshorizont gefunden werden.")
             return redirect(url_for("optimization"))
+        
+        print(machine_appointments)
+
+        # function for testing, if machine is used in appointment before on this datetime
+        def machine_used_before(dateTime, machine):
+           # filter on dateTime (if start == same date like 'dateTime')
+            for termin in machine_appointments[machine]:
+                date1 = pd.to_datetime(termin['end'])
+                date2 = pd.to_datetime(dateTime)
+                # maschine wird am gleichen Tag vorher genutzt
+                if (date1.date() == date2.date()) & (date1.time() <= date2.time()):
+                    return True
+                # maschine wird einen Tag vorher genutzt
+                if date1.date() == date2.date()+timedelta(days=-1):
+                    return True
+            
+            return False
 
         # gurobi model
         with gp.Env(empty=True) as env:
@@ -263,15 +291,24 @@ def optimization_table(start_date, end_date, termin, api=False):
                 # save end hour as numerical value 
                 end_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="end_hour")
 
+                # heating cost per machine
+                heating_cost = model.addVars(machine_heating, vtype=GRB.CONTINUOUS, name="heating_cost")
+
                 # calculate netzbezug of appointment
                 for termin in termine_energy:
                     for dateTime in df['dateTime']:
-                        if dateTime.hour < 18:
+                        if dateTime.hour < 20:
                             for i in range(0,termine_length[termin]):
+                                # calculate energy consumption
                                 if float(netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)]) < 0:
                                     consumption[dateTime,termin] = consumption[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
                                 else: 
                                     consumption[dateTime,termin] = consumption[dateTime,termin] + termine_energy[termin]/termine_length[termin]
+                                # add possible heating consumption
+                                for machine in termine_machines[1]:
+                                    if machine_used_before(dateTime, machine) == False:
+                                        consumption[dateTime,termin] += 69 # insert heating costs from 'machine_heating'
+
 
                 # minimize netzbezug
                 obj = sum((consumption[dateTime,termin]*start[dateTime,termin])
