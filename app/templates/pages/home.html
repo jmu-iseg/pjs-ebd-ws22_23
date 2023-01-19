@@ -14,15 +14,57 @@
     </div>
   </div>
 
-  <div class="col-12 col-lg-3 d-flex align-items-stretch">
+  <div class="col-12 col-lg-3 align-items-stretch">
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
-        <p class="card-text">Hier soll eine Wettervorhersage hin.</p>
-        <p></p>
+              <div class="col-12 col-lg-3 d-flex flex-row align-items-center">
+                <div class="p-3">
+                  <h4>{{ informations['Temp'][0] }}&deg;</h4>
+                  {% if 200 <= informations['Wettercode'][0] < 300 %}
+                  <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+                  {% elif 300 <= informations['Wettercode'][0] < 400 %}
+                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+                  {% elif informations['Wettercode'][0] == 500 %}
+                  <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+                  {% elif 501 <= informations['Wettercode'][0] < 600 %}
+                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+                  {% elif informations['Wettercode'][0] == 616 %}
+                  <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
+                  {% elif 600 <= informations['Wettercode'][0] < 700 %}
+                  <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+                  {% elif 700 <= informations['Wettercode'][0] < 800 %}
+                  <img src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+                  {% elif informations['Wettercode'][0] == 800 %}
+                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+                  {% elif informations['Wettercode'][0] > 800 %}
+                  <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+                  {% else %}
+                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+                  {% endif %}
+                </div>
+                <div class="p-3">
+                  <h5>{{ informations['Tag'][0] }}</h5>
+                  <p></p>
+                  <h6><b>{{ cityname }}</b></h6>
+                  <span>{{ informations['Wetter'][0] }}</span>
+                </div>
+              </div>    
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">Dummy</div>
+      <div class="card-body">
+              <div class="col-12 col-lg-12 flex-row align-items-center">
+                <p>Herzlich Willkommen, <b>{{username}}</b>!</p>
+                <p>Hier befindet sich ein Platzhalter für eine Kachel.</p>
+                
+              </div>    
       </div>
     </div>
   </div>
+
+  
 
   <div class="col-12 col-lg-4 d-flex align-items-stretch">
     <div class="card">
@@ -36,13 +78,14 @@
       </div>
     </div>
   </div>
-  
 </div>
+
+
 <div class="row">
   
   <div class="col-12 col-lg-6 d-flex align-items-stretch">
     <div class="card">
-      <div class="card-header">Analyse der geplanten Termine</div>
+      <div class="card-header">Geplante Termine</div>
       <div class="card-body">
         <p>Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit dem EnOp-System optimiert.</p>
         <table class="table">
