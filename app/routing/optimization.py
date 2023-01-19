@@ -168,6 +168,7 @@ def optimization_table(start_date, end_date, termin, api=False):
         }
     
     # define heating energy consumption per machine 
+    # TODO: anpassen mit eigenen Settings!
     machine_heating = {
         config['machines']['name_m1']: float(config['machines']['consumption_m1']), 
         config['machines']['name_m2']: float(config['machines']['consumption_m2']), 
@@ -249,8 +250,6 @@ def optimization_table(start_date, end_date, termin, api=False):
         if i==4:
             flash("Es konnte kein möglicher Terminvorschlag im Planungshorizont gefunden werden.")
             return redirect(url_for("optimization"))
-        
-        print(machine_appointments)
 
         # function for testing, if machine is used in appointment before on this datetime
         def machine_used_before(dateTime, machine):
@@ -291,9 +290,6 @@ def optimization_table(start_date, end_date, termin, api=False):
                 # save end hour as numerical value 
                 end_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="end_hour")
 
-                # heating cost per machine
-                heating_cost = model.addVars(machine_heating, vtype=GRB.CONTINUOUS, name="heating_cost")
-
                 # calculate netzbezug of appointment
                 for termin in termine_energy:
                     for dateTime in df['dateTime']:
@@ -307,7 +303,7 @@ def optimization_table(start_date, end_date, termin, api=False):
                                 # add possible heating consumption
                                 for machine in termine_machines[1]:
                                     if machine_used_before(dateTime, machine) == False:
-                                        consumption[dateTime,termin] += 69 # insert heating costs from 'machine_heating'
+                                        consumption[dateTime,termin] += machine_heating[machine] # insert heating costs from 'machine_heating'
 
 
                 # minimize netzbezug
