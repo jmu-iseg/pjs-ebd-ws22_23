@@ -5,7 +5,14 @@ from app.models import User
 from app import bcrypt, get_graph_params, app
 from flask_login import login_user
 import requests
+import re
 
+"""
+Register Form
+    Used to create a new user, needs username, role and password.
+    Validation:
+        Doesn't allow already existing usernames
+"""
 class RegisterForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
@@ -23,6 +30,14 @@ class RegisterForm(FlaskForm):
         if existing_user_username:
             raise ValidationError('Der Benutzername existiert bereits.')
 
+
+"""
+Login Form
+    Used to login a user entering the correct username and password combination.
+    Validation:
+        Only allows existing usernames
+        Only allows correct combinations of username and password
+"""
 class LoginForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
@@ -46,6 +61,13 @@ class LoginForm(FlaskForm):
         login_user(user)
         return True
 
+
+"""
+Profile Form
+    Used to show / edit a user profile -> username, password (with validation) and profile picture.
+    Validation:
+        Only changes entries if password and password repeat have the same
+"""
 class ProfileForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
@@ -69,6 +91,12 @@ class ProfileForm(FlaskForm):
         return True
 
 
+"""
+SendMail Form
+    Used to prepare an email. Asks for the Mail-Body and Mail-Texts. Has hidden fields to secretly insert content from the frontend.
+    Validation:
+        Only allows E-Mails in correct format (split by string)
+"""
 class SendMailForm(FlaskForm):
     mailAddress = StringField(validators=[
         InputRequired()], render_kw={"placeholder": "Adressen"}, label='Mailaddressen')
@@ -84,7 +112,21 @@ class SendMailForm(FlaskForm):
 
     submit = SubmitField('Absenden', name='sendMailForm', id='submit')
 
+    def validate_mailAddress(self, mailAddress):
+        mailAddresses = mailAddress.data.split(',')
+        EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+        for mail in mailAddresses:
+            if not EMAIL_REGEX.match(mail):
+                raise ValidationError("Bitte geben Sie alle Mail-Adressen im richtigen Format an")
 
+
+"""
+Weather Form
+    Settings Form to edit the config
+    Validation:
+        Only allows ASCII characters in API Key
+        Only allows float values for lat and lon
+"""
 class WeatherForm(FlaskForm):
     apikey = StringField(validators=[
         InputRequired()], label='API-Schlüssel')
@@ -103,7 +145,25 @@ class WeatherForm(FlaskForm):
         if not is_ascii(apikey.data):
             raise ValidationError("Bitte geben Sie valide Zeichen an.")
 
+    def validate_lat(self, lat):
+        try:
+            float(lat.data)
+        except:
+            raise ValidationError("Bitte geben Sie die Koordinaten als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
 
+    def validate_lon(self, lon):
+        try:
+            float(lon.data)
+        except:
+            raise ValidationError("Bitte geben Sie die Koordinaten als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+
+
+"""
+Machine Form
+    Settings Form to edit the config
+    Validation:
+        Only allows float values m1, m2 and m3
+"""
 class MachineForm(FlaskForm):
     consumption_m1 = StringField(validators=[
         InputRequired()], label='Verbrauch Maschine 1')
@@ -116,7 +176,32 @@ class MachineForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren', name='machineForm', id='submit')
 
+    def validate_consumption_m1(self, consumption_m1):
+        try:
+            float(consumption_m1.data)
+        except:
+            raise ValidationError("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
 
+    def validate_consumption_m2(self, consumption_m2):
+        try:
+            float(consumption_m2.data)
+        except:
+            raise ValidationError("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+
+    def validate_consumption_m2(self, consumption_m2):
+        try:
+            float(consumption_m2.data)
+        except:
+            raise ValidationError("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+
+
+"""
+Mail Form
+    Settings Form to edit the config
+    Validation:
+        Only allows int for port
+        Only allows Mail-Format for mail_user
+"""
 class MailForm(FlaskForm):
     mail_server = StringField(validators=[
         InputRequired()], label='Mail-Server')
@@ -135,7 +220,24 @@ class MailForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren', name='mailForm', id='submit')
 
+    def validate_mail_port(self, mail_port):
+        try:
+            int(mail_port.data)
+        except:
+            raise ValidationError("Bitte geben Sie einen korrekten Port an.")
 
+    def validate_mail_user(self, mail_user):
+        EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+        if not EMAIL_REGEX.match(mail_user.data):
+            raise ValidationError("Bitte geben Sie eine korrekte Mailadresse an")
+
+
+"""
+Kafka Form
+    Settings Form to edit the config
+    Validation:
+        Only allows int for port
+"""
 class KafkaForm(FlaskForm):
     kafka_url = StringField(validators=[
         InputRequired()], label='Server-URl')
@@ -145,6 +247,19 @@ class KafkaForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren', name='kafkaForm', id='submit')
 
+    def validate_kafka_port(self, kafka_port):
+        try:
+            int(kafka_port.data)
+        except:
+            raise ValidationError("Bitte geben Sie einen korrekten Port an.")
+
+
+"""
+OPC UA Form
+    Settings Form to edit the config
+    Validation:
+        TO DO @NILS
+"""
 class OpcForm(FlaskForm):
     value_on = StringField(validators=[
         InputRequired()], label='Einschalt-Wert')
@@ -173,6 +288,12 @@ class OpcForm(FlaskForm):
     submit = SubmitField('Aktualisieren', name='opcForm', id='submit')
 
 
+"""
+Termin Optimization Form
+    Sub-Form of Termin Form to add multiple appointments
+    Validation:
+        everything allowed so far
+"""
 class TerminOptimizationForm(FlaskForm):
 
     terminbeschreibung = StringField(validators=[
@@ -206,6 +327,18 @@ class TerminOptimizationForm(FlaskForm):
         return True
 
 
+"""
+Optimization Form Form
+    first step of optimization
+    Validation:
+        exactly one termin in termine-list
+        start date before end date
+        generic validation for each termin in termine list
+    Update-self:
+        add a new termin
+    delete-termin:
+        deletes a termin
+"""
 class OptimizationForm(FlaskForm):
     # see https://stackoverflow.com/questions/51817148/dynamically-add-new-wtforms-fieldlist-entries-from-user-interface
 
