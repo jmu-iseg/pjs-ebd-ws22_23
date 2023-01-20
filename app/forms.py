@@ -176,23 +176,25 @@ class MachineForm(FlaskForm):
 
     submit = SubmitField('Aktualisieren', name='machineForm', id='submit')
 
-    def validate_consumption_m1(self, consumption_m1):
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
         try:
-            float(consumption_m1.data)
+            float(self.consumption_m1.data)
         except:
-            raise ValidationError("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
-
-    def validate_consumption_m2(self, consumption_m2):
+            self.consumption_m1.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            return False
         try:
-            float(consumption_m2.data)
+            float(self.consumption_m2.data)
         except:
-            raise ValidationError("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
-
-    def validate_consumption_m2(self, consumption_m2):
+            self.consumption_m2.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            return False
         try:
-            float(consumption_m2.data)
+            float(self.consumption_m2.data)
         except:
-            raise ValidationError("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            self.consumption_m2.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            return False
+        return True
 
 
 """
