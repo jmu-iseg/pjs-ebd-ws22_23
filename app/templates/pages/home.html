@@ -8,7 +8,7 @@
         Energiebasierte Terminplanung
       </div>
       <div class="card-body">
-        <h4>Herzlichen Willkommen, {{username}}! Schön, dass du da bist.</h4>
+        <h4>Herzlichen Willkommen, <b>{{username}}</b>! Schön, dass du da bist.</h4>
         <p>Hier steht eine Text, welcher kurz und knackig die Funktionalitäten des Systems beschreibt.</p>
       </div>
     </div>
@@ -53,11 +53,10 @@
       </div>
     </div>
     <div class="card" style="margin-top: 12px;">
-      <div class="card-header">Dummy</div>
+      <div class="card-header">Terminzähler</div>
       <div class="card-body">
               <div class="col-12 col-lg-12 flex-row align-items-center">
-                <p>Herzlich Willkommen, <b>{{username}}</b>!</p>
-                <p>Hier befindet sich ein Platzhalter für eine Kachel.</p>
+                <p>Du warst fleißig, {{username}}! Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit dem EnOp-System optimiert.</p>
               </div>    
       </div>
     </div>
@@ -86,7 +85,6 @@
     <div class="card">
       <div class="card-header">Geplante Termine</div>
       <div class="card-body">
-        <p>Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit dem EnOp-System optimiert.</p>
         <table class="table">
           <thead>
           <tr>
@@ -96,7 +94,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for item in termin_daten %}
+            {% for item in termin_daten_5 %}
             <tr>
               <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{ termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }} </td>
               <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
@@ -116,7 +114,7 @@
         <p>Durch die PV-Anlage wurden bereits <b>{{saved_co2}} kg CO2</b> eingespart.</p>
       </div>
       <div class="chart-container">
-        <canvas id="co2_saved" style="margin: 0 auto;" width="400" height="200"></canvas>
+        <canvas id="co2_saved" style="margin: 0 auto;" width="400" height="220"></canvas>
       </div>
     </div>
   </div>
