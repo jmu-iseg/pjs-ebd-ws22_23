@@ -52,13 +52,12 @@
               </div>    
       </div>
     </div>
-    <div class="card">
+    <div class="card" style="margin-top: 12px;">
       <div class="card-header">Dummy</div>
       <div class="card-body">
               <div class="col-12 col-lg-12 flex-row align-items-center">
                 <p>Herzlich Willkommen, <b>{{username}}</b>!</p>
                 <p>Hier befindet sich ein Platzhalter für eine Kachel.</p>
-                
               </div>    
       </div>
     </div>
@@ -110,6 +109,19 @@
     </div>
   </div>
 
+  <div class="col-12 col-lg-6 d-flex align-items-stretch">
+    <div class="card">
+      <div class="card-header">CO2-Ersparnis</div>
+      <div class="card-body">
+        <p>Durch die PV-Anlage wurden bereits <b>{{saved_co2}} kg CO2</b> eingespart.</p>
+      </div>
+      <div class="chart-container">
+        <canvas id="co2_saved" style="margin: 0 auto;" width="400" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+
 </div>
 
 <script>
@@ -123,7 +135,9 @@
       labels: pv_prediction_labels,
       datasets: [{
         label: 'PV-Erzeugung',
-        data: pv_prediction
+        data: pv_prediction,
+        borderColor: 'rgb(300 180 50/ 80%)',
+        backgroundColor: 'rgb(300 180 50/ 80%)',
       }]
     },
     options: {
@@ -146,23 +160,40 @@
             }
           }
         }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'kWh'
+          }
+        }
       }
     }
   });
 </script>
 
 <script>
-  var ctx1 = document.getElementById('historic_termine').getContext('2d');  
-  var pv_prediction = {{ pv_prediction }};
-  var pv_prediction_labels = {{ pv_prediction_labels | safe }};
+  var ctx1 = document.getElementById('co2_saved').getContext('2d');
+  var parsed = JSON.parse('{{termin_daten | tojson}}');
+  var co2_saved_list = []
+  for (const [key, value] of Object.entries(parsed)) {
+    co2_saved_list.push(parsed[key]['saved_co2'])
+  }
+  var co2_saved_labels = []
+  for (const [key, value] of Object.entries(parsed)) {
+    var temp_date = parsed[key]['weekday'].toString() + ', ' + parsed[key]['date'].toString()
+    co2_saved_labels.push(temp_date)
+  }
 
   var netzbezug_chart = new Chart(ctx1, {
-    type: 'line',
+    type: 'bar',
     data: {
-      labels: pv_prediction_labels,
+      labels: co2_saved_labels,
       datasets: [{
-        label: 'PV-Erzeugung',
-        data: pv_prediction
+        label: 'CO2-Einsparung',
+        data: co2_saved_list,
+        backgroundColor: 'rgb(20 200 60/ 80%)'
       }]
     },
     options: {
@@ -181,8 +212,16 @@
         tooltip: {
           callbacks: {
             afterLabel: function (context) {
-              return 'kWh';
+              return 'kg';
             }
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'kWh'
           }
         }
       }

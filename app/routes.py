@@ -75,6 +75,7 @@ def home():
     pv_prediction = netzbezug.set_index('dateTime')
     pv_prediction = pv_prediction.resample("D").sum().reset_index()
     pv_prediction_labels = pv_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list()
+    pv_prediction['output_prediction'] = round(pv_prediction['output_prediction'],1)
     pv_prediction = pv_prediction['output_prediction'].to_list()
 
     # gespeicherte historische termine abfragen
@@ -96,11 +97,22 @@ def home():
             'energy_consumption': termin.energyconsumption,
             'gridenergy': termin.gridenergy,
             'pv_energy': termin.energyconsumption - termin.gridenergy,
-            'pv_energy_prcnt': round((1-(termin.gridenergy/termin.energyconsumption)) * 100,1)
+            'pv_energy_prcnt': round((1-(termin.gridenergy/termin.energyconsumption)) * 100,1),
+            'saved_co2': round((termin.energyconsumption - termin.gridenergy) * 0.412,1) # kg co2 pro kWh
             } 
     
     # order by date 
     termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['date'])}
+    
+    # reset id/index
+    termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
+
+    # saved co2 
+    saved_co2 = 0
+    for termin in termin_daten: 
+        saved_co2 += termin_daten[termin]['saved_co2']
+        saved_co2 = round(saved_co2,1)
+
 
     # weather 
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
@@ -155,7 +167,10 @@ def home():
         'Nacht': night,
         'Wochentag': wochentag
     }
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, records=records, informations=informations, cityname=name)
+
+    print(termin_daten)
+
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, records=records, informations=informations, cityname=name, saved_co2=saved_co2)
 
 
 def allowed_file(filename):
