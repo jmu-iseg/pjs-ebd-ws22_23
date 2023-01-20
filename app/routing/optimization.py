@@ -278,6 +278,7 @@ def optimization_table(start_date, end_date, termin, api=False):
                 # create variables 
                 # energy consumption per appointment
                 consumption = model.addVars(df['dateTime'],termine_energy,vtype=GRB.CONTINUOUS,name="consumption")
+                consumption_without_heating = model.addVars(df['dateTime'],termine_energy,vtype=GRB.CONTINUOUS,name="consumption_wth_heating")
 
                 # planned start of appointment 
                 start = model.addVars(consumption, vtype=GRB.BINARY, name="start")
@@ -298,13 +299,14 @@ def optimization_table(start_date, end_date, termin, api=False):
                                 # calculate energy consumption
                                 if float(netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)]) < 0:
                                     consumption[dateTime,termin] = consumption[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
+                                    consumption_without_heating[dateTime,termin] = consumption_without_heating[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
                                 else: 
                                     consumption[dateTime,termin] = consumption[dateTime,termin] + termine_energy[termin]/termine_length[termin]
+                                    consumption_without_heating[dateTime,termin] = consumption_without_heating[dateTime,termin] + termine_energy[termin]/termine_length[termin]
                                 # add possible heating consumption
                                 for machine in termine_machines[1]:
                                     if machine_used_before(dateTime, machine) == False:
-                                        consumption[dateTime,termin] += machine_heating[machine] # insert heating costs from 'machine_heating'
-
+                                        consumption[dateTime,termin] += machine_heating[machine] 
 
                 # minimize netzbezug
                 obj = sum((consumption[dateTime,termin]*start[dateTime,termin])
@@ -406,8 +408,6 @@ def optimization_table(start_date, end_date, termin, api=False):
                 # reformat dataframe
                 appointments['Termin'] = appointments['Termin'].map(lambda x: x.lstrip('start_hourday[').rstrip(']'))
                 appointments = appointments.groupby(by="Termin").sum().reset_index()
-
-                print(appointments)
                 appointments[['DateTime', 'TerminID']] = appointments['Termin'].str.split(',', 1, expand=True)
                 appointments[['Date', 'Time']] = appointments['DateTime'].str.split(' ', 1, expand=True)
                 appointments['TerminID'] = appointments['TerminID'].astype(int)
@@ -417,7 +417,9 @@ def optimization_table(start_date, end_date, termin, api=False):
                 for i in range(0,len(appointments)):
                     date = pd.to_datetime(appointments['DateTime'][i])
                     termin_id = int(appointments['TerminID'][i])
-                    appointments['netzbezug'][i] = round(consumption[date,termin_id].getValue(),2)
+                    appointments['netzbezug'][i] = round(consumption_without_heating[date,termin_id].getValue(),1)
+
+                print(appointments)
 
                 # change negative netzbezug of appointments to 0 
                 appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
@@ -455,7 +457,7 @@ def optimization_table(start_date, end_date, termin, api=False):
                 if obj_value < 0:
                     obj_value = 0
 
-                # get sum of energy consumption of all appointments 
+                # get energy consumption of appointment
                 energy_consumption = int(termine_df_neu['energieverbrauch'][0])
 
                 # list of energy consumption & termin id of appointments
@@ -471,6 +473,8 @@ def optimization_table(start_date, end_date, termin, api=False):
 
                 # netzbezug für jeden einzelnen termin 
                 netzbezug_termine = appointments['netzbezug'].to_list()
+                print(netzbezug_termine)
+
                 appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
                 appointments['percent'] = appointments['percent'] * 100
                 appointments['percent'] = appointments['percent'].astype(float)

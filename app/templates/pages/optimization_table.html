@@ -307,7 +307,7 @@
     data: {
       labels: ['Solarstrom', 'Netzbezug'],
       datasets: [{
-        data: [energy_consumption - netzbezug_min, netzbezug_min],
+        data: [Number((energy_consumption - netzbezug_min).toFixed(1)), netzbezug_min],
         backgroundColor: [
           'rgba(10, 150, 20, 0.6)',
           'rgba(250, 10, 20, 0.6)'

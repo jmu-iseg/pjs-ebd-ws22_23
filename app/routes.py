@@ -86,6 +86,7 @@ def home():
         endtime = termin.dateTime + timedelta(hours=termin.duration)
         termin_daten[termin.id] = {
             'creationTime': pd.to_datetime(termin.creationTimeUTC),
+            'dateTime': pd.to_datetime(termin.dateTime),
             'machines': termin.machines,
             'employees': termin.employees,
             'date': termin.dateTime.date().strftime('%d.%m.'),
@@ -102,10 +103,13 @@ def home():
             } 
     
     # order by date 
-    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['date'])}
+    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['dateTime'], reverse=True)}
     
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
+
+    # next 5 termine
+    termin_daten_5 = {k: termin_daten[k] for k in list(termin_daten.keys())[:5]}
 
     # saved co2 
     saved_co2 = 0
@@ -170,7 +174,7 @@ def home():
 
     print(termin_daten)
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, records=records, informations=informations, cityname=name, saved_co2=saved_co2)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_5=termin_daten_5, records=records, informations=informations, cityname=name, saved_co2=saved_co2)
 
 
 def allowed_file(filename):
