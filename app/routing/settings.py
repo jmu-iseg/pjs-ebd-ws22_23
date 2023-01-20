@@ -50,7 +50,7 @@ def settings():
         config['machines']['consumption_m3'] = machineForm.consumption_m3.data
         write_config(app.root_path, config)
         return redirect('/settings')
-    elif request.method == "POST" and 'weatherForm' in request.form:
+    elif request.method == "POST" and 'machineForm' in request.form:
         flash_errors(machineForm)
         return redirect('/settings')
 
