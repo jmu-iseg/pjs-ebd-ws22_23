@@ -1,8 +1,8 @@
-from flask import jsonify, request, url_for
+from flask import jsonify, request, url_for, redirect
 from app.api import bp
 from app.api.auth import token_auth
 from app.api.errors import bad_request
-from app.routing.optimization import optimization_table
+from app.routing.optimization import optimization_table, save_to_calendar
 from app import get_graph_params, app
 import requests
 from datetime import datetime
@@ -83,5 +83,15 @@ def optimize():
             'maschinen': termin['machines'],
             'mitarbeiter': termin['employees']
         })
-    payload = optimization_table(start_date=startdate, end_date=enddate, termin=termine[0], api=True)
+    payload = optimization_table(start_date=startdate, end_date=enddate, termin=termine[0], api=True, sessiontoken=request.headers.get('Authorization'))
     return jsonify(payload)
+
+@bp.route('/save-appointment', methods=['GET'])
+@token_auth.login_required
+def save_termin():
+    if 'id' in request.args:
+        try:
+            id = int(request.args.get('id'))
+        except:
+            return bad_request('Die ID muss ein Integer sein')
+    return save_to_calendar(terminId=id, api=True, sessiontoken=request.headers.get('Authorization'))

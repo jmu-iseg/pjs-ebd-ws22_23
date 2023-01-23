@@ -1,8 +1,9 @@
 from app import app, flash_errors, create_file_object, get_config, get_graph_params, db
 from app.models import Termin
+from app.api.errors import bad_request
 from flask_login import login_required
 import flask_login
-from flask import request, render_template, redirect, flash, session, url_for
+from flask import request, render_template, redirect, flash, session, url_for, jsonify
 from app.forms import SendMailForm, OptimizationForm
 from pathlib import Path
 import os
@@ -48,7 +49,7 @@ def optimization():
         return render_template("/pages/optimization.html", form=form)
     return render_template("/pages/optimization.html", form=form)
 
-def optimization_table(start_date, end_date, termin, api=False):
+def optimization_table(start_date, end_date, termin, api=False, sessiontoken=None):
     graph_start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
     graph_end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
 
@@ -491,6 +492,7 @@ def optimization_table(start_date, end_date, termin, api=False):
 
     if api:
         optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y %H:%M")
+        session[sessiontoken] = appointments_dict
         return {
             'Optimierungszeitpunkt': optimierungszeitpunkt,
             'Termine': appointments_dict
@@ -568,12 +570,30 @@ def save_termin():
     if terminId is None:
         flash("Invalid")
         return redirect(url_for('optimization'))
-    appointments_dict = session.get(str(flask_login.current_user.id)).get('appointments_dict')
+    return save_to_calendar(terminId=terminId)
+
+def save_to_calendar(terminId, api=False, sessiontoken=None):
+    if api:
+        appointments_dict = session.get(sessiontoken)
+    else:
+        appointments_dict = session.get(str(flask_login.current_user.id)).get('appointments_dict')
+    if appointments_dict is None:
+        if api:
+            return bad_request('Es wurden keine Termine geplant!')
+        else:
+            flash('Es wurden keine Termine geplant!')
+            return redirect(url_for('optimization'))
     termin_db = {}
     for trm in appointments_dict:
         if trm["Termin_ID"] == int(terminId):
             termin_db = trm
             break
+    if len(termin_db) < 1:
+        if api:
+            return bad_request('Die Termin ID existiert nicht!')
+        else:
+            flash('Die Termin ID existiert nicht')
+            return redirect(url_for('optimization'))
     dt_str = f"{termin_db['Date']}T{termin_db['Time']}"
     termin_dt = datetime.strptime(dt_str, "%d.%m.%YT%H:%M")
 
@@ -625,8 +645,10 @@ def save_termin():
         }
 
         requests.post(url=url, headers=head, data=json.dumps(payload))
-
-    [session.pop(key) for key in list(session.keys()) if key == str(flask_login.current_user.id)]
-
-    flash("Ihr Termin wurde im Outlook-Kalender für die involvierten Maschinen & Mitarbeiter gespeichert!")
-    return redirect(url_for('optimization'))
+    if api:
+        [session.pop(key) for key in list(session.keys()) if key == sessiontoken]
+        return jsonify({'Information': 'Der Termin wurde gespeichert'})
+    else:
+        [session.pop(key) for key in list(session.keys()) if key == str(flask_login.current_user.id)]
+        flash("Ihr Termin wurde im Outlook-Kalender für die involvierten Maschinen & Mitarbeiter gespeichert!")
+        return redirect(url_for('optimization'))
