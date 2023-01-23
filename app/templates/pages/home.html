@@ -9,7 +9,8 @@
       </div>
       <div class="card-body">
         <h4>Herzlichen Willkommen, <b>{{username}}</b>! Schön, dass du da bist.</h4>
-        <p>Hier steht eine Text, welcher kurz und knackig die Funktionalitäten des Systems beschreibt.</p>
+        <p>Mit dem EnOp-System können Sie zukünftige Termine in Ihrem Showroom planen. Das Ziel ist hierbei eine Maximierung des Strombezugs aus der Photovoltaikanlage, sodass möglichst wenig Strom aus dem Netz gezogen werden muss. 
+          Neben der Terminoptimierung finden Sie einen Wetterbericht der nächsten 30 Tage sowie eine Kalenderansicht mit den Terminen ihrer Mitarbeiter und Maschinen.</p>
       </div>
     </div>
   </div>
@@ -18,7 +19,7 @@
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
-              <div class="col-12 col-lg-3 d-flex flex-row align-items-center">
+              <div class="col-12 col-lg-3 d-flex flex-row align-items-center" style="height: 110px;">
                 <div class="p-3">
                   <h4>{{ informations['Temp'][0] }}&deg;</h4>
                   {% if 200 <= informations['Wettercode'][0] < 300 %}
@@ -55,7 +56,7 @@
     <div class="card" style="margin-top: 12px;">
       <div class="card-header">Terminzähler</div>
       <div class="card-body">
-              <div class="col-12 col-lg-12 flex-row align-items-center">
+              <div class="col-12 col-lg-12 flex-row align-items-center" style="height: 110px;">
                 <p>Du warst fleißig, {{username}}! Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit dem EnOp-System optimiert.</p>
               </div>    
       </div>
