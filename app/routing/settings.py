@@ -50,7 +50,7 @@ def settings():
         config['machines']['consumption_m3'] = machineForm.consumption_m3.data
         write_config(app.root_path, config)
         return redirect('/settings')
-    elif request.method == "POST" and 'weatherForm' in request.form:
+    elif request.method == "POST" and 'machineForm' in request.form:
         flash_errors(machineForm)
         return redirect('/settings')
 
@@ -142,7 +142,7 @@ def settings():
 
     # set the opcForm
     opcForm=OpcForm(value_on=value_on,value_off=value_off,url1=url1,var1=var1,url2=url2,var2=var2,url3=url3,var3=var3)
-    if opcForm.validate_on_submit() and 'kafkaForm' in request.form:
+    if opcForm.validate_on_submit() and 'opcForm' in request.form:
         config['opcua']['value_on'] = opcForm.value_on.data
         config['opcua']['value_off'] = opcForm.value_off.data
         config['opcua']['url1'] = opcForm.url1.data
