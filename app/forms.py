@@ -2,8 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, HiddenField, TextAreaField, DateField, FieldList, SelectMultipleField, IntegerField, FormField
 from wtforms.validators import InputRequired, Length, ValidationError
 from app.models import User
-from app import bcrypt, get_graph_params, app
+from app import bcrypt, get_graph_params, app, db
 from flask_login import login_user
+import flask_login
 import requests
 import re
 
@@ -64,30 +65,50 @@ class LoginForm(FlaskForm):
 
 """
 Profile Form
-    Used to show / edit a user profile -> username, password (with validation) and profile picture.
+    Used to show / edit a user profile -> username and profile picture.
     Validation:
-        Only changes entries if password and password repeat have the same
+        None
 """
 class ProfileForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"}, label='Benutzername')
 
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort')
-
-    val_password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Passwort wiederholen')
-
     profilepic = FileField(label='Profilbild')
 
     submit = SubmitField('Aktualisieren', name='profileForm', id='submit')
 
+
+"""
+Change Password Form
+    Used to change the password.
+    Validation:
+        Old password has to be correct
+        New Passwords have to match
+"""
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Altes Passwort')
+
+    password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Neues Passwort')
+
+    val_password = PasswordField(validators=[
+                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"}, label='Neues Passwort wiederholen')
+
+    submit = SubmitField('Aktualisieren', name='passwordForm', id='submit')
+
     def validate(self):
         if not FlaskForm.validate(self):
             return False
-        if not self.password.data == self.val_password.data:
-            self.password.errors.append('Die Passwörter stimmen nicht überein')
+        user = User.query.filter_by(id = flask_login.current_user.id).first()
+        if not bcrypt.check_password_hash(user.password, self.old_password.data):
+            self.old_password.errors.append('Das alte Passwort ist nicht korrekt')
             return False
+        if not self.password.data == self.val_password.data:
+            self.password.errors.append('Die neuen Passwörter stimmen nicht überein')
+            return False
+        user.password = bcrypt.generate_password_hash(self.password.data)
+        db.session.commit()
         return True
 
 
