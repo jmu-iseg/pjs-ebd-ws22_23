@@ -19,7 +19,7 @@
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
-              <div class="col-12 col-lg-3 d-flex flex-row align-items-center">
+              <div class="col-12 col-lg-3 d-flex flex-row align-items-center" style="height: 110px;">
                 <div class="p-3">
                   <h4>{{ informations['Temp'][0] }}&deg;</h4>
                   {% if 200 <= informations['Wettercode'][0] < 300 %}
@@ -56,7 +56,7 @@
     <div class="card" style="margin-top: 12px;">
       <div class="card-header">Terminzähler</div>
       <div class="card-body">
-              <div class="col-12 col-lg-12 flex-row align-items-center">
+              <div class="col-12 col-lg-12 flex-row align-items-center" style="height: 110px;">
                 <p>Du warst fleißig, {{username}}! Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit dem EnOp-System optimiert.</p>
               </div>    
       </div>
