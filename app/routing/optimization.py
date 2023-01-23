@@ -294,9 +294,10 @@ def optimization_table(start_date, end_date, termin, api=False):
                 # calculate netzbezug of appointment
                 for termin in termine_energy:
                     for dateTime in df['dateTime']:
-                        if dateTime.hour < 20:
+                        if dateTime.hour < 24-termine_length[termin]:
                             for i in range(0,termine_length[termin]):
                                 # calculate energy consumption
+                                print(netzbezug['balance'][netzbezug['dateTime'] == dateTime])
                                 if float(netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)]) < 0:
                                     consumption[dateTime,termin] = consumption[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
                                     consumption_without_heating[dateTime,termin] = consumption_without_heating[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
@@ -329,7 +330,7 @@ def optimization_table(start_date, end_date, termin, api=False):
 
                 # no overlap constraint                
                 for dateTime in df['dateTime']:
-                    if dateTime.hour < 18:
+                    if dateTime.hour < 24-termine_length[termin]:
                             for t1 in termine_length: 
                                 model.addConstr((start[dateTime,t1] == 1) >> (gp.quicksum(start[dateTime + pd.Timedelta(hours=i),t2] 
                                                                                 for i in range(1,termine_length[t1])
