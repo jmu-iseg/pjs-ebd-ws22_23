@@ -1,9 +1,9 @@
 from app import bcrypt, db, app, flash_errors
-from app.forms import LoginForm, RegisterForm, ProfileForm
+from app.forms import LoginForm, RegisterForm, ProfileForm, ChangePasswordForm
 from app.models import User
 import flask_login
 from flask_login import login_required, logout_user
-from flask import render_template, redirect, url_for, request, session
+from flask import render_template, redirect, url_for, request, session, flash
 from werkzeug.utils import secure_filename
 import os
 
@@ -35,6 +35,7 @@ def login():
 def profilepage():
     username = flask_login.current_user.username
     profileForm = ProfileForm(username=username)
+    passwordForm = ChangePasswordForm()
 
     if profileForm.validate_on_submit() and 'profileForm' in request.form:
         user = User.query.filter_by(id = flask_login.current_user.id).first()
@@ -44,13 +45,18 @@ def profilepage():
             filenameDB = os.path.join('img/profile/',filename)
             user.profilepic = filenameDB
         user.username = profileForm.username.data
-        user.password = bcrypt.generate_password_hash(profileForm.password.data)
         db.session.commit()
         return redirect('/profile')
     elif request.method == "POST" and 'profileForm' in request.form:
         flash_errors(profileForm)
         return redirect('/profile')
-    return render_template('/pages/profil.html', form=profileForm)
+    if passwordForm.validate_on_submit() and 'passwordForm' in request.form:
+        flash('Das Passwort wurde geändert!')
+    elif request.method == "POST" and 'passwordForm' in request.form:
+        flash_errors(passwordForm)
+        return redirect('/profile')
+
+    return render_template('/pages/profil.html', form=profileForm, passwordForm=passwordForm)
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required

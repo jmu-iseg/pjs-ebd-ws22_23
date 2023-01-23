@@ -17,13 +17,44 @@
           <br>
           {{ form.username.label }}
           {{ form.username }}
-          {{ form.password.label }}
-          {{ form.password }}
-          {{ form.val_password.label }}
-          {{ form.val_password }}
           <br>
           {{ form.submit }}
+          <br>
+          <br>
+          <button type="button" data-bs-toggle="modal" data-bs-target="#passwordModal" class="btn btn-outline-primary">Passwort ändern</button>
         </form>
+
+        <!-- Modals -->
+        <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="passwordModalLabel">Passwort ändern</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form method="POST" action="">
+                  {{ passwordForm.csrf_token() }}
+                  {{ passwordForm.old_password.label }}
+                  <br>
+                  {{ passwordForm.old_password }}
+                  <br>
+                  {{ passwordForm.password.label }}
+                  <br>
+                  {{ passwordForm.password }}
+                  <br>
+                  {{ passwordForm.val_password.label }}
+                  <br>
+                  {{ passwordForm.val_password }}
+                  <br>
+                  {{ passwordForm.submit }}
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

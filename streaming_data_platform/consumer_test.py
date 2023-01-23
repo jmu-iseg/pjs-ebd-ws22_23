@@ -23,12 +23,15 @@ print('polling...')
 records = consumer.poll(timeout_ms=1000)
 print(records)
 
-#read items
-for _, consumer_records in records.items():
-    # Parse records
-    for consumer_record in consumer_records:
-        # get information
-        varData = consumer_record.value.decode("utf-8").replace("'",'"')
+try:
+    #read items
+    for _, consumer_records in records.items():
+        # Parse records
+        for consumer_record in consumer_records:
+            # get information
+            varData = consumer_record.value.decode("utf-8").replace("'",'"')
+except TypeError:
+    print('TypeError')
 
 # save as json
 with open("data.json", "w") as outfile:
