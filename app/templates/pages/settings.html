@@ -121,7 +121,7 @@
   <div class="col mb-3">
     <div class="card h-100">
       <div class="card-header">
-        Verbräuche der Anlagen
+        Verbräuche der Anlagen & Grundlast
       </div>
       <div class="card-body">
         <form action="" method="post">
@@ -149,6 +149,10 @@
 
           {{ machineForm.heating_m3.label }}<br>
           {{ machineForm.heating_m3 }}
+          <div class="form-text">kWh</div>
+
+          {{ machineForm.basicConsumption.label }}<br>
+          {{ machineForm.basicConsumption }}
           <div class="form-text">kWh</div>
 
           {{ machineForm.submit }}

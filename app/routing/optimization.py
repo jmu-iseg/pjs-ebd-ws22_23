@@ -59,15 +59,13 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
-
+    # TODO: Eigentlich keine DB Query für energy & solar data nötig 
     # db query
     #db_connection = sql.connect(host='localhost', database='energy', user='energy', password='PJS2022', port=3306)
     #query = "SELECT dateTime, output, basicConsumption, managementConsumption, productionConsumption FROM sensor"
     #df = pd.read_sql(query,db_connection)
     #db_connection.close()
     #df['dateTime'] = pd.to_datetime(df.dateTime)
-
-    # Übergangslösung, bis Daten von SEHO bereitstehen 
 
     # read 2023 energy data
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'sensor_2023.csv'), mode='r', encoding='utf-8') as sensor:
@@ -116,7 +114,10 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
 
     # calculate netzbezug
-    df['balance'] = (df['basicConsumption'] + df['managementConsumption'] + df['productionConsumption']) - df['output_prediction']
+    # TODO: set basic consumption
+    #basicConsumption = 35 
+    basicConsumption = float(config['energy']['basicConsumption']) # hourly in kWh
+    df['balance'] = basicConsumption - df['output_prediction']
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
     # take termin input data

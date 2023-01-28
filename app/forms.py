@@ -203,6 +203,9 @@ class MachineForm(FlaskForm):
 
     heating_m3 = StringField(validators=[
         InputRequired()], label='Aufheizverbrauch Maschine 3')
+    
+    basicConsumption = StringField(validators=[
+        InputRequired()], label='Grundlast der SEHO')
 
     submit = SubmitField('Aktualisieren', name='machineForm', id='submit')
 
@@ -238,6 +241,11 @@ class MachineForm(FlaskForm):
             float(self.heating_m3.data)
         except:
             self.heating_m3.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            return False
+        try:
+            float(self.basicConsumption.data)
+        except:
+            self.basicConsumption.errors.append("Bitte geben Sie die Grundlast als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
             return False
         return True
 
