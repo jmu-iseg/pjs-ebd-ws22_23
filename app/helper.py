@@ -85,44 +85,65 @@ def create_file_object(start, end, summary):
     buf.seek(0)
     return buf
 
-def opc_ua_sender(machine,value):
-    # get machine
-    machine = machine
-
-    """ Get the config values """
+def opc_ua_sender(machineIDs, state, root_path, terminDateTime):
     # read settings
-    config = get_config(app.root_path)
+    config = get_config(root_path)
 
-    # specify the OPC-UA config
-    value_on = config['opcua']['value_on']
-    value_off = config['opcua']['value_off']
-    url1 = config['opcua']['url1']
-    var1 = config['opcua']['var1']
+    # get terminDateTime and nowtime
+    termin_date_time = datetime(terminDateTime)
+    now_time = datetime.now()
 
-    """ Check the OPC-UA status """
-    # Connect to the OPC-UA server
-    client = Client(url1)
+    # empty string
+    return_notification = []
 
-    # Check connection to client 1
-    try:
-        # Connect to the OPC UA server
-        client.connect()
+    """ Check for every given machine """
+    for machine in machineIDs:
+        # what type of machine?
+        if machine == "Wellenlöt":
+            machineType = 1
+        elif machine == "Lötbad 3/4":
+            machineType = 2
+        elif machine == "Lötbad 5":
+            machineType = 3
 
-        # Browse the address space and find the node you want to write to
-        root = client.get_root_node()
-        myvar = root.get_child(["0:Objects", "2:MyObject", "2:MyVariable"])
+        # specify the OPC-UA config
+        value_on = config['opcua']['value_on']
+        value_off = config['opcua']['value_off']
+        client_url = config['opcua']['url' + machineType]
+        object_var = config['opcua']['var' + machineType]
+        machine_offset = config['opcua']['offset' + machineType]
 
-        # Write data to the node
-        myvar.set_value(value_on)
+        # Is it time to start/stop the machine?
+        if (now_time - termin_date_time - machine_offset) <= 0:
+            """ Check the OPC-UA status """
+            # Connect to the OPC-UA server
+            client = Client(client_url)
 
-        # Check if client 1 is connected
-        if client.is_connected():
-            client_status = 1
-    except:
-        # Give the error code
-        client_status = 2
-    finally:
-        # Disconnect from the server
-        client.disconnect()
+            # Check connection to client 1
+            try:
+                # Connect to the OPC UA server
+                client.connect()
+
+                # Browse the address space and find the node you want to write to
+                root = client.get_root_node()
+                myvar = root.get_child([object_var, "2:MyObject", "2:MyVariable"])
+
+                # Write data to the node
+                if state == "on":
+                    myvar.set_value(value_on)
+                else:
+                    myvar.set_value(value_off)
+
+                # Check if client 1 is connected
+                if client.is_connected():
+                    client_status = machineType + " started "
+            except:
+                # Give the error code
+                client_status = "Connection refused from " + machineType
+            finally:
+                # Disconnect from the server
+                client.disconnect()
+            return_notification.append(client_status + " | ")
+        return_notification.append("Too early to start machine " + machineType + " | ")
     
-    return client_status
+    return return_notification
