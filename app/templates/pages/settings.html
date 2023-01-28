@@ -126,15 +126,31 @@
       <div class="card-body">
         <form action="" method="post">
           {{ machineForm.hidden_tag() }}
+
           {{ machineForm.consumption_m1.label }}<br>
           {{ machineForm.consumption_m1 }}
           <div class="form-text">kWh</div>
+
+          {{ machineForm.heating_m1.label }}<br>
+          {{ machineForm.heating_m1 }}
+          <div class="form-text">kWh</div>
+
           {{ machineForm.consumption_m2.label }}<br>
           {{ machineForm.consumption_m2 }}
           <div class="form-text">kWh</div>
+
+          {{ machineForm.heating_m2.label }}<br>
+          {{ machineForm.heating_m2 }}
+          <div class="form-text">kWh</div>
+
           {{ machineForm.consumption_m3.label }}<br>
           {{ machineForm.consumption_m3 }}
           <div class="form-text">kWh</div>
+
+          {{ machineForm.heating_m3.label }}<br>
+          {{ machineForm.heating_m3 }}
+          <div class="form-text">kWh</div>
+
           {{ machineForm.submit }}
         </form>
       </div>

@@ -42,12 +42,20 @@ def settings():
     consumption_m2 = config['machines']['consumption_m2']
     consumption_m3 = config['machines']['consumption_m3']
 
+    # specify heating energy
+    heating_m1 = config['machines']['heating_m1']
+    heating_m2 = config['machines']['heating_m2']
+    heating_m3 = config['machines']['heating_m3']
+
     # set the machineForm
-    machineForm=MachineForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3)
+    machineForm=MachineForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3,heating_m1=heating_m1,heating_m2=heating_m2,heating_m3=heating_m3)
     if machineForm.validate_on_submit() and 'machineForm' in request.form:
         config['machines']['consumption_m1'] = machineForm.consumption_m1.data
         config['machines']['consumption_m2'] = machineForm.consumption_m2.data
         config['machines']['consumption_m3'] = machineForm.consumption_m3.data
+        config['machines']['heating_m1'] = machineForm.heating_m1.data
+        config['machines']['heating_m2'] = machineForm.heating_m2.data
+        config['machines']['heating_m3'] = machineForm.heating_m3.data
         write_config(app.root_path, config)
         return redirect('/settings')
     elif request.method == "POST" and 'machineForm' in request.form:

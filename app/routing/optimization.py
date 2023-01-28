@@ -50,6 +50,8 @@ def optimization():
     return render_template("/pages/optimization.html", form=form)
 
 def optimization_table(start_date, end_date, termin, api=False, sessiontoken=None):
+    config = get_config(app.root_path)
+
     graph_start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
     graph_end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
 
@@ -122,8 +124,8 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     if api:
         termine['0'] = termin
     else:
-        termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data, 'mitarbeiter': termin.mitarbeiter.data}
-    termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'mitarbeiter', 'energieverbrauch'])
+        termine['0'] = {'bezeichnung': termin.terminbeschreibung.data, 'dauer': termin.duration.data, 'maschinen': termin.machines.data, 'complexity': termin.product.data, 'mitarbeiter': termin.mitarbeiter.data}
+    termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'complexity', 'mitarbeiter', 'energieverbrauch', 'complexity_percent'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
     # API call
@@ -169,17 +171,25 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
         }
     
     # define heating energy consumption per machine 
-    # TODO: anpassen mit eigenen Settings!
     machine_heating = {
-        config['machines']['name_m1']: float(config['machines']['consumption_m1']), 
-        config['machines']['name_m2']: float(config['machines']['consumption_m2']), 
-        config['machines']['name_m3']: float(config['machines']['consumption_m3'])
+        config['machines']['name_m1']: float(config['machines']['heating_m1']), 
+        config['machines']['name_m2']: float(config['machines']['heating_m2']), 
+        config['machines']['name_m3']: float(config['machines']['heating_m3'])
         }
-    
-    # calculate energy consumption for each termin
+
+    ## set product complexity 
+    complexity = 0.0
+    if str(termine_df_neu['complexity'][0]) == 'Komplex':
+        complexity = 1.0
+    elif str(termine_df_neu['complexity'][0]) == 'Normal':
+        complexity = 0.75
+    elif str(termine_df_neu['complexity'][0]) == 'Einfach':
+        complexity = 0.5
+        
+    # calculate energy consumption for each termin based on product complexity
     energie = 0
     for maschine in termine_df_neu['maschinen'].to_list()[0]: 
-        energie += machine_consumption[maschine] * float(termine_df_neu['dauer'])
+        energie += machine_consumption[maschine] * complexity * float(termine_df_neu['dauer'])
     termine_df_neu['energieverbrauch'] = energie
 
     # Verfügbarkeitsdaten der Maschinen & Mitarbeiter ziehen
@@ -298,7 +308,6 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                         if dateTime.hour < 24-termine_length[termin]:
                             for i in range(0,termine_length[termin]):
                                 # calculate energy consumption
-                                print(netzbezug['balance'][netzbezug['dateTime'] == dateTime])
                                 if float(netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)]) < 0:
                                     consumption[dateTime,termin] = consumption[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
                                     consumption_without_heating[dateTime,termin] = consumption_without_heating[dateTime,termin] + netzbezug['balance'][netzbezug['dateTime'] == dateTime + pd.Timedelta(hours=i)] + (termine_energy[termin]/termine_length[termin])
@@ -421,8 +430,6 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                     termin_id = int(appointments['TerminID'][i])
                     appointments['netzbezug'][i] = round(consumption_without_heating[date,termin_id].getValue(),1)
 
-                print(appointments)
-
                 # change negative netzbezug of appointments to 0 
                 appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
                 appointments['netzbezug'] = appointments['netzbezug'].round(1)
@@ -475,7 +482,6 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
 
                 # netzbezug für jeden einzelnen termin 
                 netzbezug_termine = appointments['netzbezug'].to_list()
-                print(netzbezug_termine)
 
                 appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
                 appointments['percent'] = appointments['percent'] * 100
