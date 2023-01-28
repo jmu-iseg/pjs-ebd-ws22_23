@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 import configparser
 from icalendar import Calendar, Event, vCalAddress, vText
 import io
-from app import get_config
 from asyncua import Client, Node, ua
 
 def get_config(root_path):
@@ -85,13 +84,13 @@ def create_file_object(start, end, summary):
     buf.seek(0)
     return buf
 
-def opc_ua_sender(machine,value):
+def opc_ua_sender(machine, value: str, root_path: str, terminDate: datetime):
     # get machine
     machine = machine
 
     """ Get the config values """
     # read settings
-    config = get_config(app.root_path)
+    config = get_config(root_path)
 
     # specify the OPC-UA config
     value_on = config['opcua']['value_on']
