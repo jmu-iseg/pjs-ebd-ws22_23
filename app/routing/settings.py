@@ -167,9 +167,9 @@ def settings():
 
     """ Check the OPC-UA status """
     # Connect to the OPC-UA server
-    client1 = Client("url1")
-    client2 = Client("url2")
-    client3 = Client("url3")
+    client1 = Client(url1)
+    client2 = Client(url2)
+    client3 = Client(url3)
     
     # Check connection to client 1
     try:
@@ -178,10 +178,11 @@ def settings():
         if client1.is_connected():
             client1_status = 1
     except:
+        # Give the error code
         client1_status = 2
     finally:
+        # Disconnect from the server
         client1.disconnect()
-        client1_status = 2
 
     # Check connection to client 1
     try:
@@ -190,10 +191,11 @@ def settings():
         if client2.is_connected():
             client2_status = 1
     except:
+        # Give the error code
         client2_status = 2
     finally:
+        # Disconnect from the server
         client2.disconnect()
-        client2_status = 2
 
     # Check connection to client 3
     try:
@@ -202,11 +204,11 @@ def settings():
         if client3.is_connected():
             client3_status = 1
     except:
+        # Give the error code
         client3_status = 2
     finally:
+        # Disconnect from the server
         client3.disconnect()
-        client3_status = 2
-
 
     # Render the settings template
     return render_template('/pages/settings.html', userList=userList, form=registerForm, weatherForm=weatherForm, machineForm=machineForm, mailForm=mailForm, kafkaForm=kafkaForm, kafka_status=kafka_status, opcForm=opcForm, client1_status=client1_status, client2_status=client2_status, client3_status=client3_status)
