@@ -112,8 +112,12 @@ def opc_ua_sender(machineIDs, state, root_path, terminDateTime):
         object_var = config['opcua']['var' + machineType]
         machine_offset = config['opcua']['offset' + machineType]
 
+        # get the timedelta
+        time_diff = now_time - termin_date_time - machine_offset
+        time_diff_mins = time_diff.total_minutes()
+
         # Is it time to start/stop the machine?
-        if (now_time - termin_date_time - machine_offset) <= 0:
+        if time_diff_mins <= 0:
             """ Check the OPC-UA status """
             # Connect to the OPC-UA server
             client = Client(client_url)
