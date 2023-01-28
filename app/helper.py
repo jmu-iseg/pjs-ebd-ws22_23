@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 import configparser
 from icalendar import Calendar, Event, vCalAddress, vText
 import io
+from app import get_config
+from asyncua import Client, Node, ua
 
 def get_config(root_path):
     config = configparser.ConfigParser()
@@ -82,3 +84,45 @@ def create_file_object(start, end, summary):
     buf.write(cal.to_ical())
     buf.seek(0)
     return buf
+
+def opc_ua_sender(machine,value):
+    # get machine
+    machine = machine
+
+    """ Get the config values """
+    # read settings
+    config = get_config(app.root_path)
+
+    # specify the OPC-UA config
+    value_on = config['opcua']['value_on']
+    value_off = config['opcua']['value_off']
+    url1 = config['opcua']['url1']
+    var1 = config['opcua']['var1']
+
+    """ Check the OPC-UA status """
+    # Connect to the OPC-UA server
+    client = Client(url1)
+
+    # Check connection to client 1
+    try:
+        # Connect to the OPC UA server
+        client.connect()
+
+        # Browse the address space and find the node you want to write to
+        root = client.get_root_node()
+        myvar = root.get_child(["0:Objects", "2:MyObject", "2:MyVariable"])
+
+        # Write data to the node
+        myvar.set_value(value_on)
+
+        # Check if client 1 is connected
+        if client.is_connected():
+            client_status = 1
+    except:
+        # Give the error code
+        client_status = 2
+    finally:
+        # Disconnect from the server
+        client.disconnect()
+    
+    return client_status
