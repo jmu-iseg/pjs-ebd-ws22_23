@@ -53,14 +53,17 @@ Vars
 body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    background: rgb(250, 251, 254);
+    background: $background;
     overflow: hidden;
     font-family: Nunito, sans-serif;
+    color: $font-color;
 }
 
 header {
     background: #fff;
     box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
+    border-radius: 10px;
+    margin: 12px 0;
 }
 
 html {
@@ -89,7 +92,14 @@ main {
 
 .card {
     box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
+    background: $background-light;
     border: 0;
+    border-radius: 10px;
+
+    &:hover {
+        background: $background-hover;
+        color: $font-hover;
+    }
 }
 
 .card-header {
