@@ -25,6 +25,7 @@
                 <th>ID</th>
                 <th>Bezeichnung</th>
                 <th>Maschinen</th>
+                <th>Lötprodukt</th>
                 <th>Mitarbeiter</th>
                 <th>Dauer (h)</th>
               </tr>
@@ -35,6 +36,7 @@
                   <td>#{{ loop.index0 + 1 }}</td>
                   <td>{{ termin.terminbeschreibung }}</td>
                   <td>{{ termin.machines }}</td>
+                  <td>{{ termin.product }}</td>
                   <td>{{ termin.mitarbeiter }}</td>
                   <td>{{ termin.duration }}</td>
                 </tr>

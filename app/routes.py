@@ -172,8 +172,6 @@ def home():
         'Wochentag': wochentag
     }
 
-    print(termin_daten)
-
     return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_5=termin_daten_5, records=records, informations=informations, cityname=name, saved_co2=saved_co2)
 
 

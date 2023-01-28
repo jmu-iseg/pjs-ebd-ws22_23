@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 import configparser
 from icalendar import Calendar, Event, vCalAddress, vText
 import io
-from app import get_config
 from asyncua import Client, Node, ua
 
 def get_config(root_path):

@@ -195,6 +195,15 @@ class MachineForm(FlaskForm):
     consumption_m3 = StringField(validators=[
         InputRequired()], label='Verbrauch Maschine 3')
 
+    heating_m1 = StringField(validators=[
+        InputRequired()], label='Aufheizverbrauch Maschine 1')
+
+    heating_m2 = StringField(validators=[
+        InputRequired()], label='Aufheizverbrauch Maschine 2')
+
+    heating_m3 = StringField(validators=[
+        InputRequired()], label='Aufheizverbrauch Maschine 3')
+
     submit = SubmitField('Aktualisieren', name='machineForm', id='submit')
 
     def validate(self):
@@ -211,9 +220,24 @@ class MachineForm(FlaskForm):
             self.consumption_m2.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
             return False
         try:
-            float(self.consumption_m2.data)
+            float(self.consumption_m3.data)
         except:
-            self.consumption_m2.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            self.consumption_m3.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            return False
+        try:
+            float(self.heating_m1.data)
+        except:
+            self.heating_m1.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            return False
+        try:
+            float(self.heating_m2.data)
+        except:
+            self.heating_m2.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
+            return False
+        try:
+            float(self.heating_m3.data)
+        except:
+            self.heating_m3.errors.append("Bitte geben Sie die Maschinenverbräuche als Float Werte (Dezimalstellen durch Punkte getrennt) an.")
             return False
         return True
 
@@ -337,10 +361,11 @@ class TerminOptimizationForm(FlaskForm):
 
     machines = SelectMultipleField(u'Maschinen', choices=machinelist, validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
+    product = SelectField(u'Lötprodukt', choices=['Einfach','Normal','Komplex'], validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
+
     mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=mitarbeiterlist, validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
-    duration = IntegerField(validators=[
-        InputRequired()])
+    duration = IntegerField(validators=[InputRequired()])
 
     delete = SubmitField('Entfernen')
 
