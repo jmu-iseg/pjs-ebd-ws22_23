@@ -91,14 +91,13 @@ main {
 }
 
 .card {
-    box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
+    box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 20px 0px;
     background: $background-light;
     border: 0;
     border-radius: 10px;
-
+    transition: box-shadow .3s ease;
     &:hover {
-        background: $background-hover;
-        color: $font-hover;
+        box-shadow: rgba(154, 161, 171, 0.5) 0px 0px 30px 0px;
     }
 }
 
