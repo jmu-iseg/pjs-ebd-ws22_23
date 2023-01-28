@@ -22,14 +22,17 @@
     {% endfor %}
   </div>
 
-  <div class="sidebar d-flex flex-column flex-shrink-0 text-bg-dark">
+  <div class="sidebar d-flex flex-column flex-shrink-0">
     {% include 'elements/sidebar.html' %}
   </div>
 
   <div class="inner">
-    <header class="p-3">
-      {% include 'elements/header.html' %}
-    </header>
+    <div class="container text-center">
+      <header class="p-3">
+        {% include 'elements/header.html' %}
+      </header>
+    </div>
+
     <div class="container content text-center">
       {% block content %} {% endblock %}
     </div>

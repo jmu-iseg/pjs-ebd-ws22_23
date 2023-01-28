@@ -6,6 +6,7 @@
   z-index: 1;
   transition: width .4s ease;
   overflow: hidden;
+  background: $background-light;
 }
 
 .inner {
@@ -26,20 +27,18 @@
   }
 }
 
+.sidebar-slogan {
+  color: $font-color;
+}
+
 .nav-link {
   padding-left: 7px;
   padding-right: 7px;
+  color: $font-color;
 
-  &.text-white {
-    color: #c8c8c8;
-
-    &:hover {
-      color: #fff;
-    }
-  }
-
-  &:active {
-    background: rgb(53, 60, 66);
+  &:active, &:hover {
+    background: $background-hover;
+    color: #fff;
   }
 
   img {
@@ -47,6 +46,10 @@
   }
 }
 
+.slogan-div {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
 
 .nav-text {
   margin-left: .5rem;
@@ -61,7 +64,7 @@
 }
 
 .nav-pills .nav-link.active {
-  background-color: #5263b4;
+  background-color: $background-hover;
 }
 
 .sidebarmax {
