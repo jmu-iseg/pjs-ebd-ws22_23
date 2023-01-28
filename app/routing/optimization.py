@@ -163,22 +163,35 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             mitarbeiter_string += displayName + ", "
     termine_df_neu['mitarbeiter_string'] = mitarbeiter_string
 
+    # get machine type 
+    machine_types = []
+    machine_types_dict = {}
+    for machine in termine_df_neu['maschinen'].to_list()[0]:
+        vorname = ''
+        for user in resp['value']:
+            if machine==user['id']:
+                vorname = user['givenName']
+                break
+        machine_types.append(vorname)
+        machine_types_dict[machine] = vorname
+    termine_df_neu['machine_types'] = [machine_types]    
+
     # define energy consumption per machine 
     machine_consumption = {
-        config['machines']['name_m1']: float(config['machines']['consumption_m1']), 
-        config['machines']['name_m2']: float(config['machines']['consumption_m2']), 
-        config['machines']['name_m3']: float(config['machines']['consumption_m3'])
+        config['machines']['typ_m1']: float(config['machines']['consumption_m1']), 
+        config['machines']['typ_m2']: float(config['machines']['consumption_m2']), 
+        config['machines']['typ_m3']: float(config['machines']['consumption_m3'])
         }
     
     # define heating energy consumption per machine 
     machine_heating = {
-        config['machines']['name_m1']: float(config['machines']['heating_m1']), 
-        config['machines']['name_m2']: float(config['machines']['heating_m2']), 
-        config['machines']['name_m3']: float(config['machines']['heating_m3'])
+        config['machines']['typ_m1']: float(config['machines']['heating_m1']), 
+        config['machines']['typ_m2']: float(config['machines']['heating_m2']), 
+        config['machines']['typ_m3']: float(config['machines']['heating_m3'])
         }
 
     ## set product complexity 
-    complexity = 0.0
+    complexity = 1.0
     if str(termine_df_neu['complexity'][0]) == 'Komplex':
         complexity = 1.0
     elif str(termine_df_neu['complexity'][0]) == 'Normal':
@@ -188,7 +201,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
         
     # calculate energy consumption for each termin based on product complexity
     energie = 0
-    for maschine in termine_df_neu['maschinen'].to_list()[0]: 
+    for maschine in termine_df_neu['machine_types'].to_list()[0]: 
         energie += machine_consumption[maschine] * complexity * float(termine_df_neu['dauer'])
     termine_df_neu['energieverbrauch'] = energie
 
@@ -317,7 +330,8 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                                 # add possible heating consumption
                                 for machine in termine_machines[1]:
                                     if machine_used_before(dateTime, machine) == False:
-                                        consumption[dateTime,termin] += machine_heating[machine] 
+                                        machine_type = machine_types_dict[machine]
+                                        consumption[dateTime,termin] += machine_heating[machine_type]
 
                 # minimize netzbezug
                 obj = sum((consumption[dateTime,termin]*start[dateTime,termin])
