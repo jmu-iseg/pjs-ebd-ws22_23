@@ -116,11 +116,14 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     # get energy consumption of planned appointments 
     consumption_data = Termin.query.filter(Termin.dateTime > start_date).filter(Termin.dateTime < end_date).all()
     termin_data_df = pd.DataFrame(columns=['dateTime', 'appointment_energy'])
-    termin_data = {}
     for t in consumption_data:
         for i in range(0,int(t.duration)):
             termin_data_df.loc[len(termin_data_df.index)] = [pd.to_datetime(t.dateTime + timedelta(hours=i)), t.energyconsumption / t.duration]
-            
+    
+    # set dummy data if no appointments are planned in future 
+    if termin_data_df.empty: 
+        termin_data_df.loc[len(termin_data_df.index)] = [start_date, 0.0]
+
     # group on dateTimes 
     termin_data_df = termin_data_df.groupby('dateTime').sum()    
 
