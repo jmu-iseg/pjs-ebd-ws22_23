@@ -114,9 +114,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
 
     # calculate netzbezug
-    # TODO: set basic consumption
-    #basicConsumption = 35 
-    basicConsumption = float(config['energy']['basicConsumption']) # hourly in kWh
+    basicConsumption = float(config['machines']['basicConsumption']) # hourly in kWh
     df['balance'] = basicConsumption - df['output_prediction']
     netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
 
