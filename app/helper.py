@@ -15,7 +15,7 @@ def get_config(root_path):
 
 def write_config(root_path, config):
     with open(os.path.join(root_path,'settings.cfg'), 'w') as configfile:
-        config.write(configfile)
+        config.write(configfile, encoding='utf-8')
 
 def flash_errors(form):
     """Flashes form errors"""
