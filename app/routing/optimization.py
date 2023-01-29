@@ -113,10 +113,27 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     # neue Spalte mit Formel pv output = ((MAX-MIN)*sun) + MIN
     df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
 
+    # get energy consumption of planned appointments 
+    consumption_data = Termin.query.filter(Termin.dateTime > start_date).filter(Termin.dateTime < end_date).all()
+    termin_data_df = pd.DataFrame(columns=['dateTime', 'appointment_energy'])
+    termin_data = {}
+    for t in consumption_data:
+        for i in range(0,int(t.duration)):
+            termin_data_df.loc[len(termin_data_df.index)] = [pd.to_datetime(t.dateTime + timedelta(hours=i)), t.energyconsumption / t.duration]
+            
+    # group on dateTimes 
+    termin_data_df = termin_data_df.groupby('dateTime').sum()    
+
+    # merge energy consumption data of planned appointments with other energy data
+    df = pd.merge(df, termin_data_df, how='left', left_on=['dateTime'], right_on=['dateTime'])
+    df['appointment_energy'] = df['appointment_energy'].fillna(0) 
+
     # calculate netzbezug
     basicConsumption = float(config['machines']['basicConsumption']) # hourly in kWh
-    df['balance'] = basicConsumption - df['output_prediction']
-    netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output'], axis=1)
+
+    # calculate netzbezug
+    df['balance'] = (basicConsumption + df['appointment_energy'])  - df['output_prediction']
+    netzbezug = df.drop(['basicConsumption', 'managementConsumption', 'productionConsumption', 'output', 'appointment_energy'], axis=1)
 
     # take termin input data
     termine = {}
