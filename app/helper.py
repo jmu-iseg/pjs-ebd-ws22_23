@@ -100,9 +100,9 @@ def opc_ua_sender(machineIDs, state, root_path, terminDateTime):
         # what type of machine?
         if machine == "Wellenlöt":
             machineType = 1
-        elif machine == "Lötbad 3/4":
+        elif machine == "Lötbad3/4":
             machineType = 2
-        elif machine == "Lötbad 5":
+        elif machine == "Lötbad5":
             machineType = 3
 
         # specify the OPC-UA config

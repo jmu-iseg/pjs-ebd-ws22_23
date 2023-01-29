@@ -17,4 +17,4 @@ def opcua_machine_start_stop():
             output[termin.description] = opc_ua_sender(termin.machines.replace(' ', '').split(','), "on", app.root_path, termin.dateTime)
         return jsonify(output)
     else:
-        return jsonify("In den nächsten 7 Stunden gibt es keine Maschinen")
+        return jsonify({"Info": "In den nächsten 7 Stunden gibt es keine Maschinen"})
