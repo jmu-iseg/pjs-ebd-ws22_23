@@ -187,22 +187,22 @@ Machine Form
 """
 class MachineForm(FlaskForm):
     consumption_m1 = StringField(validators=[
-        InputRequired()], label='Verbrauch Maschine 1')
+        InputRequired()], label='Verbrauch Wellenlöt')
 
     consumption_m2 = StringField(validators=[
-        InputRequired()], label='Verbrauch Maschine 2')
+        InputRequired()], label='Verbrauch Lötbad 3/4')
 
     consumption_m3 = StringField(validators=[
-        InputRequired()], label='Verbrauch Maschine 3')
+        InputRequired()], label='Verbrauch Lötbad 5')
 
     heating_m1 = StringField(validators=[
-        InputRequired()], label='Aufheizverbrauch Maschine 1')
+        InputRequired()], label='Aufheizverbrauch Wellenlöt (gesamt)')
 
     heating_m2 = StringField(validators=[
-        InputRequired()], label='Aufheizverbrauch Maschine 2')
+        InputRequired()], label='Aufheizverbrauch Lötbad 3/4 (gesamt)')
 
     heating_m3 = StringField(validators=[
-        InputRequired()], label='Aufheizverbrauch Maschine 3')
+        InputRequired()], label='Aufheizverbrauch Lötbad 5 (gesamt)')
     
     basicConsumption = StringField(validators=[
         InputRequired()], label='Grundlast der SEHO')
