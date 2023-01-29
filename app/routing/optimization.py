@@ -206,15 +206,15 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
         config['machines']['typ_m3']: float(config['machines']['heating_m3'])
         }
 
-    ## set product complexity 
+    # set product complexity 
     complexity = 1.0
     if str(termine_df_neu['complexity'][0]) == 'Komplex':
-        complexity = 1.0
+        complexity = float(config['machines']['complexity_high'])
     elif str(termine_df_neu['complexity'][0]) == 'Normal':
-        complexity = 0.75
+        complexity = float(config['machines']['complexity_medium'])
     elif str(termine_df_neu['complexity'][0]) == 'Einfach':
-        complexity = 0.5
-        
+        complexity = float(config['machines']['complexity_low'])
+
     # calculate energy consumption for each termin based on product complexity
     energie = 0
     for maschine in termine_df_neu['machine_types'].to_list()[0]: 
@@ -254,8 +254,9 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             })
         mitarbeiter_appointments[mitarbeiter] = appointments
     
-    # select amount of terminvorschlägen for appointments
-    termine_df_neu = pd.concat([termine_df_neu] * 3,ignore_index=True)
+    # set anzahl von terminvorschlägen
+    app_amount = int(config['machines']['appointment_amount'])
+    termine_df_neu = pd.concat([termine_df_neu] * app_amount,ignore_index=True)
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id', 'termin_id': 'del'}).drop('del',axis=1)
     termine_df_neu['termin_id'] = termine_df_neu['termin_id'] + 1
     
@@ -277,19 +278,17 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
         int_key = int(k)
         termine_machines[int_key] = termine_machines.pop(k)
     
-    for i in range(1,5):
-        # try 2 vorschläge
-        if i==2: 
-            termine_energy.popitem()
-            termine_length.popitem()
-        # try 1 vorschlag
-        if i==3: 
-            termine_energy.popitem()
-            termine_length.popitem()
-        # 1 terminvorschlag führt zu infeasible model 
-        if i==4:
+    # start optimization
+    for i in range(1,app_amount+2):
+        # throw error if model is infeasible
+        if i==app_amount+1:
             flash("Es konnte kein möglicher Terminvorschlag im Planungshorizont gefunden werden.")
             return redirect(url_for("optimization"))
+
+        # versuche termin mit 1 vorschlag weniger zu optimieren
+        if 1 < i < app_amount+1:
+            termine_energy.popitem()
+            termine_length.popitem()
 
         # function for testing, if machine is used in appointment before on this datetime
         def machine_used_before(dateTime, machine):
@@ -412,7 +411,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                     end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
                     for termin in termine_energy:
                         for dateTime in df['dateTime']:
-                            if start_time <= dateTime < end_time:
+                            if start_time < dateTime < end_time:
                                 model.addConstr((start[dateTime,termin])==0)
     
                 # get list of all appointments of involved mitarbeiter
@@ -427,7 +426,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                     end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
                     for termin in termine_energy:
                         for dateTime in df['dateTime']:
-                            if start_time <= dateTime < end_time:
+                            if start_time < dateTime < end_time:
                                 model.addConstr((start[dateTime,termin])==0)
 
                 # optimize 
