@@ -88,21 +88,12 @@ def home():
     # auslastung pv-anlage
     df_today = df.set_index('dateTime')
     df_today = df_today.resample("D").sum().reset_index()
-    print(df_today)
-    print(df_today.info())
-    print(datetime.today().date())
-    #print(df_today[df_today['dateTime'])
-    todays_pv_energy = df_today['output_prediction'][df_today['dateTime'] == datetime.today().date()]
-
-    print(df_today)
-
-    print(todays_pv_energy)
-    max_pv_energy = df_today['max'][df_today['dateTime'] == datetime.today().date()]
+    today = date.today().strftime("%Y-%m-%d")
+    df_today = df_today[df_today['dateTime'] == today] 
+    todays_pv_energy = float(df_today['output_prediction'])
+    max_pv_energy = float(df_today['max'])
     auslastung_pv = todays_pv_energy / max_pv_energy
-    print(auslastung_pv)
-
-
-    
+    auslastung_pv = int(round(auslastung_pv*100,0)) 
 
     # gespeicherte historische termine abfragen
     termine = Termin.query.all()
@@ -204,7 +195,7 @@ def home():
         'Wochentag': wochentag
     }
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, tag=tag, uhrzeit=uhrzeit)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv)
 
 
 def allowed_file(filename):
