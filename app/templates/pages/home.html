@@ -122,7 +122,8 @@
     <div class="card">
       <div class="card-header">CO2-Ersparnis</div>
       <div class="card-body">
-        <p>Durch die PV-Anlage wurden bereits <b>{{saved_co2}} kg CO2</b> eingespart.</p>
+        <p><b>{{saved_co2_today}} kg</b> heute</p>
+        <p><b>{{saved_co2}} kg</b> gesamt</p>
       </div>
       <div class="chart-container">
         <canvas id="co2_saved" style="margin: 0 auto;" width="400" height="220"></canvas>
@@ -134,8 +135,9 @@
     <div class="card">
       <div class="card-header">Erwartete PV-Energie</div>
       <div class="card-body">
-        <p class="card-text">In den kommenden <b>14 Tagen</b> wird folgende erzeugte <b>Solarenergie</b> erwartet:</p>
-        <p></p>
+        <div class="chart-container">
+          <canvas id="pv_auslastung" style="margin: 0 auto;" width="200" height="200"></canvas>
+        </div>
         <div class="chart-container">
           <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
         </div>
@@ -191,6 +193,31 @@
       }
     }
   });
+</script>
+
+<script>
+  var ctx1 = document.getElementById('pv_auslastung').getContext('2d');
+  var auslastung_pv = {{ auslastung_pv }};
+  
+  var percentage_chart = new Chart(ctx1, {
+    plugins: [ChartDataLabels],
+    type: 'doughnut',
+    data: {
+      labels: ['Auslastung'],
+      datasets: [{
+        data: [auslastung_pv, 100-auslastung_pv],
+        backgroundColor: [
+          'rgba(10, 150, 20, 0.6)',
+          'rgba(250, 10, 20, 0.6)'
+        ]
+      }]
+    },
+    options: {
+      rotation: -90,
+      circumference: 180,
+    }
+  });
+  
 </script>
 
 <script>
