@@ -91,7 +91,7 @@ def home():
     print(df_today)
     print(df_today.info())
     print(datetime.today().date())
-    print(df_today[df_today['dateTime'])
+    #print(df_today[df_today['dateTime'])
     todays_pv_energy = df_today['output_prediction'][df_today['dateTime'] == datetime.today().date()]
 
     print(df_today)
@@ -135,7 +135,7 @@ def home():
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
 
     # next 2 termine
-    termin_daten_5 = {k: termin_daten[k] for k in list(termin_daten.keys())[:2]}
+    termin_daten_list = {k: termin_daten[k] for k in list(termin_daten.keys())[:2]}
 
     # sum of saved co2 (insgesamt)
     saved_co2 = 0
@@ -204,7 +204,7 @@ def home():
         'Wochentag': wochentag
     }
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_5=termin_daten_5, records=records, informations=informations, cityname=name, saved_co2=saved_co2, tag=tag, uhrzeit=uhrzeit)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, tag=tag, uhrzeit=uhrzeit)
 
 
 def allowed_file(filename):
