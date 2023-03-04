@@ -9329,6 +9329,23 @@ textarea.form-control-lg {
 
   .d-print-none {
     display: none !important; } }
+.card {
+  box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 20px 0px;
+  background: #fbfbfb;
+  border: 0;
+  border-radius: 10px;
+  transition: box-shadow .3s ease;
+  height: 100%;
+  width: 100%; }
+  .card:hover {
+    box-shadow: rgba(154, 161, 171, 0.5) 0px 0px 30px 0px; }
+
+.card-header {
+  background: transparent;
+  border-bottom: 0;
+  text-align: left;
+  color: #8a969c; }
+
 /*!
  * Datepicker for Bootstrap v1.4.1 (https://github.com/eternicode/bootstrap-datepicker)
  *
@@ -11224,38 +11241,11 @@ textarea.form-control-lg {
   padding: 5px 10px; }
 
 /*
-Vars
+    General styling
 */
 :root {
   --border-radius: 0; }
 
-/*
-    Webfont
-*/
-/* nunito-300 - latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 300;
-  src: local(""), url("../fonts/nunito-v25-latin-300.woff2") format("woff2"), url("../fonts/nunito-v25-latin-300.woff") format("woff");
-  /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ }
-/* nunito-regular - latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  src: local(""), url("../fonts/nunito-v25-latin-regular.woff2") format("woff2"), url("../fonts/nunito-v25-latin-regular.woff") format("woff");
-  /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ }
-/* nunito-700 - latin */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  src: local(""), url("../fonts/nunito-v25-latin-700.woff2") format("woff2"), url("../fonts/nunito-v25-latin-700.woff") format("woff");
-  /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ }
-/*
-    General styling
-*/
 body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
@@ -11288,43 +11278,6 @@ main {
 .nav-pills .nav-link {
   border-radius: var(--border-radius); }
 
-.card {
-  box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 20px 0px;
-  background: #fbfbfb;
-  border: 0;
-  border-radius: 10px;
-  transition: box-shadow .3s ease; }
-  .card:hover {
-    box-shadow: rgba(154, 161, 171, 0.5) 0px 0px 30px 0px; }
-
-.card-header {
-  background: transparent;
-  border-bottom: 0;
-  text-align: left;
-  color: #8a969c; }
-
-.btn {
-  background: #5263b4;
-  color: #fff; }
-  .btn:hover, .btn:active {
-    background: #455398;
-    color: #fff; }
-  .btn.btn-danger {
-    background: #b45252; }
-  .btn.btn-outline-danger {
-    color: #b45252;
-    background: transparent; }
-
-.btn-outline-primary {
-  background: transparent;
-  color: #5263b4; }
-
-label {
-  margin-top: 10px; }
-
-input {
-  border: 1px solid #dfe7ee; }
-
 @media (min-width: 1200px) {
   .fs-4 {
     font-size: 1.2rem !important; } }
@@ -11334,6 +11287,15 @@ input {
 
 #val_password {
   display: block; }
+
+.next-dates .datetime {
+  font-weight: 200; }
+  .next-dates .datetime .time {
+    font-size: 2.6rem; }
+  .next-dates .datetime .next-date-slogan {
+    margin-top: 1.5rem; }
+  .next-dates .datetime .next-date-value {
+    font-size: 1.5rem; }
 
 .body-plain {
   background: #212529;

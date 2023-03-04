@@ -3,27 +3,35 @@
 <div class="row">
 
   <div class="col-12 col-lg-6 d-flex align-items-stretch">
-    <div class="card">
+    <div class="card next-dates">
       <div class="card-header">Geplante Termine</div>
       <div class="card-body">
-        <table class="table">
-          <thead>
-          <tr>
-              <th scope="col">Datum & Uhrzeit</th>
-              <th scope="col">Maschinen</th>
-              <th scope="col">Mitarbeiter</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in termin_daten_5 %}
-            <tr>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{ termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }} </td>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['employees'] }}</td>
-            </tr>
+        <div class="row">
+
+          <div class="col-4">
+            <div class="datetime">
+              <div class="time">{{ uhrzeit }}</div>
+              <div class="date">{{ tag }}</div>
+              <div class="next-date-slogan">
+                Nächster Termin
+              </div>
+              <div class="next-date-value">
+                {{ termin_daten_list[0]['starttime'] }}
+              </div>
+            </div>
+          </div>
+          <div class="col-8">
+            {% for item in termin_daten_list %}
+              <div class="date_box">
+                <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{
+                  termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }}
+                </td>
+                <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
+                <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['employees'] }}</td>
+              </div>
             {% endfor %}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -32,38 +40,38 @@
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
-              <div class="col-12 col-lg-3 d-flex flex-row align-items-center" style="height: 110px;">
-                <div class="p-3">
-                  <h4>{{ informations['Temp'][0] }}&deg;</h4>
-                  {% if 200 <= informations['Wettercode'][0] < 300 %}
-                  <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
-                  {% elif 300 <= informations['Wettercode'][0] < 400 %}
-                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
-                  {% elif informations['Wettercode'][0] == 500 %}
-                  <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
-                  {% elif 501 <= informations['Wettercode'][0] < 600 %}
-                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
-                  {% elif informations['Wettercode'][0] == 616 %}
-                  <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
-                  {% elif 600 <= informations['Wettercode'][0] < 700 %}
-                  <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
-                  {% elif 700 <= informations['Wettercode'][0] < 800 %}
-                  <img src="{{ url_for('static', filename='img/weather/foog.svg') }}">
-                  {% elif informations['Wettercode'][0] == 800 %}
-                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
-                  {% elif informations['Wettercode'][0] > 800 %}
-                  <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
-                  {% else %}
-                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
-                  {% endif %}
-                </div>
-                <div class="p-3">
-                  <h5>{{ informations['Tag'][0] }}</h5>
-                  <p></p>
-                  <h6><b>{{ cityname }}</b></h6>
-                  <span>{{ informations['Wetter'][0] }}</span>
-                </div>
-              </div>    
+        <div class="col-12 col-lg-3 d-flex flex-row align-items-center" style="height: 110px;">
+          <div class="p-3">
+            <h4>{{ informations['Temp'][0] }}&deg;</h4>
+            {% if 200 <= informations['Wettercode'][0] < 300 %} <img
+              src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+            {% elif 300 <= informations['Wettercode'][0] < 400 %} <img
+              src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][0] == 500 %}
+              <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+            {% elif 501 <= informations['Wettercode'][0] < 600 %} <img
+              src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][0] == 616 %}
+              <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
+            {% elif 600 <= informations['Wettercode'][0] < 700 %} <img
+              src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+            {% elif 700 <= informations['Wettercode'][0] < 800 %} <img
+              src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+            {% elif informations['Wettercode'][0] == 800 %}
+              <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% elif informations['Wettercode'][0] > 800 %}
+              <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+            {% else %}
+              <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% endif %}
+          </div>
+          <div class="p-3">
+            <h5>{{ informations['Tag'][0] }}</h5>
+            <p></p>
+            <h6><b>{{ cityname }}</b></h6>
+            <span>{{ informations['Wetter'][0] }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -98,7 +106,7 @@
 </div>
 
 <script>
-  var ctx1 = document.getElementById('pv_prediction').getContext('2d');  
+  var ctx1 = document.getElementById('pv_prediction').getContext('2d');
   var pv_prediction = {{ pv_prediction }};
   var pv_prediction_labels = {{ pv_prediction_labels | safe }};
 
