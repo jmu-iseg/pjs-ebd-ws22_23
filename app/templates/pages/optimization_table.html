@@ -10,7 +10,7 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col">
-                <h3>Hier sind <b>Vorschläge</b> für optimalen Zeitpunkte Ihres Termins:</h3>
+                <h3>Terminvorschläge</h3>
                 <p></p>
               </div>
             </div>
@@ -31,7 +31,7 @@
                       <th scope="col">Datum</th>
                       <th scope="col">Uhrzeit</th>
                       <th scope="col">Dauer</th>
-                      <th scope="col">Einladung</th>
+                      <th scope="col">Terminauswahl</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -45,12 +45,9 @@
                       <td>{{ item.Time }}</td>
                       <td>{{ item.dauer }}h</td>
                       <td>
+
                         <div class="btn-group" role="group" aria-label="Basic example">
-                          <a type="button"
-                            href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
-                            class="btn btn-outline-primary">herunterladen</a>
-                          <button type="button" data-bs-toggle="modal" data-bs-target="#mailModal{{ item.TerminID }}" class="btn btn-outline-primary">senden</button>
-                          <button type="button" data-bs-toggle="modal" data-bs-target="#saveModal{{ item.TerminID }}" class="btn btn-outline-primary">speichern</button>
+                          <button type="button" data-bs-toggle="modal" data-bs-target="#mailModal{{ item.TerminID }}" class="btn btn-outline-primary">auswählen</button>
                         </div>
 
                         <!-- Modals -->
@@ -64,6 +61,14 @@
                                   aria-label="Close"></button>
                               </div>
                               <div class="modal-body">
+                                <p>Um den Termin zu speichern, können Sie den Termin</p>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                  <a type="button"
+                                    href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
+                                    class="btn btn-outline-primary">herunterladen</a>
+                                </div>
+                                <p></p>
+                                <p>oder per E-Mail versenden:</p>
                                 <form method="POST" action="">
                                   {{ sendMailForm.csrf_token() }}
                                   {{ sendMailForm.dauer(value=item.dauer) }}
@@ -101,6 +106,7 @@
                             </div>
                           </div>
                         </div>
+
 
                       </td>
                     </tr>
