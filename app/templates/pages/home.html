@@ -143,14 +143,15 @@
       <div class="card-body">
         <div class="pv-container">
           <div class="pv-percentage">
-            Auslastung PV-Anlage
+            Auslastung PV-Anlage:
             <div class="pv-percentage-value">{{ auslastung_pv }} %</div>
             <div class="chart-container">
               <canvas id="pv_auslastung" style="margin: 0 auto;" width="200" height="200"></canvas>
             </div>
           </div>
           <div class="pv-values">
-            Erwartete PV-Energie 14 Tage Aussicht
+            Erwartete PV-Energie 14 Tage Aussicht:
+            <div class="pv-kwh">{{ pv_prediction_sum }} kWh</div>
             <div class="chart-container">
               <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
             </div>

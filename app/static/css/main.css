@@ -11355,7 +11355,9 @@ main {
   text-align: left; }
   .pv-container .pv-percentage-value {
     font-size: 2.6rem;
-    text-align: center;
+    font-weight: 200; }
+  .pv-container .pv-values .pv-kwh {
+    font-size: 1.8rem;
     font-weight: 200; }
 
 .body-plain {
