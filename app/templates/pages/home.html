@@ -4,7 +4,7 @@
 
   <div class="col-12 col-lg-6 d-flex align-items-stretch">
     <div class="card next-dates">
-      <div class="card-header">Geplante Termine</div>
+      <div class="card-header">Nächste Termine</div>
       <div class="card-body">
         <div class="row">
 
@@ -16,18 +16,28 @@
                 Nächster Termin
               </div>
               <div class="next-date-value">
-                {{ termin_daten_list[0]['starttime'] }}
+                {{ timer[0] }} T. {{ timer[1] }}:{{ timer[2] }} Std.
               </div>
             </div>
           </div>
           <div class="col-8">
             {% for item in termin_daten_list %}
-              <div class="date_box">
-                <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{
-                  termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }}
-                </td>
-                <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
-                <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['employees'] }}</td>
+              <div class="date-box">
+                <div class="date-column">
+                  <div class="weekday">{{ termin_daten[item]['weekday'] }}</div>
+                  <span class="date">{{ termin_daten[item]['date'] }}</span>
+                </div>
+                <div class="info-column">
+                  <div class="daterange-column">
+                    {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }}
+                  </div>
+
+                  <div class="detail-column">
+                    <div class="date-description">{{ termin_daten[item]['description'] }}</div>
+                    {{ termin_daten[item]['machines'] }}<br>
+                    {{ termin_daten[item]['employees'] }}
+                  </div>
+                </div>
               </div>
             {% endfor %}
           </div>
@@ -40,9 +50,13 @@
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
-        <div class="col-12 col-lg-3 d-flex flex-row align-items-center" style="height: 110px;">
-          <div class="p-3">
-            <h4>{{ informations['Temp'][0] }}&deg;</h4>
+        <div class="weather-preview">
+          <div class="weather-facts">
+            <div class="temperature">{{ informations['Temp'][0] }}&deg;</div>
+            <div class="weather-text">{{ informations['Wetter'][0] }}</div>
+            <b>{{ cityname }}</b>
+          </div>
+          <div class="weather-icon">
             {% if 200 <= informations['Wettercode'][0] < 300 %} <img
               src="{{ url_for('static', filename='img/weather/storm.svg') }}">
             {% elif 300 <= informations['Wettercode'][0] < 400 %} <img
@@ -65,12 +79,37 @@
               <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
             {% endif %}
           </div>
-          <div class="p-3">
-            <h5>{{ informations['Tag'][0] }}</h5>
-            <p></p>
-            <h6><b>{{ cityname }}</b></h6>
-            <span>{{ informations['Wetter'][0] }}</span>
+        </div>
+        
+        <!-- Weather Forecast -->
+        <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
+          {% for i in range(1,9) %}
+          <div class="p-1 d-flex flex-column justify-content-center align-items-center">
+            <span>{{ informations['Wochentag'][i] }}</span>
+            {% if 200 <= informations['Wettercode'][i] < 300 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+            {% elif 300 <= informations['Wettercode'][i] < 400 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][i] == 500 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+            {% elif 501 <= informations['Wettercode'][i] < 600 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][i] == 616 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
+            {% elif 600 <= informations['Wettercode'][i] < 700 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+            {% elif 700 <= informations['Wettercode'][i] < 800 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+            {% elif informations['Wettercode'][i] == 800 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% elif informations['Wettercode'][i] > 800 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+            {% else %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% endif %}
+            <span>{{ informations['Temp'][i] }}&deg;</span>
           </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -210,6 +249,9 @@
   });
 </script>
 
-
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 
 {% endblock %}
