@@ -12,38 +12,54 @@
           <h4>Planungshorizont festlegen</h4>
         </div>
         <p>Die Terminplanung ist aufgrund des Wetterberichtes nur für die <b>nächsten 30 Tage</b> möglich.</p>
-        <form action="" method="post">
+        <form action="" method="post" style="max-width: 550px;margin: 0 auto;">
           {{ form.csrf_token }}
-          {{ form.startdate.label }}
-          {{ form.startdate }}<br>
-          {{ form.enddate.label }}
-          {{ form.enddate }}<br>
+
+          <div class="row">
+            <div class="col">
+              {{ form.startdate.label }}<br>
+              {{ form.startdate(class_="form-control") }}<br>
+            </div>
+            <div class="col">
+              {{ form.enddate.label }}<br>
+              {{ form.enddate(class_="form-control") }}<br>
+            </div>
+          </div>
+          {% for termin in form.termine %}
+            <div class="row">
+              <div class="col">
+                Bezeichnung<br>
+                {{ termin.terminbeschreibung(class_="form-control") }}<br>
+              </div>
+              <div class="col">
+                Dauer in Stunden<br>
+                {{ termin.duration(class_="form-control") }}<br>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                Maschinen<br>
+                {{ termin.machines }}<br>
+              </div>
+              <div class="col">
+                Produkt<br>
+                {{ termin.product }}<br>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                Mitarbeiter<br>
+                {{ termin.mitarbeiter }}
+              </div>
+            </div>
+            {{ termin.csrf_token }}
+          {% endfor %}
+
           {{ form.optimization_identifier }}
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Bezeichnung</th>
-                <th>Maschinen</th>
-                <th>Lötprodukt</th>
-                <th>Mitarbeiter</th>
-                <th>Dauer (h)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for termin in form.termine %}
-                <tr>{{ termin.csrf_token }}
-                  <td>#{{ loop.index0 + 1 }}</td>
-                  <td>{{ termin.terminbeschreibung }}</td>
-                  <td>{{ termin.machines }}</td>
-                  <td>{{ termin.product }}</td>
-                  <td>{{ termin.mitarbeiter }}</td>
-                  <td>{{ termin.duration }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>            
-          {{ form.optimize }}
+          <br>
+          {{ form.optimize(class_="btn btn-primary") }}
         </form>
       </div>
     </div>
