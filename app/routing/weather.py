@@ -9,7 +9,7 @@ from flask import render_template
 @app.route('/weather')
 @login_required
 def weather():
-    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/weather_forecast.json'), mode='r', encoding='utf-8') as openfile:
         data = json.load(openfile)
     timestamp = []
     clouds = []

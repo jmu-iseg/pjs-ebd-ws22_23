@@ -1,12 +1,13 @@
 <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end">
-        <div class="mobile-title d-lg-none me-auto">
-            Energieoptimierung
+        <div class="mobile-title me-auto">
+            Energiebasierte Terminplanung
         </div>
 
         <div class="dropdown text-end">
             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                 aria-expanded="false">
+                {{ username }}
                 <img src="{{ url_for('static', filename=profilepic) }}" alt="mdo" width="34" height="34" class="rounded-circle profile-img-preview">
             </a>
             <ul class="dropdown-menu text-small">
@@ -19,7 +20,6 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li><a class="dropdown-item" href="{{ url_for('logout') }}">Sign out</a></li>
-                <li><p class="dropdown-item">Nutzer: {{ username }}</p></li>
             </ul>
         </div>
     </div>

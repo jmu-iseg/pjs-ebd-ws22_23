@@ -1,3 +1,4 @@
+from pytz import utc
 from app import app, create_file_object, flash_errors
 from flask import render_template, request, redirect, send_file
 from app.models import *
@@ -13,7 +14,7 @@ import pandas as pd
 import mysql.connector as sql
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import subprocess
 from flask_login import login_required
 
@@ -35,7 +36,7 @@ def home():
     #df = df.drop('datetime', axis=1)
 
     # get cloud data
-    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/weather_forecast.json'), mode='r', encoding='utf-8') as openfile:
         data = json.load(openfile)
     timestamp = []
     clouds = []
@@ -79,6 +80,22 @@ def home():
     pv_prediction['output_prediction'] = round(pv_prediction['output_prediction'],1)
     pv_prediction = pv_prediction['output_prediction'].to_list()
 
+    # uhrzeit & datum 
+    tag = date.today()   
+    tag = tag.strftime("%d.%m.%Y")
+    uhrzeit = datetime.now()
+    uhrzeit = uhrzeit.strftime("%H:%M")
+
+    # auslastung pv-anlage
+    df_today = df.set_index('dateTime')
+    df_today = df_today.resample("D").sum().reset_index()
+    today = date.today().strftime("%Y-%m-%d")
+    df_today = df_today[df_today['dateTime'] == today] 
+    todays_pv_energy = float(df_today['output_prediction'])
+    max_pv_energy = float(df_today['max'])
+    auslastung_pv = todays_pv_energy / max_pv_energy
+    auslastung_pv = int(round(auslastung_pv*100,0)) 
+
     # gespeicherte historische termine abfragen
     termine = Termin.query.all()
     termin_daten = {}
@@ -104,23 +121,51 @@ def home():
             } 
     
     # order by date 
-    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['dateTime'], reverse=True)}
+    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['dateTime'], reverse=False)}
     
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
 
-    # next 5 termine
-    termin_daten_5 = {k: termin_daten[k] for k in list(termin_daten.keys())[:5]}
+    # next 2 termine
+    termin_daten_list = {k: termin_daten[k] for k in list(termin_daten.keys())[:2]}
 
-    # saved co2 
+    # timer for next termin 
+    next_termin = termin_daten[0]['dateTime']
+    duration = next_termin - datetime.now()
+    duration_in_s = duration.total_seconds()    
+    days = divmod(duration_in_s, 86400)        
+    hours = divmod(days[1], 3600)               
+    minutes = divmod(hours[1], 60)  
+    days = int(days[0])
+    hours = int(hours[0])
+    minutes = int(minutes[0])
+    timer = [days,hours,minutes]
+
+    # sum of saved co2 (insgesamt)
     saved_co2 = 0
     for termin in termin_daten: 
         saved_co2 += termin_daten[termin]['saved_co2']
         saved_co2 = round(saved_co2,1)
 
+    # sum of saved co2 (heute)
+    saved_co2_today = 0
+    for termin in termin_daten:
+        if termin_daten[termin]['dateTime'].date() == datetime.today().date():
+            saved_co2_today += termin_daten[termin]['saved_co2']
+            saved_co2_today = round(saved_co2_today,1)
+
+    # termin daten für visualisierung 
+    temp_df = pd.DataFrame(termin_daten).T
+    temp_df = temp_df.groupby('date', as_index=False).sum()
+    temp_df = temp_df[['date', 'saved_co2']]
+    temp_df['saved_co2'] = round(temp_df['saved_co2'],1)
+    co2_termine = temp_df.to_dict()
+
+    # todo 
+    pv_prediction_sum = int(sum(pv_prediction))
 
     # weather 
-    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/weather_forecast.json'), mode='r', encoding='utf-8') as openfile:
         data = json.load(openfile)
     timestamp = []
     clouds = []
@@ -173,7 +218,7 @@ def home():
         'Wochentag': wochentag
     }
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_5=termin_daten_5, records=records, informations=informations, cityname=name, saved_co2=saved_co2)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, saved_co2_today=saved_co2_today, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv, timer=timer, co2_termine=co2_termine, pv_prediction_sum=pv_prediction_sum)
 
 
 def allowed_file(filename):

@@ -2,128 +2,168 @@
 {% block content %}
 <div class="row">
 
-  <div class="col-12 col-lg-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-header">
-        Energiebasierte Terminplanung
-      </div>
+  <div class="col-12 col-xl-6 d-flex align-items-stretch">
+    <div class="card next-dates">
+      <div class="card-header">Nächste Termine</div>
       <div class="card-body">
-        <h4>Herzlichen Willkommen, <b>{{username}}</b>! Schön, dass du da bist.</h4>
-        <p>Mit Solar<b>Sync</b> können Sie zukünftige Termine in Ihrem Showroom planen. Das Ziel ist hierbei eine Maximierung des Strombezugs aus der Photovoltaikanlage.</p>
+        <div class="row">
+
+          <div class="col-4">
+            <div class="datetime">
+              <div class="time">{{ uhrzeit }}</div>
+              <div class="date">{{ tag }}</div>
+              <div class="next-date-slogan">
+                Nächster Termin
+              </div>
+              <div class="next-date-value">
+                {{ timer[0] }} T. {{ timer[1] }}:{{ timer[2] }} Std.
+              </div>
+            </div>
+          </div>
+          <div class="col-8">
+            {% for item in termin_daten_list %}
+              <div class="date-box">
+                <div class="date-column">
+                  <div class="weekday">{{ termin_daten[item]['weekday'] }}</div>
+                  <span class="date">{{ termin_daten[item]['date'] }}</span>
+                </div>
+                <div class="info-column">
+                  <div class="daterange-column">
+                    {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }}
+                  </div>
+
+                  <div class="detail-column">
+                    <div class="date-description">{{ termin_daten[item]['description'] }}</div>
+                    {{ termin_daten[item]['machines'] }}<br>
+                    {{ termin_daten[item]['employees'] }}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="col-12 col-lg-4 align-items-stretch">
+  <div class="col-12 col-xl-6 align-items-stretch">
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
-              <div class="col-12 col-lg-3 d-flex flex-row align-items-center" style="height: 110px;">
-                <div class="p-3">
-                  <h4>{{ informations['Temp'][0] }}&deg;</h4>
-                  {% if 200 <= informations['Wettercode'][0] < 300 %}
-                  <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
-                  {% elif 300 <= informations['Wettercode'][0] < 400 %}
-                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
-                  {% elif informations['Wettercode'][0] == 500 %}
-                  <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
-                  {% elif 501 <= informations['Wettercode'][0] < 600 %}
-                  <img src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
-                  {% elif informations['Wettercode'][0] == 616 %}
-                  <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
-                  {% elif 600 <= informations['Wettercode'][0] < 700 %}
-                  <img src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
-                  {% elif 700 <= informations['Wettercode'][0] < 800 %}
-                  <img src="{{ url_for('static', filename='img/weather/foog.svg') }}">
-                  {% elif informations['Wettercode'][0] == 800 %}
-                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
-                  {% elif informations['Wettercode'][0] > 800 %}
-                  <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
-                  {% else %}
-                  <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
-                  {% endif %}
-                </div>
-                <div class="p-3">
-                  <h5>{{ informations['Tag'][0] }}</h5>
-                  <p></p>
-                  <h6><b>{{ cityname }}</b></h6>
-                  <span>{{ informations['Wetter'][0] }}</span>
-                </div>
-              </div>    
-      </div>
-    </div>
-    <div class="card" style="margin-top: 12px;">
-      <div class="card-header">Terminzähler</div>
-      <div class="card-body">
-              <div class="col-12 col-lg-12 flex-row align-items-center" style="height: 110px;">
-                <p>Du warst fleißig, {{username}}! Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit Solar<b>Sync</b> optimiert.</p>
-              </div>    
+        <div class="weather-preview">
+          <div class="weather-facts">
+            <div class="temperature">{{ informations['Temp'][0] }}&deg;</div>
+            <div class="weather-text">{{ informations['Wetter'][0] }}</div>
+            <b>{{ cityname }}</b>
+          </div>
+          <div class="weather-icon">
+            {% if 200 <= informations['Wettercode'][0] < 300 %} <img
+              src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+            {% elif 300 <= informations['Wettercode'][0] < 400 %} <img
+              src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][0] == 500 %}
+              <img src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+            {% elif 501 <= informations['Wettercode'][0] < 600 %} <img
+              src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][0] == 616 %}
+              <img src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
+            {% elif 600 <= informations['Wettercode'][0] < 700 %} <img
+              src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+            {% elif 700 <= informations['Wettercode'][0] < 800 %} <img
+              src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+            {% elif informations['Wettercode'][0] == 800 %}
+              <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% elif informations['Wettercode'][0] > 800 %}
+              <img src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+            {% else %}
+              <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Weather Forecast -->
+        <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
+          {% for i in range(1,9) %}
+          <div class="p-1 d-flex flex-column justify-content-center align-items-center">
+            <span>{{ informations['Wochentag'][i] }}</span>
+            {% if 200 <= informations['Wettercode'][i] < 300 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/storm.svg') }}">
+            {% elif 300 <= informations['Wettercode'][i] < 400 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][i] == 500 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/light_rain.svg') }}">
+            {% elif 501 <= informations['Wettercode'][i] < 600 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/rainy.svg') }}">
+            {% elif informations['Wettercode'][i] == 616 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/snow_and_rain.svg') }}">
+            {% elif 600 <= informations['Wettercode'][i] < 700 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/snowflake.svg') }}">
+            {% elif 700 <= informations['Wettercode'][i] < 800 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/foog.svg') }}">
+            {% elif informations['Wettercode'][i] == 800 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% elif informations['Wettercode'][i] > 800 %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/cloud.svg') }}">
+            {% else %}
+            <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
+            {% endif %}
+            <span>{{ informations['Temp'][i] }}&deg;</span>
+          </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
 
-  
+</div>
 
-  <div class="col-12 col-lg-4 d-flex align-items-stretch">
+<div class="row">
+  <div class="col-12 col-xl-6 d-flex align-items-stretch">
+    <div class="card">
+      <div class="card-header"><img src="{{ url_for('static', filename='img/leaf.svg') }}"> CO2-Ersparnis</div>
+      <div class="card-body">
+        <div class="savings">
+          <div class="savings-facts">
+            <div class="p-large">{{saved_co2_today}} kg</div>
+            <p>heute</p>
+            <div class="p-large">{{saved_co2}} kg</div>
+            <p>gesamt</p>
+          </div>
+          <div class="chart-container">
+            <canvas id="co2_saved" style="margin: 0 auto; width:100%" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-6 d-flex align-items-stretch">
     <div class="card">
       <div class="card-header">Erwartete PV-Energie</div>
       <div class="card-body">
-        <p class="card-text">In den kommenden <b>14 Tagen</b> wird folgende erzeugte <b>Solarenergie</b> erwartet:</p>
-        <p></p>
-        <div class="chart-container">
-          <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
+        <div class="pv-container">
+          <div class="pv-percentage">
+            Auslastung PV-Anlage:
+            <div class="pv-percentage-value">{{ auslastung_pv }} %</div>
+            <div class="chart-container">
+              <canvas id="pv_auslastung" style="margin: 0 auto;" width="200" height="200"></canvas>
+            </div>
+          </div>
+          <div class="pv-values">
+            Erwartete PV-Energie 14 Tage Aussicht:
+            <div class="pv-kwh">{{ pv_prediction_sum }} kWh</div>
+            <div class="chart-container">
+              <canvas id="pv_prediction" style="margin: 0 auto;width:100%" height="220"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-
-<div class="row">
-  
-  <div class="col-12 col-lg-6 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-header">Geplante Termine</div>
-      <div class="card-body">
-        <table class="table">
-          <thead>
-          <tr>
-              <th scope="col">Datum & Uhrzeit</th>
-              <th scope="col">Maschinen</th>
-              <th scope="col">Mitarbeiter</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in termin_daten_5 %}
-            <tr>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{ termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }} </td>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['employees'] }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-12 col-lg-6 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-header">CO2-Ersparnis</div>
-      <div class="card-body">
-        <p>Durch die PV-Anlage wurden bereits <b>{{saved_co2}} kg CO2</b> eingespart.</p>
-      </div>
-      <div class="chart-container">
-        <canvas id="co2_saved" style="margin: 0 auto;" width="400" height="220"></canvas>
-      </div>
-    </div>
-  </div>
-
-
-</div>
-
 <script>
-  var ctx1 = document.getElementById('pv_prediction').getContext('2d');  
+  var ctx1 = document.getElementById('pv_prediction').getContext('2d');
   var pv_prediction = {{ pv_prediction }};
   var pv_prediction_labels = {{ pv_prediction_labels | safe }};
 
@@ -134,8 +174,8 @@
       datasets: [{
         label: 'PV-Erzeugung',
         data: pv_prediction,
-        borderColor: 'rgb(300 180 50/ 80%)',
-        backgroundColor: 'rgb(300 180 50/ 80%)',
+        borderColor: 'rgb(138, 179, 51, 1)',
+        backgroundColor: 'rgb(138, 179, 51, 1)',
       }]
     },
     options: {
@@ -172,26 +212,56 @@
 </script>
 
 <script>
-  var ctx1 = document.getElementById('co2_saved').getContext('2d');
-  var parsed = JSON.parse('{{termin_daten | tojson}}');
-  var co2_saved_list = []
-  for (const [key, value] of Object.entries(parsed)) {
-    co2_saved_list.push(parsed[key]['saved_co2'])
+  var ctx1 = document.getElementById('pv_auslastung').getContext('2d');
+  var auslastung_pv = {{ auslastung_pv }};
+  
+  var percentage_chart = new Chart(ctx1, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [auslastung_pv, 100-auslastung_pv],
+        backgroundColor: [
+          'rgba(138, 179, 51, 1)',
+          'rgba(241, 241, 244, 1)'
+        ]
+      }]
+    },
+    options: {
+      rotation: -90,
+      circumference: 180,
+      legend: {
+        display: false,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        }
+    }
   }
-  var co2_saved_labels = []
-  for (const [key, value] of Object.entries(parsed)) {
-    var temp_date = parsed[key]['weekday'].toString() + ', ' + parsed[key]['date'].toString()
-    co2_saved_labels.push(temp_date)
-  }
+  });
+  
+</script>
 
+<script>
+  var ctx1 = document.getElementById('co2_saved').getContext('2d');
+  var data = {{ co2_termine | safe }};
+  var labels = []
+  for (key in data['date']) { 
+    labels.push(data['date'][key])
+  }
+  var data_list = []
+  for (key in data['saved_co2']) { 
+    data_list.push(data['saved_co2'][key])
+  }
+  
   var netzbezug_chart = new Chart(ctx1, {
     type: 'bar',
     data: {
-      labels: co2_saved_labels,
+      labels: labels,
       datasets: [{
         label: 'CO2-Einsparung',
-        data: co2_saved_list,
-        backgroundColor: 'rgb(20 200 60/ 80%)'
+        data: data_list,
+        backgroundColor: 'rgb(138 179 51/ 100%)'
       }]
     },
     options: {
@@ -227,6 +297,9 @@
   });
 </script>
 
-
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 
 {% endblock %}

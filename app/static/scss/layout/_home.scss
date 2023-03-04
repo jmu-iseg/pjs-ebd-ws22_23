@@ -1,0 +1,106 @@
+.next-dates {
+    .datetime {
+        font-weight: 200;
+
+        .time {
+            font-size: 2.6rem;
+        }
+
+        .next-date-slogan {
+            margin-top: 1.5rem;
+        }
+
+        .next-date-value {
+            font-size: 1.5rem;
+        }
+    }
+
+    .date-box {
+        background: #f1f1f4;
+        border-radius: .5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        font-weight: 200;
+        overflow: hidden;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        .date-column {
+            background: $green;
+            color: $font-hover;
+            width: 3.5rem;
+            text-align: left;
+            padding: 0.5rem;
+
+            .date {
+                font-size: $p-small;
+            }
+        }
+
+        .info-column {
+            display: flex;
+            align-items: center;
+
+            .daterange-column {
+                padding: 0.3rem;
+            }
+
+            .detail-column {
+                font-size: $p-small;
+                text-align: left;
+
+                .date-description {
+                    font-size: initial;
+                }
+            }
+        }
+    }
+}
+
+.weather-preview {
+    display: flex;
+    justify-content: center;
+
+    .weather-facts {
+        .temperature {
+            font-size: 2.6rem;
+            font-weight: 200;
+        }
+
+        .weather-text {
+            font-size: $p-small;
+        }
+    }
+
+    .weather-icon {
+        img {
+            height:80px;
+        }
+    }
+}
+
+.savings {
+    display: flex;
+    .savings-facts {
+        text-align: left;
+        font-weight: 200;
+        min-width: 130px;
+    }
+}
+
+.pv-container {
+    display: flex;
+    text-align: left;
+    .pv-percentage-value {
+        font-size: $p-huge;
+        font-weight: 200;
+    }
+    .pv-values {
+        .pv-kwh {
+            font-size: $p-large;
+            font-weight: 200;
+        }
+    }
+}

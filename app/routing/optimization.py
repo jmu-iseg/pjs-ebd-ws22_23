@@ -82,7 +82,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     #df = df.drop('datetime', axis=1)
 
     # get cloud data
-    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
+    with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/weather_forecast.json'), mode='r', encoding='utf-8') as openfile:
         data = json.load(openfile)
     timestamp = []
     clouds = []
