@@ -1,0 +1,17 @@
+.card {
+    box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 20px 0px;
+    background: $background-light;
+    border: 0;
+    border-radius: 10px;
+    transition: box-shadow .3s ease;
+    &:hover {
+        box-shadow: rgba(154, 161, 171, 0.5) 0px 0px 30px 0px;
+    }
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: 0;
+    text-align: left;
+    color: rgb(138, 150, 156);
+}
