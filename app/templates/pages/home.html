@@ -169,14 +169,19 @@
         data: [auslastung_pv, 100-auslastung_pv],
         backgroundColor: [
           'rgba(10, 150, 20, 0.6)',
-          'rgba(250, 10, 20, 0.6)'
+          'rgba(255, 255, 255, 0.6)'
         ]
       }]
     },
     options: {
       rotation: -90,
       circumference: 180,
+      plugins: {
+        legend: {
+          display: false,
+        }
     }
+  }
   });
   
 </script>
