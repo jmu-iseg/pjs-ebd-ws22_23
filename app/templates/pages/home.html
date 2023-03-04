@@ -2,19 +2,33 @@
 {% block content %}
 <div class="row">
 
-  <div class="col-12 col-lg-4 d-flex align-items-stretch">
+  <div class="col-12 col-lg-6 d-flex align-items-stretch">
     <div class="card">
-      <div class="card-header">
-        Energiebasierte Terminplanung
-      </div>
+      <div class="card-header">Geplante Termine</div>
       <div class="card-body">
-        <h4>Herzlichen Willkommen, <b>{{username}}</b>! Schön, dass du da bist.</h4>
-        <p>Mit Solar<b>Sync</b> können Sie zukünftige Termine in Ihrem Showroom planen. Das Ziel ist hierbei eine Maximierung des Strombezugs aus der Photovoltaikanlage.</p>
+        <table class="table">
+          <thead>
+          <tr>
+              <th scope="col">Datum & Uhrzeit</th>
+              <th scope="col">Maschinen</th>
+              <th scope="col">Mitarbeiter</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in termin_daten_5 %}
+            <tr>
+              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{ termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }} </td>
+              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
+              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['employees'] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <div class="col-12 col-lg-4 align-items-stretch">
+  <div class="col-12 col-lg-6 align-items-stretch">
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
@@ -52,61 +66,11 @@
               </div>    
       </div>
     </div>
-    <div class="card" style="margin-top: 12px;">
-      <div class="card-header">Terminzähler</div>
-      <div class="card-body">
-              <div class="col-12 col-lg-12 flex-row align-items-center" style="height: 110px;">
-                <p>Du warst fleißig, {{username}}! Insgesamt wurden bereits <b>{{ termin_daten|count }}</b> Termine mit Solar<b>Sync</b> optimiert.</p>
-              </div>    
-      </div>
-    </div>
   </div>
 
-  
-
-  <div class="col-12 col-lg-4 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-header">Erwartete PV-Energie</div>
-      <div class="card-body">
-        <p class="card-text">In den kommenden <b>14 Tagen</b> wird folgende erzeugte <b>Solarenergie</b> erwartet:</p>
-        <p></p>
-        <div class="chart-container">
-          <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
-
 <div class="row">
-  
-  <div class="col-12 col-lg-6 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-header">Geplante Termine</div>
-      <div class="card-body">
-        <table class="table">
-          <thead>
-          <tr>
-              <th scope="col">Datum & Uhrzeit</th>
-              <th scope="col">Maschinen</th>
-              <th scope="col">Mitarbeiter</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in termin_daten_5 %}
-            <tr>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['weekday'] }}, {{ termin_daten[item]['date'] }} {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }} </td>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['machines'] }}</td>
-              <td style="width: 1px; white-space: nowrap;">{{ termin_daten[item]['employees'] }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
   <div class="col-12 col-lg-6 d-flex align-items-stretch">
     <div class="card">
       <div class="card-header">CO2-Ersparnis</div>
@@ -119,7 +83,18 @@
     </div>
   </div>
 
-
+  <div class="col-12 col-lg-6 d-flex align-items-stretch">
+    <div class="card">
+      <div class="card-header">Erwartete PV-Energie</div>
+      <div class="card-body">
+        <p class="card-text">In den kommenden <b>14 Tagen</b> wird folgende erzeugte <b>Solarenergie</b> erwartet:</p>
+        <p></p>
+        <div class="chart-container">
+          <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
