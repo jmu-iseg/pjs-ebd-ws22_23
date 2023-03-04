@@ -221,6 +221,12 @@
 <script>
   var ctx3 = document.getElementById('netzbezug_pro_termin').getContext('2d');
   var netzbezug_termine = {{ netzbezug_termine }};
+  var parsed = JSON.parse('{{netzbezug_termine_percent | tojson}}');
+  var data_list = []
+  for (item in parsed){
+    data_list.push(parsed[item].percent)
+  }
+    
   var termin_list = {{ termin_list }};
   var termin_list_new = termin_list.map(String);
 
@@ -231,7 +237,7 @@
       labels: ['#1', '#2', '#3',],
       datasets: [{
         label: 'Netzbezug',
-        data: netzbezug_termine,
+        data: data_list,
         backgroundColor: [
           'rgba(15, 150, 50, 0.6)',
           'rgba(250, 180, 30, 0.6)',
