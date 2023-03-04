@@ -116,24 +116,8 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col col-xl-3 mb-3 d-flex align-items-stretch">
-    <div class="card">
-      <div class="card-header">Anteil PV-Strom</div>
-      <div class="card-body">
-        <p class="card-text">Beim optimalen <b>Terminvorschlag #1</b> wird voraussichtlich <b>{{renewable_percent}} %</b> der benötigten Strommenge durch die
-          PV-Anlage gedeckt.</p>
-        <p></p>
-        <div class="chart-container">
-          <canvas id="pv_percentage" style="margin: 0 auto;" width="190" height="175"></canvas>
-          <div class="donut-inner" style="margin-top: -100px; margin-bottom: 100px;">
-            <span>{{energy_consumption}} kWh</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
+<div class="row">
   <div class="col-12 col-xl-6 mb-3 d-flex align-items-stretch">
     <div class="card">
       <div class="card-header">Netzbezug der Terminvorschläge</div>
@@ -143,16 +127,20 @@
               <p class="card-text">Die Planung des Termins führt zu einem <b>Stromverbrauch</b> in Höhe von <b>{{energy_consumption}} kWh</b>.</p>
               <table class="table">
                 <thead>
-                <tr>
-                    <th scope="col">Terminvorschlag</th>
-                    <th scope="col">PV-Strom</th>
+                  <tr>
+                    <th scope="col">Termin</th>
+                    <th scope="col">Netzbezug</th>
+                    <th scope="col">PV-Energie</th>
+                    <th scope="col">PV-Anteil</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for item in netzbezug_termine_percent %}
                   <tr>
                     <td style="width: 1px; white-space: nowrap;">#{{ item.Termin_ID }}</td>
-                    <td style="width: 1px; white-space: nowrap;"><b>{{ item.percent }} %</b></td>
+                    <td style="width: 1px; white-space: nowrap;">{{ item.netzbezug }} kWh</td>
+                    <td style="width: 1px; white-space: nowrap;">{{ item.pv_consumption }} kWh</td>
+                    <td style="width: 1px; white-space: nowrap;">{{ item.percent }} %</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -169,7 +157,6 @@
             </div>
           </div>
           </div>
-        
     </div>
   </div>
 
@@ -177,10 +164,13 @@
     <div class="card">
       <div class="card-header">PV-Energie im Planungshorizont</div>
       <div class="card-body">
-        <p class="card-text">Im Planungshorizont wird folgende erzeugte <b>Solarenergie</b> erwartet:</p>
+        <div class="pv-values">
+          Erwartete PV-Energie im Planungszeitraum:
+          <div class="pv-kwh">{{output_prediction_sum}} kWh</div>
+        </div>
         <p></p>
         <div class="chart-container">
-          <canvas id="netzbezug" style="margin: 0 auto;" width="280" height="220"></canvas>
+          <canvas id="pv_prediction" style="margin: 0 auto;width:100%" width="280" height="220"></canvas>
         </div>
       </div>
     </div>
@@ -188,17 +178,19 @@
 
 </div>
 <script>
-  var ctx1 = document.getElementById('netzbezug').getContext('2d');  
+  var ctx1 = document.getElementById('pv_prediction').getContext('2d');  
   var output_prediction_list = {{ output_prediction_list }};
   var output_prediction_dates = {{ output_prediction_dates | safe }};
 
-  var netzbezug_chart = new Chart(ctx1, {
+  var pv_prediction = new Chart(ctx1, {
     type: 'line',
     data: {
       labels: output_prediction_dates,
       datasets: [{
         label: 'PV-Erzeugung',
-        data: output_prediction_list
+        data: output_prediction_list,
+        borderColor: 'rgb(138, 179, 51, 1)',
+        backgroundColor: 'rgb(138, 179, 51, 1)',
       }]
     },
     options: {

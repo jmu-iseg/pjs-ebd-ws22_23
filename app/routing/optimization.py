@@ -1,3 +1,4 @@
+from re import A
 from app import app, flash_errors, create_file_object, get_config, get_graph_params, db
 from app.models import Termin
 from app.api.errors import bad_request
@@ -514,18 +515,34 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
 
                 # netzbezug für jeden einzelnen termin 
                 netzbezug_termine = appointments['netzbezug'].to_list()
-
+            
                 appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
                 appointments['percent'] = appointments['percent'] * 100
                 appointments['percent'] = appointments['percent'].astype(float)
                 appointments['percent'] = appointments['percent'].round(2).astype(int)
+                appointments['pv_consumption'] = (appointments['percent'] / 100) * energy_consumption
                 appointments = appointments.sort_values(by="percent",ascending=False)
                 netzbezug_termine_percent = appointments.to_dict('records')
+
+                # pv consumption of every termin 
+                #pv_consumption = []
+                #for termin in netzbezug_termine_percent: 
+                 #   pv_consumption.append((termin['percent'] / 100) * energy_consumption)
+
+                # pv consumption of every termin 
+               # for termin in netzbezug_termine_percent: 
+                #    netzbezug_termine_percent[termin]['pv_consumption'] = (termin['percent'] / 100) * energy_consumption
+                    #pv_consumption.append((termin['percent'] / 100) * energy_consumption)
+                
+                print(netzbezug_termine_percent)
 
                 # output prediction visualization 
                 output_prediction = netzbezug.set_index('dateTime')
                 output_prediction = output_prediction.resample("D").sum().reset_index()
                 output_prediction['dateTime'] = pd.to_datetime(output_prediction.dateTime)
+
+                # sum output prediction in time horizon
+                output_prediction_sum = int(sum(output_prediction['output_prediction'].to_list()))
 
                 break
 
@@ -547,7 +564,9 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             'netzbezug_termine': netzbezug_termine,
             'netzbezug_termine_percent': netzbezug_termine_percent,
             'output_prediction_list': output_prediction['output_prediction'].round(1).to_list(),
-            'output_prediction_dates': output_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list()
+            'output_prediction_dates': output_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list(),
+            'output_prediction_sum': output_prediction_sum,
+            #'pv_termine': pv_termine
         }
 
         return redirect(url_for('appointment_list'))
@@ -569,6 +588,8 @@ def appointment_list():
     netzbezug_termine_percent = session.get(user_id).get('netzbezug_termine_percent')
     output_prediction_list = session.get(user_id).get('output_prediction_list')
     output_prediction_dates = session.get(user_id).get('output_prediction_dates')
+    output_prediction_sum = session.get(user_id).get('output_prediction_sum')
+    #pv_termine = session.get(user_id).get('pv_termine')
 
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
@@ -594,12 +615,12 @@ def appointment_list():
             server.login(user, password)
             server.sendmail(sender, receiver, msg.as_string())
             flash("Mail erfolgreich verschickt")
-        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
+        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
     elif request.method == "POST" and 'sendMailForm' in request.form:
         flash_errors(sendMailForm)
-        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
+        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
 
-    return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm)
+    return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
 
 @app.route('/save-optimization', methods=['GET'])
 @login_required
