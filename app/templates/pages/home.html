@@ -253,13 +253,26 @@
     co2_saved_labels.push(temp_date)
   }
 
+  var data = {{ co2_termine | safe }};
+
+  var labels = []
+  for (key in data['date']) { 
+    labels.push(data['date'][key])
+  }
+
+  var data_list = []
+  for (key in data['saved_co2']) { 
+    data_list.push(data['saved_co2'][key])
+  }
+
+  
   var netzbezug_chart = new Chart(ctx1, {
     type: 'bar',
     data: {
-      labels: co2_saved_labels,
+      labels: labels,
       datasets: [{
         label: 'CO2-Einsparung',
-        data: co2_saved_list,
+        data: data_list,
         backgroundColor: 'rgb(138 179 51/ 100%)'
       }]
     },
