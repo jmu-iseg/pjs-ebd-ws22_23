@@ -1,6 +1,7 @@
 .btn {
     background: #5263b4;
     color: #fff;
+    border-color: #5263b4;
 
     &:hover,
     &:active {
@@ -25,8 +26,5 @@
 
 label {
     margin-top: 10px;
-}
-
-input {
-    border: 1px solid #dfe7ee;
+    text-align: left;
 }
