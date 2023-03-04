@@ -1,0 +1,32 @@
+.btn {
+    background: #5263b4;
+    color: #fff;
+
+    &:hover,
+    &:active {
+        background: #455398;
+        color: #fff;
+    }
+
+    &.btn-danger {
+        background: #b45252;
+    }
+
+    &.btn-outline-danger {
+        color: #b45252;
+        background: transparent;
+    }
+}
+
+.btn-outline-primary {
+    background: transparent;
+    color: #5263b4;
+}
+
+label {
+    margin-top: 10px;
+}
+
+input {
+    border: 1px solid #dfe7ee;
+}

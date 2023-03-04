@@ -1,0 +1,62 @@
+/*
+    General styling
+*/
+
+:root {
+    --border-radius: 0;
+}
+
+body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    background: $background;
+    overflow: hidden;
+    font-family: Nunito, sans-serif;
+    color: $font-color;
+}
+
+header {
+    background: #fff;
+    box-shadow: rgba(154, 161, 171, 0.15) 0px 0px 35px 0px;
+    border-radius: 10px;
+    margin: 12px 0;
+}
+
+html {
+    height: -webkit-fill-available;
+}
+
+main {
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.inner {
+    .content {
+        height: calc(100vh - 66px);
+        overflow-y: auto;
+        padding-top: 1rem;
+    }
+}
+
+.nav-pills .nav-link {
+    border-radius: var(--border-radius);
+}
+
+@media (min-width: 1200px) {
+    .fs-4 {
+        font-size: 1.2rem !important;
+    }
+}
+
+.profile-img-preview,
+.profile-pic {
+    object-fit: cover;
+}
+
+#val_password {
+    display: block;
+}
