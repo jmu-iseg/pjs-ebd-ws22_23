@@ -1,9 +1,8 @@
-from app import app, db
-from app.models import *
+# Importieren der App aus app/__init__.py
+from app import app
 
-@app.shell_context_processor
-def make_shell_context():
-    return {'db': db, 'User': User}
-
+# Starten der Applikation mit app.run(). 
+# Option debug ist für lokale Entwicklung immer aktiviert, 
+# spielt auf dem Webserver allerdings keine Rolle.
 if __name__ == "__main__":
     app.run(debug=True)

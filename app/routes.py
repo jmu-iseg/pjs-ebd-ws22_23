@@ -2,6 +2,7 @@ from app import app, create_file_object, flash_errors
 from flask import render_template, request, redirect, send_file
 from app.models import *
 from app.forms import *
+# importieren aller Sub-Routen
 from app.routing.auth import *
 from app.routing.optimization import *
 from app.routing.settings import *
@@ -198,6 +199,12 @@ def dashboard():
 @app.route('/reload_webapp')
 @login_required
 def reload():
+    """Führt auf der Maschine ein Skript aus, um den neuesten Stand vom Github zu laden
+    und den Apache-Webserver neuzustarten.
+
+    Returns:
+        redirect('/'): Nachdem erfolgreich neu geladen wurde, wird auf die Home-Seite verwiesen
+    """
     subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd=app.root_path)
     subprocess.run('./update_files.sh', shell=True, check=True, text=True, cwd=app.root_path)
     return redirect('/')
