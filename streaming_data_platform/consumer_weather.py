@@ -34,5 +34,5 @@ except TypeError:
     print('TypeError')
 
 # save as json
-with open("data.json", "w") as outfile:
+with open("weather_forecast.json", "w") as outfile:
     outfile.write(varData)
