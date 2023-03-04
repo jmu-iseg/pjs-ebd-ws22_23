@@ -124,7 +124,6 @@
       <div class="row">
           <div class="col-md-6">
             <div class="card-body">
-              <p class="card-text">Die Planung des Termins führt zu einem <b>Stromverbrauch</b> in Höhe von <b>{{energy_consumption}} kWh</b>.</p>
               <table class="table">
                 <thead>
                   <tr>
@@ -149,8 +148,6 @@
           </div>
           <div class="col-md-6">
             <div class="card-body">
-              <p class="card-text">So unterscheiden sich die Terminvorschläge hinsichtlich des <b>Netzbezugs</b>:</p>
-              <p></p>
               <div class="chart-container" style="position: relative">
                 <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="260" height="200"></canvas>
               </div>
@@ -231,18 +228,13 @@
   var termin_list_new = termin_list.map(String);
 
   var netzbezug_chart = new Chart(ctx3, {
-    plugins: [ChartDataLabels],
     type: 'bar',
     data: {
-      labels: ['#1', '#2', '#3',],
+      labels: ['Termin #1', 'Termin #2', 'Termin #3',],
       datasets: [{
-        label: 'Netzbezug',
+        label: 'PV-Anteil',
         data: data_list,
-        backgroundColor: [
-          'rgba(15, 150, 50, 0.6)',
-          'rgba(250, 180, 30, 0.6)',
-          'rgba(250, 80, 30, 0.6)'
-        ]
+        backgroundColor: 'rgb(138, 179, 51, 1)'
       }]
     },
     options: {
@@ -257,37 +249,19 @@
           ticks: {
             display: true
           }
+        },
+        y: {
+          ticks: {
+            callback: function(value, index, ticks) {
+                        return value + ' %';
+            }
+          }
         }
       },
       plugins: {
         legend: {
           display: false,
-        },
-        tooltip: {
-          callbacks: {
-            afterLabel: function (context) {
-              return 'kWh';
-            }
-          }
-        },
-        datalabels: {
-          align: 'top',
-          borderRadius: 2,
-          color: 'black',
-          font: {
-            size: 12,
-            weight: 'bold',
-            color: '#fff',
-            family: 'nunito'
-          },
-          formatter: function (value, context) { 
-            if (value == 0){
-              return null;
-          } else {
-            return value + " kWh"; 
-          }
         }
-      }
       }
     }
   });
