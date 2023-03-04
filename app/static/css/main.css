@@ -11281,7 +11281,10 @@ main {
 .inner .content {
   height: calc(100vh - 66px);
   overflow-y: auto;
-  padding-top: 1rem; }
+  padding-top: 1rem;
+  padding-bottom: 1.2rem; }
+.inner .row {
+  margin-bottom: 0; }
 
 .nav-pills .nav-link {
   border-radius: var(--border-radius); }
@@ -11437,9 +11440,6 @@ main {
     line-height: 13px; }
     .table-title .add-new i {
       margin-right: 4px; }
-
-.inner .row {
-  margin-bottom: 24px; }
 
 table.table tr th,
 table.table tr td {
