@@ -89,6 +89,9 @@ def home():
     df_today = df.set_index('dateTime')
     df_today = df_today.resample("D").sum().reset_index()
     print(df_today)
+    print(df_today.info())
+    print(datetime.today().date())
+    print(df_today[df_today['dateTime'])
     todays_pv_energy = df_today['output_prediction'][df_today['dateTime'] == datetime.today().date()]
 
     print(df_today)
@@ -126,7 +129,7 @@ def home():
             } 
     
     # order by date 
-    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['dateTime'], reverse=True)}
+    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['dateTime'], reverse=False)}
     
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
