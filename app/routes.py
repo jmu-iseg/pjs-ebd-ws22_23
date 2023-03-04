@@ -1,3 +1,4 @@
+from pytz import utc
 from app import app, create_file_object, flash_errors
 from flask import render_template, request, redirect, send_file
 from app.models import *
@@ -78,6 +79,13 @@ def home():
     pv_prediction['output_prediction'] = round(pv_prediction['output_prediction'],1)
     pv_prediction = pv_prediction['output_prediction'].to_list()
 
+    # auslastung pv-anlage
+    print(df)
+    todays_pv_energy = df['output_prediction'][df['dateTime'].date() == datetime.today().date()]
+    max_pv_energy = df['max'][df['dateTime'].date() == datetime.today().date()]
+    auslastung_pv = todays_pv_energy / max_pv_energy
+    print(auslastung_pv)
+
     # gespeicherte historische termine abfragen
     termine = Termin.query.all()
     termin_daten = {}
@@ -108,15 +116,21 @@ def home():
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
 
-    # next 5 termine
-    termin_daten_5 = {k: termin_daten[k] for k in list(termin_daten.keys())[:5]}
+    # next 2 termine
+    termin_daten_5 = {k: termin_daten[k] for k in list(termin_daten.keys())[:2]}
 
-    # saved co2 
+    # sum of saved co2 (insgesamt)
     saved_co2 = 0
     for termin in termin_daten: 
         saved_co2 += termin_daten[termin]['saved_co2']
         saved_co2 = round(saved_co2,1)
 
+    # sum of saved co2 (heute)
+    saved_co2_today = 0
+    for termin in termin_daten:
+        if termin_daten[termin]['dateTime'].date() == datetime.today().date():
+            saved_co2_today += termin_daten[termin]['saved_co2']
+            saved_co2_today = round(saved_co2_today,1)
 
     # weather 
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/data.json'), mode='r', encoding='utf-8') as openfile:
