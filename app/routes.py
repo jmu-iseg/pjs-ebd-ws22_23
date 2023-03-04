@@ -160,6 +160,9 @@ def home():
     temp_df['saved_co2'] = round(temp_df['saved_co2'],1)
     co2_termine = temp_df.to_dict()
 
+    # todo 
+    pv_prediction_sum = int(sum(pv_prediction))
+
     # weather 
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/weather_forecast.json'), mode='r', encoding='utf-8') as openfile:
         data = json.load(openfile)
@@ -214,7 +217,7 @@ def home():
         'Wochentag': wochentag
     }
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, saved_co2_today=saved_co2_today, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv, timer=timer, co2_termine=co2_termine)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, saved_co2_today=saved_co2_today, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv, timer=timer, co2_termine=co2_termine, pv_prediction_sum=pv_prediction_sum)
 
 
 def allowed_file(filename):
