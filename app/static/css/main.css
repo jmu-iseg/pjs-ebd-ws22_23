@@ -19,6 +19,12 @@
   font-weight: 700;
   src: local(""), url("../../fonts/nunito-v25-latin-700.woff2") format("woff2"), url("../../fonts/nunito-v25-latin-700.woff") format("woff");
   /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ }
+.p-large {
+  font-size: 1.8rem; }
+
+.p-huge {
+  font-size: 2.6rem; }
+
 /*!
  * Bootstrap  v5.2.3 (https://getbootstrap.com/)
  * Copyright 2011-2022 The Bootstrap Authors
@@ -9345,6 +9351,8 @@ textarea.form-control-lg {
   border-bottom: 0;
   text-align: left;
   color: #8a969c; }
+  .card-header img {
+    max-height: 20px; }
 
 /*!
  * Datepicker for Bootstrap v1.4.1 (https://github.com/eternicode/bootstrap-datepicker)
@@ -11334,6 +11342,21 @@ main {
     font-size: 0.8rem; }
   .weather-preview .weather-icon img {
     height: 80px; }
+
+.savings {
+  display: flex; }
+  .savings .savings-facts {
+    text-align: left;
+    font-weight: 200;
+    min-width: 130px; }
+
+.pv-container {
+  display: flex;
+  text-align: left; }
+  .pv-container .pv-percentage-value {
+    font-size: 2.6rem;
+    text-align: center;
+    font-weight: 200; }
 
 .body-plain {
   background: #212529;

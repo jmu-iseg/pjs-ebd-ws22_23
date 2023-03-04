@@ -80,3 +80,21 @@
         }
     }
 }
+
+.savings {
+    display: flex;
+    .savings-facts {
+        text-align: left;
+        font-weight: 200;
+        min-width: 130px;
+    }
+}
+
+.pv-container {
+    display: flex;
+    text-align: left;
+    .pv-percentage-value {
+        font-size: $p-huge;
+        font-weight: 200;
+    }
+}

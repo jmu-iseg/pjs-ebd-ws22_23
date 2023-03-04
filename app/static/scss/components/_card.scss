@@ -6,7 +6,7 @@
     transition: box-shadow .3s ease;
     height: 100%;
     width: 100%;
-    
+
     &:hover {
         box-shadow: rgba(154, 161, 171, 0.5) 0px 0px 30px 0px;
     }
@@ -17,4 +17,7 @@
     border-bottom: 0;
     text-align: left;
     color: rgb(138, 150, 156);
+    img {
+        max-height: 20px;
+    }
 }

@@ -33,3 +33,11 @@
         url('../../fonts/nunito-v25-latin-700.woff') format('woff');
     /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
+
+.p-large {
+    font-size: $p-large;
+}
+
+.p-huge {
+    font-size: $p-huge;
+}

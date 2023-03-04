@@ -120,13 +120,19 @@
 <div class="row">
   <div class="col-12 col-lg-6 d-flex align-items-stretch">
     <div class="card">
-      <div class="card-header">CO2-Ersparnis</div>
+      <div class="card-header"><img src="{{ url_for('static', filename='img/leaf.svg') }}"> CO2-Ersparnis</div>
       <div class="card-body">
-        <p><b>{{saved_co2_today}} kg</b> heute</p>
-        <p><b>{{saved_co2}} kg</b> gesamt</p>
-      </div>
-      <div class="chart-container">
-        <canvas id="co2_saved" style="margin: 0 auto;" width="400" height="220"></canvas>
+        <div class="savings">
+          <div class="savings-facts">
+            <div class="p-large">{{saved_co2_today}} kg</div>
+            <p>heute</p>
+            <div class="p-large">{{saved_co2}} kg</div>
+            <p>gesamt</p>
+          </div>
+          <div class="chart-container">
+            <canvas id="co2_saved" style="margin: 0 auto;" height="220"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -135,11 +141,20 @@
     <div class="card">
       <div class="card-header">Erwartete PV-Energie</div>
       <div class="card-body">
-        <div class="chart-container">
-          <canvas id="pv_auslastung" style="margin: 0 auto;" width="200" height="200"></canvas>
-        </div>
-        <div class="chart-container">
-          <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
+        <div class="pv-container">
+          <div class="pv-percentage">
+            Auslastung PV-Anlage
+            <div class="pv-percentage-value">{{ auslastung_pv }} %</div>
+            <div class="chart-container">
+              <canvas id="pv_auslastung" style="margin: 0 auto;" width="200" height="200"></canvas>
+            </div>
+          </div>
+          <div class="pv-values">
+            Erwartete PV-Energie 14 Tage Aussicht
+            <div class="chart-container">
+              <canvas id="pv_prediction" style="margin: 0 auto;" width="350" height="220"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -158,8 +173,8 @@
       datasets: [{
         label: 'PV-Erzeugung',
         data: pv_prediction,
-        borderColor: 'rgb(300 180 50/ 80%)',
-        backgroundColor: 'rgb(300 180 50/ 80%)',
+        borderColor: 'rgb(138, 179, 51, 1)',
+        backgroundColor: 'rgb(138, 179, 51, 1)',
       }]
     },
     options: {
@@ -207,8 +222,8 @@
       datasets: [{
         data: [auslastung_pv, 100-auslastung_pv],
         backgroundColor: [
-          'rgba(10, 150, 20, 0.6)',
-          'rgba(255, 255, 255, 0.6)'
+          'rgba(138, 179, 51, 1)',
+          'rgba(241, 241, 244, 1)'
         ]
       }]
     },
@@ -245,7 +260,7 @@
       datasets: [{
         label: 'CO2-Einsparung',
         data: co2_saved_list,
-        backgroundColor: 'rgb(20 200 60/ 80%)'
+        backgroundColor: 'rgb(138 179 51/ 100%)'
       }]
     },
     options: {
