@@ -9620,6 +9620,12 @@ label {
   margin-top: 10px;
   text-align: left; }
 
+.text-bg-success {
+  background: #8ab333; }
+
+.text-bg-danger {
+  background: #dc3545; }
+
 .sidebar {
   width: 60px;
   position: absolute;

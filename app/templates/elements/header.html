@@ -12,14 +12,13 @@
             </a>
             <ul class="dropdown-menu text-small">
                 {%+ if userrole == "0" %}
-                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                <li><a class="dropdown-item" href="/settings">Einstellungen</a></li>
                 {% endif %}
-                <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                <li><a class="dropdown-item" href="/reload_webapp">Reload Webapp</a></li>
+                <li><a class="dropdown-item" href="/profile">Profil</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Sign out</a></li>
+                <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}">Abmelden</a></li>
             </ul>
         </div>
     </div>

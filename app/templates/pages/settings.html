@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row">
-  <div class="col mb-3">
+  <div class="col-12 col-xl-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         Benutzerverwaltung
@@ -44,11 +44,19 @@
                           {%+ if userid != user.id %}
                           {%+ if user.role == "0" %}
                           <a href="{{ url_for('settings',downgrade=user.id) }}" class="btn btn-outline-primary">
-                            <svg style="height:14px; fill:rgb(13, 110, 253);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xmlns:v="https://vecta.io/nano"><path d="M256 0c-74.439 0-135 60.561-135 135s60.561 135 135 135 135-60.561 135-135S330.439 0 256 0zm0 240c-57.897 0-105-47.103-105-105S198.103 30 256 30s105 47.103 105 105-47.103 105-105 105zm167.966 118.195C387.006 320.667 338.009 300 286 300h-60c-52.008 0-101.006 20.667-137.966 58.195C51.255 395.539 31 444.833 31 497c0 8.284 6.716 15 15 15h420c8.284 0 15-6.716 15-15 0-52.167-20.255-101.461-57.034-138.805zM61.66 482c7.515-85.086 78.351-152 164.34-152h60c85.989 0 156.825 66.914 164.34 152H61.66z"/></svg>
+                            <svg style="height:14px; fill:rgb(13, 110, 253);" xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 512 512" xmlns:v="https://vecta.io/nano">
+                              <path
+                                d="M256 0c-74.439 0-135 60.561-135 135s60.561 135 135 135 135-60.561 135-135S330.439 0 256 0zm0 240c-57.897 0-105-47.103-105-105S198.103 30 256 30s105 47.103 105 105-47.103 105-105 105zm167.966 118.195C387.006 320.667 338.009 300 286 300h-60c-52.008 0-101.006 20.667-137.966 58.195C51.255 395.539 31 444.833 31 497c0 8.284 6.716 15 15 15h420c8.284 0 15-6.716 15-15 0-52.167-20.255-101.461-57.034-138.805zM61.66 482c7.515-85.086 78.351-152 164.34-152h60c85.989 0 156.825 66.914 164.34 152H61.66z" />
+                            </svg>
                           </a>
                           {%+ elif user.role == "1" %}
                           <a href="{{ url_for('settings',upgrade=user.id) }}" class="btn btn-outline-primary">
-                            <svg style="height:14px; fill:rgb(13, 110, 253);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xmlns:v="https://vecta.io/nano"><path d="M256 0c-74.439 0-135 60.561-135 135s60.561 135 135 135 135-60.561 135-135S330.439 0 256 0zm0 240c-57.897 0-105-47.103-105-105S198.103 30 256 30s105 47.103 105 105-47.103 105-105 105zm167.966 118.195C387.006 320.667 338.009 300 286 300h-60c-52.008 0-101.006 20.667-137.966 58.195C51.255 395.539 31 444.833 31 497c0 8.284 6.716 15 15 15h420c8.284 0 15-6.716 15-15 0-52.167-20.255-101.461-57.034-138.805zM61.66 482c7.515-85.086 78.351-152 164.34-152h60c85.989 0 156.825 66.914 164.34 152H61.66z"/></svg>
+                            <svg style="height:14px; fill:rgb(13, 110, 253);" xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 512 512" xmlns:v="https://vecta.io/nano">
+                              <path
+                                d="M256 0c-74.439 0-135 60.561-135 135s60.561 135 135 135 135-60.561 135-135S330.439 0 256 0zm0 240c-57.897 0-105-47.103-105-105S198.103 30 256 30s105 47.103 105 105-47.103 105-105 105zm167.966 118.195C387.006 320.667 338.009 300 286 300h-60c-52.008 0-101.006 20.667-137.966 58.195C51.255 395.539 31 444.833 31 497c0 8.284 6.716 15 15 15h420c8.284 0 15-6.716 15-15 0-52.167-20.255-101.461-57.034-138.805zM61.66 482c7.515-85.086 78.351-152 164.34-152h60c85.989 0 156.825 66.914 164.34 152H61.66z" />
+                            </svg>
                           </a>
                           {% endif %}
                           <a data-toggle="modal" onclick="$('#deleteModal{{user.id}}').modal('toggle')"
@@ -74,7 +82,7 @@
               data-bs-parent="#accordionExample">
               <div class="accordion-body">
                 <form method="POST" action="">
-                  <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="75"
+                  <img class="mb-4" src="{{ url_for('static', filename='img/logo.svg') }}" alt="" width="75"
                     height="75">
                   <h1 class="h3 mb-3 font-weight-normal">Neuen Benutzer registrieren</h1>
                   {{ form.hidden_tag() }}
@@ -96,7 +104,7 @@
     </div>
   </div>
 
-  <div class="col mb-3">
+  <div class="col-12 col-xl-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         Wetter und Standort
@@ -104,21 +112,26 @@
       <div class="card-body">
         <form action="" method="post">
           {{ weatherForm.hidden_tag() }}
-          {{ weatherForm.apikey.label }}
-          {{ weatherForm.apikey }}
+          {{ weatherForm.apikey.label }}<br>
+          {{ weatherForm.apikey(class_="form-control") }}
           <br>
-          {{ weatherForm.lat.label }}<br>
-          {{ weatherForm.lat }}
-          <br>
-          {{ weatherForm.lon.label }}<br>
-          {{ weatherForm.lon }}<br>
-          {{ weatherForm.submit }}
+          <div class="row">
+            <div class="col">
+              {{ weatherForm.lat.label }}<br>
+              {{ weatherForm.lat(class_="form-control") }}
+            </div>
+            <div class="col">
+              {{ weatherForm.lon.label }}<br>
+              {{ weatherForm.lon(class_="form-control") }}<br>
+            </div>
+          </div>
+          {{ weatherForm.submit(class_="btn btn-primary") }}
         </form>
       </div>
     </div>
   </div>
 
-  <div class="col mb-3">
+  <div class="col-12 col-xl-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         Verbräuche der Anlagen & Grundlast
@@ -126,41 +139,54 @@
       <div class="card-body">
         <form action="" method="post">
           {{ machineForm.hidden_tag() }}
+          <div class="row">
+            <div class="col">
+              {{ machineForm.consumption_m1.label }}<br>
+              {{ machineForm.consumption_m1(class_="form-control") }}
+              <div class="form-text">kWh</div>
+            </div>
+            <div class="col">
+              {{ machineForm.heating_m1.label }}<br>
+              {{ machineForm.heating_m1(class_="form-control") }}
+              <div class="form-text">kWh</div>
+            </div>
+          </div>
 
-          {{ machineForm.consumption_m1.label }}<br>
-          {{ machineForm.consumption_m1 }}
-          <div class="form-text">kWh</div>
+          <div class="row">
+            <div class="col">
+              {{ machineForm.consumption_m2.label }}<br>
+              {{ machineForm.consumption_m2(class_="form-control") }}
+              <div class="form-text">kWh</div>
+            </div>
+            <div class="col">
+              {{ machineForm.heating_m2.label }}<br>
+              {{ machineForm.heating_m2(class_="form-control") }}
+              <div class="form-text">kWh</div>
+            </div>
+          </div>
 
-          {{ machineForm.heating_m1.label }}<br>
-          {{ machineForm.heating_m1 }}
-          <div class="form-text">kWh</div>
-
-          {{ machineForm.consumption_m2.label }}<br>
-          {{ machineForm.consumption_m2 }}
-          <div class="form-text">kWh</div>
-
-          {{ machineForm.heating_m2.label }}<br>
-          {{ machineForm.heating_m2 }}
-          <div class="form-text">kWh</div>
-
-          {{ machineForm.consumption_m3.label }}<br>
-          {{ machineForm.consumption_m3 }}
-          <div class="form-text">kWh</div>
-
-          {{ machineForm.heating_m3.label }}<br>
-          {{ machineForm.heating_m3 }}
-          <div class="form-text">kWh</div>
-
+          <div class="row">
+            <div class="col">
+              {{ machineForm.consumption_m3.label }}<br>
+              {{ machineForm.consumption_m3(class_="form-control") }}
+              <div class="form-text">kWh</div>
+            </div>
+            <div class="col">
+              {{ machineForm.heating_m3.label }}<br>
+              {{ machineForm.heating_m3(class_="form-control") }}
+              <div class="form-text">kWh</div>
+            </div>
+          </div>
           {{ machineForm.basicConsumption.label }}<br>
-          {{ machineForm.basicConsumption }}
+          {{ machineForm.basicConsumption(class_="form-control") }}
           <div class="form-text">kWh</div>
 
-          {{ machineForm.submit }}
+          {{ machineForm.submit(class_="btn btn-primary") }}
         </form>
       </div>
     </div>
   </div>
-  <div class="col mb-3">
+  <div class="col-12 col-xl-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         Mail-Server
@@ -168,50 +194,35 @@
       <div class="card-body">
         <form action="" method="post">
           {{ mailForm.hidden_tag() }}
-          {{ mailForm.mail_server.label }}<br>
-          {{ mailForm.mail_server }}<br>
-          {{ mailForm.mail_port.label }}<br>
-          {{ mailForm.mail_port }}<br>
-          {{ mailForm.mail_user.label }}<br>
-          {{ mailForm.mail_user }}<br>
-          {{ mailForm.mail_pw.label }}<br>
-          {{ mailForm.mail_pw }}<br>
-          {{ mailForm.mail_sender.label }}<br>
-          {{ mailForm.mail_sender }}<br>
-          {{ mailForm.submit }}
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="col mb-3">
-    <div class="card h-100">
-      <div class="card-header">
-        Anlagen-Offset
-      </div>
-      <div class="card-body">
-        Status des Servers:<br>
-        {% if kafka_status == 0 %}
-          <span class="badge rounded-pill text-bg-info">Verbindungsaufbau</span>
-        {% elif kafka_status == 1 %}
-          <span class="badge rounded-pill text-bg-success">verbunden</span>
-        {% else %}
-          <span class="badge rounded-pill text-bg-danger">nicht verbunden</span>
-        {% endif %}
+          <div class="row">
+            <div class="col">
+              {{ mailForm.mail_server.label }}<br>
+              {{ mailForm.mail_server(class_="form-control") }}<br>
+            </div>
+            <div class="col">
+              {{ mailForm.mail_port.label }}<br>
+              {{ mailForm.mail_port(class_="form-control") }}<br>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {{ mailForm.mail_user.label }}<br>
+              {{ mailForm.mail_user(class_="form-control") }}<br>
+            </div>
+            <div class="col">
+              {{ mailForm.mail_pw.label }}<br>
+              {{ mailForm.mail_pw(class_="form-control") }}<br>
+            </div>
+          </div>
 
-        <form action="" method="post">
-          {{ kafkaForm.hidden_tag() }}
-          {{ kafkaForm.kafka_url.label }}<br>
-          {{ kafkaForm.kafka_url }}
-          <br>
-          {{ kafkaForm.kafka_port.label }}<br>
-          {{ kafkaForm.kafka_port }}
-          <br>
-          {{ kafkaForm.submit }}
+          {{ mailForm.mail_sender.label }}<br>
+          {{ mailForm.mail_sender(class_="form-control") }}<br>
+          {{ mailForm.submit(class_="btn btn-primary") }}
         </form>
       </div>
     </div>
   </div>
-  <div class="col mb-3">
+  <div class="col-12 col-xl-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         Kafka Streaming-Server
@@ -219,27 +230,32 @@
       <div class="card-body">
         Status des Servers:<br>
         {% if kafka_status == 0 %}
-          <span class="badge rounded-pill text-bg-info">Verbindungsaufbau</span>
+        <span class="badge rounded-pill text-bg-info">Verbindungsaufbau</span>
         {% elif kafka_status == 1 %}
-          <span class="badge rounded-pill text-bg-success">verbunden</span>
+        <span class="badge rounded-pill text-bg-success">verbunden</span>
         {% else %}
-          <span class="badge rounded-pill text-bg-danger">nicht verbunden</span>
+        <span class="badge rounded-pill text-bg-danger">nicht verbunden</span>
         {% endif %}
 
         <form action="" method="post">
           {{ kafkaForm.hidden_tag() }}
-          {{ kafkaForm.kafka_url.label }}<br>
-          {{ kafkaForm.kafka_url }}
-          <br>
-          {{ kafkaForm.kafka_port.label }}<br>
-          {{ kafkaForm.kafka_port }}
-          <br>
-          {{ kafkaForm.submit }}
+          <div class="row">
+            <div class="col">
+              {{ kafkaForm.kafka_url.label }}<br>
+              {{ kafkaForm.kafka_url(class_="form-control") }}
+              <br>
+            </div>
+            <div class="col">
+              {{ kafkaForm.kafka_port.label }}<br>
+              {{ kafkaForm.kafka_port(class_="form-control") }}
+            </div>
+          </div>
+          {{ kafkaForm.submit(class_="btn btn-primary") }}
         </form>
       </div>
     </div>
   </div>
-  <div class="col mb-3">
+  <div class="col-12 col-xl-6 mb-3">
     <div class="card h-100">
       <div class="card-header">
         OPC-UA
@@ -247,50 +263,74 @@
       <div class="card-body">
         Status des Servers:<br>
         {% if client1_status == 1 %}
-          <span class="badge rounded-pill text-bg-success">Maschine 1</span>
+        <span class="badge rounded-pill text-bg-success">Maschine 1</span>
         {% else %}
-          <span class="badge rounded-pill text-bg-danger">Maschine 1</span>
+        <span class="badge rounded-pill text-bg-danger">Maschine 1</span>
         {% endif %}
 
         {% if client2_status == 1 %}
-          <span class="badge rounded-pill text-bg-success">Maschine 2</span>
+        <span class="badge rounded-pill text-bg-success">Maschine 2</span>
         {% else %}
-          <span class="badge rounded-pill text-bg-danger">Maschine 2</span>
+        <span class="badge rounded-pill text-bg-danger">Maschine 2</span>
         {% endif %}
 
         {% if client3_status == 1 %}
-          <span class="badge rounded-pill text-bg-success">Maschine 3</span>
+        <span class="badge rounded-pill text-bg-success">Maschine 3</span>
         {% else %}
-          <span class="badge rounded-pill text-bg-danger">Maschine 3</span>
+        <span class="badge rounded-pill text-bg-danger">Maschine 3</span>
         {% endif %}
 
         <form action="" method="post">
           {{ opcForm.hidden_tag() }}
-          {{ opcForm.value_on.label }}<br>
-          {{ opcForm.value_on }}
-          <br>
-          {{ opcForm.value_off.label }}<br>
-          {{ opcForm.value_off }}
-          <br>
-          {{ opcForm.url1.label }}<br>
-          {{ opcForm.url1 }}
-          <br>
-          {{ opcForm.var1.label }}<br>
-          {{ opcForm.var1 }}
-          <br>
-          {{ opcForm.url2.label }}<br>
-          {{ opcForm.url2 }}
-          <br>
-          {{ opcForm.var2.label }}<br>
-          {{ opcForm.var2 }}
-          <br>
-          {{ opcForm.url3.label }}<br>
-          {{ opcForm.url3 }}
-          <br>
-          {{ opcForm.var3.label }}<br>
-          {{ opcForm.var3 }}
-          <br>
-          {{ opcForm.submit }}
+          <div class="row">
+            <div class="col">
+              {{ opcForm.value_on.label }}<br>
+              {{ opcForm.value_on(class_="form-control") }}
+              <br>
+            </div>
+            <div class="col">
+              {{ opcForm.value_off.label }}<br>
+              {{ opcForm.value_off(class_="form-control") }}
+              <br>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {{ opcForm.url1.label }}<br>
+              {{ opcForm.url1(class_="form-control") }}
+              <br>
+            </div>
+            <div class="col">
+              {{ opcForm.var1.label }}<br>
+              {{ opcForm.var1(class_="form-control") }}
+              <br>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {{ opcForm.url2.label }}<br>
+              {{ opcForm.url2(class_="form-control") }}
+              <br>
+
+            </div>
+            <div class="col">
+              {{ opcForm.var2.label }}<br>
+              {{ opcForm.var2(class_="form-control") }}
+              <br>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {{ opcForm.url3.label }}<br>
+              {{ opcForm.url3(class_="form-control") }}
+              <br>
+            </div>
+            <div class="col">
+              {{ opcForm.var3.label }}<br>
+              {{ opcForm.var3(class_="form-control") }}
+            </div>
+          </div>
+          {{ opcForm.submit(class_="btn btn-primary") }}
         </form>
       </div>
     </div>
