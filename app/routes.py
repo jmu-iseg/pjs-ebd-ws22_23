@@ -128,6 +128,20 @@ def home():
     # next 2 termine
     termin_daten_list = {k: termin_daten[k] for k in list(termin_daten.keys())[:2]}
 
+    # timer for next termin 
+    next_termin = termin_daten[0]['dateTime']
+    print(next_termin)
+    print(datetime.now())
+    duration = next_termin - datetime.now()
+    duration_in_s = duration.total_seconds()    
+    days = divmod(duration_in_s, 86400)        
+    hours = divmod(days[1], 3600)               
+    minutes = divmod(hours[1], 60)  
+    days = int(days[0])
+    hours = int(hours[0])
+    minutes = int(minutes[0])
+    timer = [days,hours,minutes]
+
     # sum of saved co2 (insgesamt)
     saved_co2 = 0
     for termin in termin_daten: 
@@ -195,7 +209,7 @@ def home():
         'Wochentag': wochentag
     }
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv, timer=timer)
 
 
 def allowed_file(filename):
