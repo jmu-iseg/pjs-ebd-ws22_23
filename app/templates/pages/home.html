@@ -216,10 +216,8 @@
   var auslastung_pv = {{ auslastung_pv }};
   
   var percentage_chart = new Chart(ctx1, {
-    plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
-      labels: ['Auslastung'],
       datasets: [{
         data: [auslastung_pv, 100-auslastung_pv],
         backgroundColor: [
@@ -231,6 +229,9 @@
     options: {
       rotation: -90,
       circumference: 180,
+      legend: {
+        display: false,
+      },
       plugins: {
         legend: {
           display: false,
@@ -243,29 +244,15 @@
 
 <script>
   var ctx1 = document.getElementById('co2_saved').getContext('2d');
-  var parsed = JSON.parse('{{termin_daten | tojson}}');
-  var co2_saved_list = []
-  for (const [key, value] of Object.entries(parsed)) {
-    co2_saved_list.push(parsed[key]['saved_co2'])
-  }
-  var co2_saved_labels = []
-  for (const [key, value] of Object.entries(parsed)) {
-    var temp_date = parsed[key]['weekday'].toString() + ', ' + parsed[key]['date'].toString()
-    co2_saved_labels.push(temp_date)
-  }
-
   var data = {{ co2_termine | safe }};
-
   var labels = []
   for (key in data['date']) { 
     labels.push(data['date'][key])
   }
-
   var data_list = []
   for (key in data['saved_co2']) { 
     data_list.push(data['saved_co2'][key])
   }
-
   
   var netzbezug_chart = new Chart(ctx1, {
     type: 'bar',
