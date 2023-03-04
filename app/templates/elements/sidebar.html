@@ -19,17 +19,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url_for('dashboard') }}"
-                    class="nav-link {% if request.path == '/dashboard' %}active{% endif %}">
-                    <script src="{{ url_for('static', filename='js/icons/dashboard.js') }}"></script>
-                    <lord-icon src="{{ url_for('static', filename='js/icons/dashboard.json') }}" trigger="hover"
-                        target=".nav-item"
-                        style="width:26px;height:26px;vertical-align: middle;">
-                    </lord-icon>
-                    <span class="nav-text">Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a href="{{ url_for('optimization') }}"
                     class="nav-link {% if request.path == '/optimization' %}active{% endif %}">
                     <script src="{{ url_for('static', filename='js/icons/math.js') }}"></script>
