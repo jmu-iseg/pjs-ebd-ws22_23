@@ -196,13 +196,13 @@ class MachineForm(FlaskForm):
         InputRequired()], label='Verbrauch Lötbad 5')
 
     heating_m1 = StringField(validators=[
-        InputRequired()], label='Aufheizverbrauch Wellenlöt (gesamt)')
+        InputRequired()], label='Aufheizverbrauch Wellenlöt')
 
     heating_m2 = StringField(validators=[
-        InputRequired()], label='Aufheizverbrauch Lötbad 3/4 (gesamt)')
+        InputRequired()], label='Aufheizverbrauch Lötbad 3/4')
 
     heating_m3 = StringField(validators=[
-        InputRequired()], label='Aufheizverbrauch Lötbad 5 (gesamt)')
+        InputRequired()], label='Aufheizverbrauch Lötbad 5')
     
     basicConsumption = StringField(validators=[
         InputRequired()], label='Grundlast der SEHO')
@@ -295,7 +295,7 @@ Kafka Form
 """
 class KafkaForm(FlaskForm):
     kafka_url = StringField(validators=[
-        InputRequired()], label='Server-URl')
+        InputRequired()], label='Server-URL')
 
     kafka_port = StringField(validators=[
         InputRequired()], label='Server-Port')
