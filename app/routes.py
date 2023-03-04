@@ -130,8 +130,6 @@ def home():
 
     # timer for next termin 
     next_termin = termin_daten[0]['dateTime']
-    print(next_termin)
-    print(datetime.now())
     duration = next_termin - datetime.now()
     duration_in_s = duration.total_seconds()    
     days = divmod(duration_in_s, 86400)        
@@ -154,6 +152,13 @@ def home():
         if termin_daten[termin]['dateTime'].date() == datetime.today().date():
             saved_co2_today += termin_daten[termin]['saved_co2']
             saved_co2_today = round(saved_co2_today,1)
+
+    # termin daten für visualisierung 
+    temp_df = pd.DataFrame(termin_daten).T
+    temp_df = temp_df.groupby('date', as_index=False).sum()
+    temp_df = temp_df[['date', 'saved_co2']]
+    temp_df['saved_co2'] = round(temp_df['saved_co2'],1)
+    co2_termine = temp_df.to_dict()
 
     # weather 
     with open(os.path.join(Path(app.root_path).parent.absolute(), 'streaming_data_platform/weather_forecast.json'), mode='r', encoding='utf-8') as openfile:
@@ -209,7 +214,7 @@ def home():
         'Wochentag': wochentag
     }
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, saved_co2_today=saved_co2_today, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv, timer=timer)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, saved_co2=saved_co2, saved_co2_today=saved_co2_today, tag=tag, uhrzeit=uhrzeit, auslastung_pv=auslastung_pv, timer=timer, co2_termine=co2_termine)
 
 
 def allowed_file(filename):
