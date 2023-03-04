@@ -13,7 +13,7 @@ import pandas as pd
 import mysql.connector as sql
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import subprocess
 from flask_login import login_required
 
@@ -79,12 +79,27 @@ def home():
     pv_prediction['output_prediction'] = round(pv_prediction['output_prediction'],1)
     pv_prediction = pv_prediction['output_prediction'].to_list()
 
+    # uhrzeit & datum 
+    tag = date.today()   
+    tag = tag.strftime("%d.%m.%Y")
+    uhrzeit = datetime.now()
+    uhrzeit = uhrzeit.strftime("%H:%M")
+
     # auslastung pv-anlage
-    print(df)
-    todays_pv_energy = df['output_prediction'][df['dateTime'].date() == datetime.today().date()]
-    max_pv_energy = df['max'][df['dateTime'].date() == datetime.today().date()]
+    df_today = df.set_index('dateTime')
+    df_today = df_today.resample("D").sum().reset_index()
+    print(df_today)
+    todays_pv_energy = df_today['output_prediction'][df_today['dateTime'] == datetime.today().date()]
+
+    print(df_today)
+
+    print(todays_pv_energy)
+    max_pv_energy = df_today['max'][df_today['dateTime'] == datetime.today().date()]
     auslastung_pv = todays_pv_energy / max_pv_energy
     print(auslastung_pv)
+
+
+    
 
     # gespeicherte historische termine abfragen
     termine = Termin.query.all()
@@ -186,7 +201,7 @@ def home():
         'Wochentag': wochentag
     }
 
-    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_5=termin_daten_5, records=records, informations=informations, cityname=name, saved_co2=saved_co2)
+    return render_template("/pages/home.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, termin_daten=termin_daten, termin_daten_5=termin_daten_5, records=records, informations=informations, cityname=name, saved_co2=saved_co2, tag=tag, uhrzeit=uhrzeit)
 
 
 def allowed_file(filename):
