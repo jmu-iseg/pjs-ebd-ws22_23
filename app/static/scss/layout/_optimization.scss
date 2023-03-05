@@ -78,17 +78,6 @@ table.table {
     }
   }
 
-  .form-control {
-    height: 32px;
-    line-height: 32px;
-    box-shadow: none;
-    border-radius: 2px;
-
-    &.error {
-      border-color: #f50000;
-    }
-  }
-
   table.table td .add {
     display: none;
   }
