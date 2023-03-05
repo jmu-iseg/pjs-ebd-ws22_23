@@ -63,8 +63,7 @@
                               <div class="modal-body">
                                 <p>Um den Termin zu speichern, können Sie den Termin</p>
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                  <a type="button"
-                                    href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
+                                  <a href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
                                     class="btn btn-outline-primary">herunterladen</a>
                                 </div>
                                 <p></p>
@@ -77,10 +76,10 @@
                                   {{ sendMailForm.time(value=item.Time) }}
                                   {{ sendMailForm.terminID(value=item.TerminID) }}
                                   {{ sendMailForm.mailAddress.label }}<br>
-                                  {{ sendMailForm.mailAddress }}<br>
+                                  {{ sendMailForm.mailAddress(class_="form-control") }}<br>
                                   <div id="emailHelp" class="form-text">Mehrere Empfänger werden mit einem Komma getrennt.</div>
                                   {{ sendMailForm.mailText.label }}<br>
-                                  {{ sendMailForm.mailText }}<br>
+                                  {{ sendMailForm.mailText(class_="form-control sendMailTextarea") }}<br>
                                   {{ sendMailForm.submit }}
                                 </form>
                               </div>
@@ -127,53 +126,51 @@
   <div class="col-12 col-xl-6 mb-3 d-flex align-items-stretch">
     <div class="card">
       <div class="card-header">Netzbezug der Terminvorschläge</div>
-      <div class="row">
-          <div class="col-md-6">
-            <div class="card-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Termin</th>
-                    <th scope="col">Netzbezug</th>
-                    <th scope="col">PV-Energie</th>
-                    <th scope="col">PV-Anteil</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for item in netzbezug_termine_percent %}
-                  <tr>
-                    <td style="width: 1px; white-space: nowrap;">#{{ item.Termin_ID }}</td>
-                    <td style="width: 1px; white-space: nowrap;">{{ item.netzbezug }} kWh</td>
-                    <td style="width: 1px; white-space: nowrap;">{{ item.pv_consumption }} kWh</td>
-                    <td style="width: 1px; white-space: nowrap;">{{ item.percent }} %</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+      <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Termin</th>
+                      <th scope="col">Netzbezug</th>
+                      <th scope="col">PV-Energie</th>
+                      <th scope="col">PV-Anteil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in netzbezug_termine_percent %}
+                    <tr>
+                      <td style="width: 1px; white-space: nowrap;">#{{ item.Termin_ID }}</td>
+                      <td style="width: 1px; white-space: nowrap;">{{ item.netzbezug }} kWh</td>
+                      <td style="width: 1px; white-space: nowrap;">{{ item.pv_consumption }} kWh</td>
+                      <td style="width: 1px; white-space: nowrap;">{{ item.percent }} %</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+            <div class="col-xl-6">
+                <div class="chart-container" style="position: relative">
+                  <canvas id="netzbezug_pro_termin" style="margin: 0 auto; max-width: 100%; height: 200px;"></canvas>
+                </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="card-body">
-              <div class="chart-container" style="position: relative">
-                <canvas id="netzbezug_pro_termin" style="margin: 0 auto;" width="260" height="200"></canvas>
-              </div>
-            </div>
-          </div>
-          </div>
+      </div>
     </div>
   </div>
 
-  <div class="col-12 col-xl-3 mb-3 d-flex align-items-stretch">
+  <div class="col-12 col-xl-6 mb-3 d-flex align-items-stretch">
     <div class="card">
       <div class="card-header">PV-Energie im Planungshorizont</div>
       <div class="card-body">
         <div class="pv-values">
           Erwartete PV-Energie im Planungszeitraum:
-          <div class="pv-kwh">{{output_prediction_sum}} kWh</div>
+          <div class="p-large">{{output_prediction_sum}} kWh</div>
         </div>
         <p></p>
         <div class="chart-container">
-          <canvas id="pv_prediction" style="margin: 0 auto;width:100%" width="280" height="220"></canvas>
+          <canvas id="pv_prediction" style="margin: 0 auto;max-width:100%; height: 220px;"></canvas>
         </div>
       </div>
     </div>

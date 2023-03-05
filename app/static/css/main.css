@@ -9790,13 +9790,6 @@ table.table td a {
     color: #FFC107; }
   table.table td a.delete {
     color: #E34724; }
-table.table .form-control {
-  height: 32px;
-  line-height: 32px;
-  box-shadow: none;
-  border-radius: 2px; }
-  table.table .form-control.error {
-    border-color: #f50000; }
 table.table table.table td .add {
   display: none; }
 table.table canvas {
