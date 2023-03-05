@@ -7,6 +7,9 @@
         Termine
       </div>
       <div class="card-body">
+        {% if not termin_daten %}
+          Keine Termine vorhanden. Plane jetzt den ersten Termin!
+        {% endif %}
         {% for event in termin_daten %}
           <div class="calendardate-box {% if termin_daten[event]['before'] %}before{% endif %} {% if termin_daten[event]['after'] %}after{% endif %}">
             <div class="date-column">
