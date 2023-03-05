@@ -9569,7 +9569,7 @@ main {
   height: calc(100vh - 66px);
   overflow-y: auto;
   padding-top: 1rem;
-  padding-bottom: 1.2rem; }
+  padding-bottom: 2rem; }
 .inner .row {
   margin-bottom: 0; }
 
@@ -9605,7 +9605,7 @@ main {
   .calendardate-box .date-column {
     background: #8ab333;
     color: #fbfbfb;
-    width: 3.5rem;
+    width: 5rem;
     text-align: left;
     padding: 0.5rem; }
     .calendardate-box .date-column .date {
@@ -9673,8 +9673,7 @@ main {
   display: flex; }
   .savings .savings-facts {
     text-align: left;
-    font-weight: 200;
-    min-width: 150px; }
+    font-weight: 200; }
 
 .pv-container {
   display: flex;

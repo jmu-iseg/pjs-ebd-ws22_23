@@ -8,7 +8,7 @@
       <div class="card-body">
         <div class="row">
 
-          <div class="col-4">
+          <div class="col-12 col-md-4 pb-4 p-md-0">
             <div class="datetime">
               <div class="time">{{ uhrzeit }}</div>
               <div class="date">{{ tag }}</div>
@@ -20,7 +20,10 @@
               </div>
             </div>
           </div>
-          <div class="col-8">
+          <div class="col-12 col-md-8">
+            {% if termin_daten_list is empty %}
+              Keine Termine vorhanden
+            {% endif %}
             {% for item in termin_daten_list %}
               <div class="date-box">
                 <div class="date-column">
@@ -84,7 +87,7 @@
         <!-- Weather Forecast -->
         <div class="weather__forecast d-flex flex-row justify-content-center align-items-center mt-3">
           {% for i in range(1,9) %}
-          <div class="p-1 d-flex flex-column justify-content-center align-items-center">
+          <div class="p-0 p-md-1 d-flex flex-column justify-content-center align-items-center">
             <span>{{ informations['Wochentag'][i] }}</span>
             {% if 200 <= informations['Wettercode'][i] < 300 %}
             <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/storm.svg') }}">
@@ -122,14 +125,20 @@
     <div class="card">
       <div class="card-header"><img src="{{ url_for('static', filename='img/leaf.svg') }}"> CO2-Ersparnis</div>
       <div class="card-body">
-        <div class="savings">
-          <div class="savings-facts">
-            <div class="p-large">{{saved_co2_today}} kg</div>
-            <p>heute</p>
-            <div class="p-large">{{saved_co2}} kg</div>
-            <p>gesamt</p>
+        <div class="savings row">
+          <div class="savings-facts col-12 col-md-4">
+            <div class="row">
+              <div class="col-6 col-md-12">
+                <div class="p-large">{{saved_co2_today}} kg</div>
+                <p>heute</p>
+              </div>
+              <div class="col-6 col-md-12">
+                <div class="p-large">{{saved_co2}} kg</div>
+                <p>gesamt</p>
+              </div>
+            </div>
           </div>
-          <div class="chart-container">
+          <div class="chart-container col-12 col-md-8">
             <canvas id="co2_saved" style="margin: 0 auto; width:100%" height="220"></canvas>
           </div>
         </div>
@@ -141,15 +150,15 @@
     <div class="card">
       <div class="card-header">Erwartete PV-Energie</div>
       <div class="card-body">
-        <div class="pv-container">
-          <div class="pv-percentage">
+        <div class="pv-container row">
+          <div class="pv-percentage col-12 col-md-6">
             Auslastung PV-Anlage:
             <div class="pv-percentage-value">{{ auslastung_pv }} %</div>
             <div class="chart-container">
               <canvas id="pv_auslastung" style="margin: 0 auto;" width="200" height="200"></canvas>
             </div>
           </div>
-          <div class="pv-values">
+          <div class="pv-values col-12 col-md-6">
             Erwartete PV-Energie 14 Tage Aussicht:
             <div class="pv-kwh">{{ pv_prediction_sum }} kWh</div>
             <div class="chart-container">
