@@ -133,8 +133,6 @@ class SendMailForm(FlaskForm):
 
     submit = SubmitField('Absenden', name='sendMailForm', id='submit')
 
-    # Hier muss der Termin gespeichert werden (save_termin)
-
     def validate_mailAddress(self, mailAddress):
         mailAddresses = mailAddress.data.split(',')
         EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")

@@ -524,18 +524,6 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 appointments = appointments.sort_values(by="percent",ascending=False)
                 netzbezug_termine_percent = appointments.to_dict('records')
 
-                # pv consumption of every termin 
-                #pv_consumption = []
-                #for termin in netzbezug_termine_percent: 
-                 #   pv_consumption.append((termin['percent'] / 100) * energy_consumption)
-
-                # pv consumption of every termin 
-               # for termin in netzbezug_termine_percent: 
-                #    netzbezug_termine_percent[termin]['pv_consumption'] = (termin['percent'] / 100) * energy_consumption
-                    #pv_consumption.append((termin['percent'] / 100) * energy_consumption)
-                
-                print(netzbezug_termine_percent)
-
                 # output prediction visualization 
                 output_prediction = netzbezug.set_index('dateTime')
                 output_prediction = output_prediction.resample("D").sum().reset_index()
@@ -566,7 +554,6 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             'output_prediction_list': output_prediction['output_prediction'].round(1).to_list(),
             'output_prediction_dates': output_prediction['dateTime'].dt.strftime("%d.%m.%Y").to_list(),
             'output_prediction_sum': output_prediction_sum,
-            #'pv_termine': pv_termine
         }
 
         return redirect(url_for('appointment_list'))
@@ -589,7 +576,6 @@ def appointment_list():
     output_prediction_list = session.get(user_id).get('output_prediction_list')
     output_prediction_dates = session.get(user_id).get('output_prediction_dates')
     output_prediction_sum = session.get(user_id).get('output_prediction_sum')
-    #pv_termine = session.get(user_id).get('pv_termine')
 
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
@@ -610,12 +596,16 @@ def appointment_list():
         msg.attach(attachment)
         user = config['mail']['mail_user']
         password = config['mail']['mail_pw']
+        
         # Set up connection to the SMTP server
         with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
             server.login(user, password)
             server.sendmail(sender, receiver, msg.as_string())
             flash("Mail erfolgreich verschickt")
-        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
+
+        terminID = sendMailForm.terminID.data
+        return save_to_calendar(terminID)
+ 
     elif request.method == "POST" and 'sendMailForm' in request.form:
         flash_errors(sendMailForm)
         return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
@@ -632,7 +622,7 @@ def save_termin():
         return redirect(url_for('optimization'))
     return save_to_calendar(terminId=terminId)
 
-def save_to_calendar(terminId, api=False, sessiontoken=None):
+def save_to_calendar(terminId, api=False, sessiontoken=None, flashmessage=True):
     if api:
         appointments_dict = session.get(sessiontoken)
     else:
@@ -710,5 +700,6 @@ def save_to_calendar(terminId, api=False, sessiontoken=None):
         return jsonify({'Information': 'Der Termin wurde gespeichert'})
     else:
         [session.pop(key) for key in list(session.keys()) if key == str(flask_login.current_user.id)]
-        flash("Ihr Termin wurde im Outlook-Kalender für die involvierten Maschinen & Mitarbeiter gespeichert!")
+        if flashmessage:
+            flash("Ihr Termin wurde im Outlook-Kalender für die involvierten Maschinen & Mitarbeiter gespeichert!")
         return redirect(url_for('optimization'))

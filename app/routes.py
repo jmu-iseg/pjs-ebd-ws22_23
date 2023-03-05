@@ -140,7 +140,7 @@ def home():
     if len(termin_daten_future) < 1: 
         timer = "0000"
     else:
-        next_termin = termin_daten_future[0]['dateTime']
+        next_termin = termin_daten_future[list(termin_daten_future.keys())[0]]['dateTime']
         duration = next_termin - datetime.now()
         duration_in_s = duration.total_seconds()    
         days = divmod(duration_in_s, 86400)        
@@ -272,8 +272,6 @@ def return_files_calendar():
     endtime_formatted = starttime_formatted + timedelta(hours=float(request.args.get('dauer')))
     filename = "Termineinladung {}.ics".format(request.args.get('id'))
     buf = create_file_object(starttime_formatted, endtime_formatted, request.args.get('bezeichnung'))
-    # hier muss der Termin gespeichert werden (save_termin)
-    
-
+    save_to_calendar(request.args.get('id'), flashmessage=False)
     return send_file(buf, download_name=filename)
 
