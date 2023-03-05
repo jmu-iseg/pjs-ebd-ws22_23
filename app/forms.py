@@ -380,6 +380,12 @@ class TerminOptimizationForm(FlaskForm):
     def validate(self):
         if not FlaskForm.validate(self):
             return False
+        if len(self.data['machines']) < 1:
+            self.machines.errors.append('Es muss mindestens eine Maschine ausgewählt werden')
+            return False
+        if len(self.data['mitarbeiter']) < 1:
+            self.mitarbeiter.errors.append('Es muss mindestens ein Mitarbeiter ausgewählt werden')
+            return False
         return True
 
 
