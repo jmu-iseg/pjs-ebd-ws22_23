@@ -56,12 +56,12 @@
                           <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                               <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="mailModalLabel{{ item.TerminID }}">Termineinladung per Mail</h1>
+                                <h1 class="modal-title fs-5" id="mailModalLabel{{ item.TerminID }}">Termin bestätigen</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                   aria-label="Close"></button>
                               </div>
                               <div class="modal-body">
-                                <p>Um den Termin zu speichern, können Sie den Termin</p>
+                                <p>Um den Termin zu bestätigen, können Sie den Termin</p>
                                 <div class="btn-group" role="group" aria-label="Basic example">
                                   <a href="{{ url_for('return_files_calendar', dauer=item.dauer, bezeichnung=item.bezeichnung, datum=item.Date, uhrzeit=item.Time, id=item.TerminID) }}"
                                     class="btn btn-outline-primary">herunterladen</a>
