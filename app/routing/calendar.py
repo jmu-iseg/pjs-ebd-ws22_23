@@ -70,12 +70,11 @@ def calendar():
             del termin_daten[termin]
 
     # for schleife über termin_daten 
-    for termin in range(list(termin_daten.keys())[0],list(termin_daten.keys())[-1]-1): 
-        print(termin_daten[termin]['date'])
+    for termin in range(list(termin_daten.keys())[0],list(termin_daten.keys())[-1]): 
         if termin_daten[termin]['date'] == termin_daten[termin+1]['date']: 
             termin_daten[termin]['after'] = 1
             termin_daten[termin+1]['before'] = 1
-
+    
     return render_template('/pages/calendar.html', users=users, machines=machines, termin_daten=termin_daten)
 
 @app.route('/calendar/<id>')
