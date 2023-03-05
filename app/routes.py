@@ -126,20 +126,30 @@ def home():
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
 
+    # filter zukünftige termine 
+    termin_daten_future = termin_daten.copy()
+    today = date.today()  
+    for termin in list(termin_daten_future.keys()):
+       if termin_daten_future[termin]['dateTime'].date() < today:
+            del termin_daten_future[termin]
+
     # next 2 termine
-    termin_daten_list = {k: termin_daten[k] for k in list(termin_daten.keys())[:2]}
+    termin_daten_list = {k: termin_daten_future[k] for k in list(termin_daten_future.keys())[:2]}
 
     # timer for next termin 
-    next_termin = termin_daten[0]['dateTime']
-    duration = next_termin - datetime.now()
-    duration_in_s = duration.total_seconds()    
-    days = divmod(duration_in_s, 86400)        
-    hours = divmod(days[1], 3600)               
-    minutes = divmod(hours[1], 60)  
-    days = int(days[0])
-    hours = int(hours[0])
-    minutes = int(minutes[0])
-    timer = [days,hours,minutes]
+    if len(termin_daten_future) < 1: 
+        timer = "0000"
+    else:
+        next_termin = termin_daten_future[0]['dateTime']
+        duration = next_termin - datetime.now()
+        duration_in_s = duration.total_seconds()    
+        days = divmod(duration_in_s, 86400)        
+        hours = divmod(days[1], 3600)               
+        minutes = divmod(hours[1], 60)  
+        days = int(days[0])
+        hours = int(hours[0])
+        minutes = int(minutes[0])
+        timer = [days,hours,minutes]
 
     # sum of saved co2 (insgesamt)
     saved_co2 = 0
