@@ -1,0 +1,42 @@
+.calendardate-box {
+    background: #f1f1f4;
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    font-weight: 200;
+    overflow: hidden;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    .date-column {
+        background: $green;
+        color: $font-hover;
+        width: 3.5rem;
+        text-align: left;
+        padding: 0.5rem;
+
+        .date {
+            font-size: $p-small;
+        }
+    }
+
+    .info-column {
+        display: flex;
+        align-items: center;
+
+        .daterange-column {
+            padding: 0.3rem;
+        }
+
+        .detail-column {
+            font-size: $p-small;
+            text-align: left;
+
+            .date-description {
+                font-size: initial;
+            }
+        }
+    }
+}
