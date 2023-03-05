@@ -24,18 +24,18 @@
             {% for item in termin_daten_list %}
               <div class="date-box">
                 <div class="date-column">
-                  <div class="weekday">{{ termin_daten[item]['weekday'] }}</div>
-                  <span class="date">{{ termin_daten[item]['date'] }}</span>
+                  <div class="weekday">{{ termin_daten_list[item]['weekday'] }}</div>
+                  <span class="date">{{ termin_daten_list[item]['date'] }}</span>
                 </div>
                 <div class="info-column">
                   <div class="daterange-column">
-                    {{ termin_daten[item]['starttime'] }}-{{ termin_daten[item]['endtime'] }}
+                    {{ termin_daten_list[item]['starttime'] }}-{{ termin_daten_list[item]['endtime'] }}
                   </div>
 
                   <div class="detail-column">
-                    <div class="date-description">{{ termin_daten[item]['description'] }}</div>
-                    {{ termin_daten[item]['machines'] }}<br>
-                    {{ termin_daten[item]['employees'] }}
+                    <div class="date-description">{{ termin_daten_list[item]['description'] }}</div>
+                    {{ termin_daten_list[item]['machines'] }}<br>
+                    {{ termin_daten_list[item]['employees'] }}
                   </div>
                 </div>
               </div>

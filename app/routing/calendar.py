@@ -52,7 +52,9 @@ def calendar():
             'gridenergy': termin.gridenergy,
             'pv_energy': termin.energyconsumption - termin.gridenergy,
             'pv_energy_prcnt': round((1-(termin.gridenergy/termin.energyconsumption)) * 100,1),
-            'saved_co2': round((termin.energyconsumption - termin.gridenergy) * 0.412,1) # kg co2 pro kWh
+            'saved_co2': round((termin.energyconsumption - termin.gridenergy) * 0.412,1), # kg co2 pro kWh
+            'previous': 0,
+            'before': 0
             } 
     
     # order by date 
@@ -60,6 +62,12 @@ def calendar():
     
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
+
+    # for schleife über termin_daten 
+    for termin in range(0,len(termin_daten)-1): 
+        if termin_daten[termin]['date'] == termin_daten[termin+1]['date']: 
+            termin_daten[termin]['previous'] = 1
+            termin_daten[termin+1]['before'] = 1
 
     return render_template('/pages/calendar.html', users=users, machines=machines, termin_daten=termin_daten)
 
