@@ -35,6 +35,8 @@ main {
 }
 
 .inner {
+    height: 100%;
+    
     .content {
         height: calc(100% - 90px);
         overflow-y: auto;
