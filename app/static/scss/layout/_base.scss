@@ -36,7 +36,7 @@ main {
 
 .inner {
     .content {
-        height: calc(100vh - 90px);
+        height: calc(100% - 90px);
         overflow-y: auto;
         padding-top: 1rem;
         padding-bottom: 0;
