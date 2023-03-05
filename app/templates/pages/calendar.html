@@ -7,6 +7,27 @@
         Maschinen
       </div>
       <div class="card-body">
+        {% for event in termin_daten %}
+          <div class="calendardate-box {% if termin_daten[event]['before'] %}before{% endif %} {% if termin_daten[event]['after'] %}after{% endif %}">
+            <div class="date-column">
+              {% if not termin_daten[event]['before'] %}
+                <div class="weekday">{{ termin_daten[event]['weekday'] }}</div>
+                <span class="date">{{ termin_daten[event]['date'] }}</span>
+              {% endif %}
+            </div>
+            <div class="info-column">
+              <div class="daterange-column">
+                {{ termin_daten[event]['starttime'] }}-{{ termin_daten[event]['endtime'] }}
+              </div>
+
+              <div class="detail-column">
+                <div class="date-description">{{ termin_daten[event]['description'] }}</div>
+                <b>Maschinen:</b> {{ termin_daten[event]['machines'] }}<br>
+                <b>Mitarbeiter:</b> {{ termin_daten[event]['employees'] }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
         <div class="row">
           {% for machine in machines %}
           <div class="col-6 col-lg-3 mb-3">
