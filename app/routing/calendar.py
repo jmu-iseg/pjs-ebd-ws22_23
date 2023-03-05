@@ -3,6 +3,9 @@ from flask_login import login_required
 import requests
 from flask import render_template
 from datetime import datetime, timedelta
+from app.models import *
+import pandas as pd
+
 
 @app.route('/calendar')
 @login_required
@@ -27,7 +30,38 @@ def calendar():
                 'title': user['jobTitle'],
                 'mail': user['mail']
                 }
-    return render_template('/pages/calendar.html', users=users, machines=machines)
+
+     # gespeicherte historische termine abfragen
+    termine = Termin.query.all()
+    termin_daten = {}
+    wochentage_kuerzel = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+    for termin in termine: 
+        endtime = termin.dateTime + timedelta(hours=termin.duration)
+        termin_daten[termin.id] = {
+            'creationTime': pd.to_datetime(termin.creationTimeUTC),
+            'dateTime': pd.to_datetime(termin.dateTime),
+            'machines': termin.machines,
+            'employees': termin.employees,
+            'date': termin.dateTime.date().strftime('%d.%m.'),
+            'weekday': wochentage_kuerzel[termin.dateTime.weekday()],
+            'starttime': termin.dateTime.time().strftime('%H:%M'),
+            'endtime': endtime.time().strftime('%H:%M'),
+            'duration': termin.duration, 
+            'description': termin.description,
+            'energy_consumption': termin.energyconsumption,
+            'gridenergy': termin.gridenergy,
+            'pv_energy': termin.energyconsumption - termin.gridenergy,
+            'pv_energy_prcnt': round((1-(termin.gridenergy/termin.energyconsumption)) * 100,1),
+            'saved_co2': round((termin.energyconsumption - termin.gridenergy) * 0.412,1) # kg co2 pro kWh
+            } 
+    
+    # order by date 
+    termin_daten = {k: v for k, v in sorted(termin_daten.items(), key=lambda item: item[1]['dateTime'], reverse=False)}
+    
+    # reset id/index
+    termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
+
+    return render_template('/pages/calendar.html', users=users, machines=machines, termin_daten=termin_daten)
 
 @app.route('/calendar/<id>')
 @login_required
@@ -56,4 +90,6 @@ def show_calendar(id):
             'date': startdate.strftime("%d.%m.%Y")
         }
         events.append(event)
+
+
     return render_template('/pages/display_calendar.html', events=events)
