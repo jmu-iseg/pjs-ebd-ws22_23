@@ -2,7 +2,7 @@ from app import app, get_graph_params
 from flask_login import login_required
 import requests
 from flask import render_template
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from app.models import *
 import pandas as pd
 
@@ -62,6 +62,16 @@ def calendar():
     
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
+
+    # filter zukünftige termine 
+    today = date.today()  
+   # for termin in termin_daten:
+    #    if termin_daten[termin]['dateTime'].date() < today:
+     #       termin_daten.popitem()
+
+    print(termin_daten)
+
+
 
     # for schleife über termin_daten 
     for termin in range(0,len(termin_daten)-1): 
