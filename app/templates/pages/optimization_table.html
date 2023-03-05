@@ -220,20 +220,24 @@
 
 <script>
   var ctx3 = document.getElementById('netzbezug_pro_termin').getContext('2d');
-  var netzbezug_termine = {{ netzbezug_termine }};
   var parsed = JSON.parse('{{netzbezug_termine_percent | tojson}}');
   var data_list = []
   for (item in parsed){
     data_list.push(parsed[item].percent)
   }
-    
-  var termin_list = {{ termin_list }};
-  var termin_list_new = termin_list.map(String);
-
+  labels = []
+  if (data_list.length == 1) {
+    labels = ['Termin #1']
+  } else if (data_list.length == 2) {
+    labels = ['Termin #1','Termin #2']
+  } else {
+    labels = ['Termin #1','Termin #2','#Termin #3']
+  }
+  
   var netzbezug_chart = new Chart(ctx3, {
     type: 'bar',
     data: {
-      labels: ['Termin #1', 'Termin #2', 'Termin #3',],
+      labels: labels,
       datasets: [{
         label: 'PV-Anteil',
         data: data_list,
