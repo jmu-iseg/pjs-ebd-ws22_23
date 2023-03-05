@@ -272,4 +272,8 @@ def return_files_calendar():
     endtime_formatted = starttime_formatted + timedelta(hours=float(request.args.get('dauer')))
     filename = "Termineinladung {}.ics".format(request.args.get('id'))
     buf = create_file_object(starttime_formatted, endtime_formatted, request.args.get('bezeichnung'))
+    # hier muss der Termin gespeichert werden (save_termin)
+    
+
     return send_file(buf, download_name=filename)
+
