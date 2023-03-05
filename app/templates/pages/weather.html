@@ -9,14 +9,14 @@
       </div>
       <div class="card-body">
         <!-- Weather -->
-        <div class="container mt-5">
+        <div class="container">
           <div class="d-flex flex-row justify-content-center align-items-center">
-            <div class="weather__card">
+            <div class="weather__card p-1 p-md-4">
               <div class="d-flex flex-row justify-content-center align-items-center">
-                <div class="p-3">
+                <div class="p-1 p-md-3">
                   <h2>{{ informations['Temp'][0] }}&deg;</h2>
                 </div>
-                <div class="p-3">
+                <div class="p-1 p-md-3">
                   {% if 200 <= informations['Wettercode'][0] < 300 %}
                   <img src="{{ url_for('static', filename='img/weather/storm.svg') }}">
                   {% elif 300 <= informations['Wettercode'][0] < 400 %}
@@ -39,22 +39,22 @@
                   <img src="{{ url_for('static', filename='img/weather/sun.svg') }}">
                   {% endif %}
                 </div>
-                <div class="p-3">
+                <div class="p-1 p-md-3">
                   <h5>{{ informations['Tag'][0] }}</h5>
                   <h3>{{ cityname }}</h3>
                   <span class="weather__description">{{ informations['Wetter'][0] }}</span>
                 </div>
               </div>
               <div class="weather__status d-flex flex-row justify-content-center align-items-center mt-3">
-                <div class="p-4 d-flex justify-content-center align-items-center">
+                <div class="p-0 p-sm-2 p-md-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oHw.svg">
                   <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Niederschlag">{{ informations['Regen'][0] }} mm</span>
                 </div>
-                <div class="p-4 d-flex justify-content-center align-items-center">
+                <div class="p-0 p-sm-2 p-md-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oH_.svg">
                   <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Luftdruck">{{ informations['Druck'][0] }} hPa</span>
                 </div>
-                <div class="p-4 d-flex justify-content-center align-items-center">
+                <div class="p-0 p-sm-2 p-md-4 d-flex justify-content-center align-items-center">
                   <img src="https://svgur.com/i/oKS.svg">
                   <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Windgeschwindigkeit">{{ informations['Wind'][0] }} km/h</span>
                 </div>
@@ -89,7 +89,7 @@
             {% else %}
             <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
             {% endif %}
-            <span>{{ informations['Temp'][i] }}&deg;</span>
+            <span class="p-sm-1">{{ informations['Temp'][i] }}&deg;</span>
           </div>
           {% endfor %}
         </div>

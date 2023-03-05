@@ -9470,42 +9470,36 @@ label {
 --------------------------------------------------------------*/
 .weather__card {
   width: 800px;
-  padding: 40px 30px;
   background-color: #EEEEEE;
   border-radius: 20px;
   color: #3C4048; }
-
-.weather__card h2, .weather__card .h2 {
-  font-size: 120px;
-  font-weight: 700;
-  color: #3C4048;
-  line-height: .8; }
-
-.weather__card h3, .weather__card .h3 {
-  font-size: 40px;
-  font-weight: 600;
-  line-height: .8;
-  color: #3C4048; }
-
-.weather__card h5, .weather__card .h5 {
-  font-size: 20px;
-  font-weight: 400;
-  line-height: .1;
-  color: #9D9D9D; }
-
-.weather__card img {
-  width: 120px;
-  height: 120px; }
-
-.weather__card .weather__description {
-  background-color: #fff;
-  border-radius: 25px;
-  padding: 5px 13px;
-  border: 0;
-  outline: none;
-  color: #7F8487;
-  font-size: .956rem;
-  font-weight: 400; }
+  .weather__card h2, .weather__card .h2 {
+    font-size: clamp(1rem, 7.5vw, 7.5rem);
+    font-weight: 700;
+    color: #3C4048;
+    line-height: .8; }
+  .weather__card h3, .weather__card .h3 {
+    font-size: clamp(1rem, 2.5vw, 2.5rem);
+    font-weight: 600;
+    line-height: .8;
+    color: #3C4048; }
+  .weather__card h5, .weather__card .h5 {
+    font-size: clamp(1rem, 1.25vw, 1.25rem);
+    font-weight: 400;
+    line-height: .1;
+    color: #9D9D9D; }
+  .weather__card img {
+    width: clamp(1rem, 7.5vw, 7.5rem);
+    height: 120clamp 1rem, 7.5vw, 7.5rem px; }
+  .weather__card .weather__description {
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 5px 13px;
+    border: 0;
+    outline: none;
+    color: #7F8487;
+    font-size: .956rem;
+    font-weight: 400; }
 
 /*--------------------------------------------------------------
 # Weather Status
@@ -9528,12 +9522,6 @@ label {
   height: 25px;
   width: 25px;
   vertical-align: middle; }
-
-.weather__forecast span {
-  font-weight: 500;
-  color: #3C4048;
-  font-size: 1rem;
-  padding: 5px 10px; }
 
 /*
     General styling
@@ -9566,10 +9554,10 @@ main {
   overflow-y: hidden; }
 
 .inner .content {
-  height: calc(100vh - 66px);
+  height: calc(100vh - 90px);
   overflow-y: auto;
   padding-top: 1rem;
-  padding-bottom: 2rem; }
+  padding-bottom: 0; }
 .inner .row {
   margin-bottom: 0; }
 

@@ -3,43 +3,48 @@
 --------------------------------------------------------------*/
 .weather__card {
     width: 800px;
-    padding: 40px 30px;
     background-color: #EEEEEE;
     border-radius: 20px;
     color:#3C4048;
+
+    h2 {
+      font-size: clamp(1rem, 7.5vw, 7.5rem);
+      font-weight:700;
+      color:#3C4048;
+      line-height: .8;
+    }
+
+    h3 {
+      font-size: clamp(1rem, 2.5vw, 2.5rem);
+      font-weight: 600;
+      line-height: .8;
+      color:#3C4048;
+    }
+
+    h5 {
+      font-size: clamp(1rem, 1.25vw, 1.25rem);
+      font-weight: 400;
+      line-height: .1;
+      color:#9D9D9D;
+    }
+
+    img {
+      width: clamp(1rem, 7.5vw, 7.5rem);
+      height: 120clamp(1rem, 7.5vw, 7.5rem)px;
+    }
+    
+    .weather__description {
+      background-color: #fff;
+      border-radius: 25px;
+      padding: 5px 13px;
+      border:0;
+      outline: none;
+      color:#7F8487;
+      font-size: .956rem;
+      font-weight: 400;
+    }
   }
-  .weather__card h2 {
-    font-size:120px;
-    font-weight:700;
-    color:#3C4048;
-    line-height: .8;
-  }
-  .weather__card h3 {
-    font-size: 40px;
-    font-weight: 600;
-    line-height: .8;
-    color:#3C4048;
-  }
-  .weather__card h5 {
-    font-size: 20px;
-    font-weight: 400;
-    line-height: .1;
-    color:#9D9D9D;
-  }
-  .weather__card img {
-    width: 120px;
-    height: 120px;
-  }
-  .weather__card .weather__description {
-    background-color: #fff;
-    border-radius: 25px;
-    padding: 5px 13px;
-    border:0;
-    outline: none;
-    color:#7F8487;
-    font-size: .956rem;
-    font-weight: 400;
-  }
+
   /*--------------------------------------------------------------
   # Weather Status
   --------------------------------------------------------------*/
@@ -61,10 +66,4 @@
     height: 25px;
     width: 25px;
     vertical-align:middle;
-  }
-  .weather__forecast span {
-    font-weight: 500;
-    color: #3C4048;
-    font-size: 1rem;
-    padding: 5px 10px;
   }
