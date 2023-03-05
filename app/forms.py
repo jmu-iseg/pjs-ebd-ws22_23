@@ -367,11 +367,11 @@ class TerminOptimizationForm(FlaskForm):
         else:
             mitarbeiterlist.append((user['id'], user['displayName']))
 
-    machines = SelectMultipleField(u'Maschinen', choices=machinelist, validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
+    machines = SelectMultipleField(u'Maschinen', choices=machinelist, render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
     product = SelectField(u'Lötprodukt', choices=['Einfach','Normal','Komplex'], validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
-    mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=mitarbeiterlist, validators=[InputRequired()], render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
+    mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=mitarbeiterlist, render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
     duration = IntegerField(validators=[InputRequired()])
 
