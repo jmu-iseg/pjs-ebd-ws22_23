@@ -39,15 +39,15 @@
                   {{ passwordForm.csrf_token() }}
                   {{ passwordForm.old_password.label }}
                   <br>
-                  {{ passwordForm.old_password }}
+                  {{ passwordForm.old_password(class_="form-control") }}
                   <br>
                   {{ passwordForm.password.label }}
                   <br>
-                  {{ passwordForm.password }}
+                  {{ passwordForm.password(class_="form-control") }}
                   <br>
                   {{ passwordForm.val_password.label }}
                   <br>
-                  {{ passwordForm.val_password }}
+                  {{ passwordForm.val_password(class_="form-control") }}
                   <br>
                   {{ passwordForm.submit }}
                 </form>

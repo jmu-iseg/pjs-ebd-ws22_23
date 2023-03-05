@@ -102,32 +102,34 @@
         Wetterbericht
       </div>
       <div class="card-body">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Tag</th>
-              <th scope="col">Temperatur</th>
-              <th scope="col">Wetter</th>
-              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Zeitpunkte des Sonnenaufgangs und -untergangs.">Sonne</th>
-              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Anteil der Zeit am Tag, die bewölkt sein wird.">Wolken</th>
-              <th scope="col">Druck</th>
-              <th scope="col">Luftfeuchte</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for i in range(records-1) %}
-            <tr>
-              <th scope="row">{{ informations['Tag'][i] }}</th>
-              <td>{{ informations['Nacht'][i] }} - {{ informations['Temp'][i] }}°C</td>
-              <td>{{ informations['Wetter'][i] }}</td>
-              <td>{{ informations['Sonnenaufgang'][i] }} - {{ informations['Sonnenuntergang'][i] }}</td>
-              <td>{{ informations['Wolken'][i] }} %</td>
-              <td>{{ informations['Druck'][i] }} hPa</td>
-              <td>{{ informations['Feuchtigkeit'][i] }} %</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Tag</th>
+                <th scope="col">Temperatur</th>
+                <th scope="col">Wetter</th>
+                <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Zeitpunkte des Sonnenaufgangs und -untergangs.">Sonne</th>
+                <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Anteil der Zeit am Tag, die bewölkt sein wird.">Wolken</th>
+                <th scope="col">Druck</th>
+                <th scope="col">Luftfeuchte</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in range(records-1) %}
+              <tr>
+                <th scope="row">{{ informations['Tag'][i] }}</th>
+                <td>{{ informations['Nacht'][i] }} - {{ informations['Temp'][i] }}°C</td>
+                <td>{{ informations['Wetter'][i] }}</td>
+                <td>{{ informations['Sonnenaufgang'][i] }} - {{ informations['Sonnenuntergang'][i] }}</td>
+                <td>{{ informations['Wolken'][i] }} %</td>
+                <td>{{ informations['Druck'][i] }} hPa</td>
+                <td>{{ informations['Feuchtigkeit'][i] }} %</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
