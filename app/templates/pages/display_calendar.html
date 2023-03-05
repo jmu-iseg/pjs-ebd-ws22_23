@@ -7,33 +7,28 @@
         Events
       </div>
       <div class="card-body">
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Datum</th>
-                <th scope="col">Startzeit</th>
-                <th scope="col">Endzeit</th>
-                <th scope="col">Titel</th>
-                <th scope="col">Beschreibung</th>
-                <th scope="col">Ort</th>
-              </tr>
-            </thead>
-            <tbody>
-        <div class="list-group">
-          {% for event in events %}
-          <tr>
-            <td>{{ event['date'] }}</td>
-            <td>{{ event['starttime'] }}</td>
-            <td>{{ event['endtime'] }}</td>
-            <td>{{ event['subject'] }}</td>
-            <td>{{ event['body'] }}</td>
-            <td>{{ event['location'] }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        {% for event in events %}
+          <div class="calendardate-box">
+            <div class="date-column">
+              <div class="weekday">Mi</div>
+              <span class="date">{{ event['date'] }}</span>
+            </div>
+            <div class="info-column">
+              <div class="daterange-column">
+                {{ event['starttime'] }}-{{ event['endtime'] }}
+              </div>
+
+              <div class="detail-column">
+                <div class="date-description">{{ event['subject'] }}</div>
+                <b>Maschinen:</b> Wellenlöt, Lötbad 3/4, Lötbad 5<br>
+                <b>Mitarbeiter:</b> Adele Vance, Henrietta Mueller<br>
+                <b>Ort:</b> {{ event['location'] }}<br><br>
+                <b>Beschreibung:</b> {{ event['body'] }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     </div>
   </div>
-</div>
-{% endblock %}
+  {% endblock %}
