@@ -6,6 +6,17 @@
     font-weight: 200;
     overflow: hidden;
 
+    &.after {
+        margin-bottom: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    &.before {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
     &:last-child {
         margin-bottom: 0;
     }
@@ -33,6 +44,7 @@
         .detail-column {
             font-size: $p-small;
             text-align: left;
+            margin: .5rem 0;
 
             .date-description {
                 font-size: initial;

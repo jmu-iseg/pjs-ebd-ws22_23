@@ -3,21 +3,21 @@
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 300;
-  src: local(""), url("../../fonts/nunito-v25-latin-300.woff2") format("woff2"), url("../../fonts/nunito-v25-latin-300.woff") format("woff");
+  src: local(""), url("../fonts/nunito-v25-latin-300.woff2") format("woff2"), url("../fonts/nunito-v25-latin-300.woff") format("woff");
   /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ }
 /* nunito-regular - latin */
 @font-face {
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("../../fonts/nunito-v25-latin-regular.woff2") format("woff2"), url("../../fonts/nunito-v25-latin-regular.woff") format("woff");
+  src: local(""), url("../fonts/nunito-v25-latin-regular.woff2") format("woff2"), url("../fonts/nunito-v25-latin-regular.woff") format("woff");
   /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ }
 /* nunito-700 - latin */
 @font-face {
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 700;
-  src: local(""), url("../../fonts/nunito-v25-latin-700.woff2") format("woff2"), url("../../fonts/nunito-v25-latin-700.woff") format("woff");
+  src: local(""), url("../fonts/nunito-v25-latin-700.woff2") format("woff2"), url("../fonts/nunito-v25-latin-700.woff") format("woff");
   /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ }
 .p-large {
   font-size: 1.8rem; }
@@ -9593,6 +9593,13 @@ main {
   display: flex;
   font-weight: 200;
   overflow: hidden; }
+  .calendardate-box.after {
+    margin-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0; }
+  .calendardate-box.before {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0; }
   .calendardate-box:last-child {
     margin-bottom: 0; }
   .calendardate-box .date-column {
@@ -9610,7 +9617,8 @@ main {
       padding: 0.3rem; }
     .calendardate-box .info-column .detail-column {
       font-size: 0.8rem;
-      text-align: left; }
+      text-align: left;
+      margin: .5rem 0; }
       .calendardate-box .info-column .detail-column .date-description {
         font-size: initial; }
 
