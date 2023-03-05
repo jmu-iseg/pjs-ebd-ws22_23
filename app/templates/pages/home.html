@@ -110,7 +110,7 @@
             {% else %}
             <img data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{{ informations['Wetter'][i] }}" src="{{ url_for('static', filename='img/weather/sun.svg') }}">
             {% endif %}
-            <span>{{ informations['Temp'][i] }}&deg;</span>
+            <span class="p-sm-1">{{ informations['Temp'][i] }}&deg;</span>
           </div>
           {% endfor %}
         </div>
