@@ -66,7 +66,7 @@ def calendar():
     # for schleife über termin_daten 
     for termin in range(0,len(termin_daten)-1): 
         if termin_daten[termin]['date'] == termin_daten[termin+1]['date']: 
-            termin_daten[termin]['previous'] = 1
+            termin_daten[termin]['after'] = 1
             termin_daten[termin+1]['before'] = 1
 
     return render_template('/pages/calendar.html', users=users, machines=machines, termin_daten=termin_daten)
