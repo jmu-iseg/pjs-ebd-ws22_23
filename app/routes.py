@@ -164,14 +164,18 @@ def home():
             saved_co2_today += termin_daten[termin]['saved_co2']
             saved_co2_today = round(saved_co2_today,1)
 
-    # termin daten für visualisierung 
+    # termin daten für co2 visualisierung 
     temp_df = pd.DataFrame(termin_daten).T
-    temp_df = temp_df.groupby('date', as_index=False).sum()
-    temp_df = temp_df[['date', 'saved_co2']]
+    temp_df = temp_df.sort_values(by='dateTime')
+    temp_df['day'] = temp_df['dateTime'].dt.date
+    temp_df = temp_df.groupby('day', as_index=False).sum()    
+    temp_df = temp_df[['day', 'saved_co2']]
     temp_df['saved_co2'] = round(temp_df['saved_co2'],1)
-    co2_termine = temp_df.to_dict()
+    temp_df['day'] = pd.to_datetime(temp_df['day'])
+    temp_df['day'] = temp_df['day'].dt.strftime("%d.%m.%Y")
+    co2_termine = temp_df.to_dict()    
 
-    # todo 
+    # sum of predicted pv energy in next 2 weeks
     pv_prediction_sum = int(sum(pv_prediction))
 
     # weather 

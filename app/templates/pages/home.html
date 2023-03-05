@@ -255,8 +255,8 @@
   var ctx1 = document.getElementById('co2_saved').getContext('2d');
   var data = {{ co2_termine | safe }};
   var labels = []
-  for (key in data['date']) { 
-    labels.push(data['date'][key])
+  for (key in data['day']) { 
+    labels.push(data['day'][key])
   }
   var data_list = []
   for (key in data['saved_co2']) { 
