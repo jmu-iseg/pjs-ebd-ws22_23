@@ -72,4 +72,6 @@ def model_prediction(data):
     predictions = model.predict(data)
     data['pred_energy'] = predictions
 
+    return data
+
 
