@@ -87,7 +87,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     clouds['clouds'] = clouds['clouds'] / 100
     clouds['sun'] = 1 - clouds['clouds']
     
-    # merge cloud data into energy data 
+    # merge cloud data into solar data 
     df = pd.merge(solar_data, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
 
     # select planing period
@@ -502,7 +502,11 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 appointments['percent'] = appointments['percent'].round(2).astype(int)
                 appointments['pv_consumption'] = (appointments['percent'] / 100) * energy_consumption
                 appointments = appointments.sort_values(by="percent",ascending=False)
+                appointments['saved_co2'] = round(((appointments['pv_consumption'] + appointments['netzbezug']) - appointments['netzbezug']) * 0.412,1)
+                
+                #'saved_co2': round((termin.energyconsumption - termin.gridenergy) * 0.412,1) # kg co2 pro kWh
                 netzbezug_termine_percent = appointments.to_dict('records')
+                print(netzbezug_termine_percent)
 
                 # output prediction visualization 
                 output_prediction = netzbezug.set_index('dateTime')
