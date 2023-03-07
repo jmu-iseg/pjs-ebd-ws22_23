@@ -124,10 +124,14 @@ def home():
     termin_daten_list = {k: termin_daten_future[k] for k in list(termin_daten_future.keys())[:2]}
 
     # timer for next termin 
-    if len(termin_daten_future) < 1: 
+    termin_timer = termin_daten_future.copy()
+    for termin in list(termin_timer.keys()):
+       if termin_timer[termin]['dateTime'] < datetime.now():
+            del termin_timer[termin]
+    if len(termin_timer) < 1: 
         timer = "0000"
     else:
-        next_termin = termin_daten_future[list(termin_daten_future.keys())[0]]['dateTime']
+        next_termin = termin_timer[list(termin_timer.keys())[0]]['dateTime']
         duration = next_termin - datetime.now()
         duration_in_s = duration.total_seconds()    
         days = divmod(duration_in_s, 86400)        
