@@ -87,7 +87,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     clouds['clouds'] = clouds['clouds'] / 100
     clouds['sun'] = 1 - clouds['clouds']
     
-    # merge cloud data into energy data 
+    # merge cloud data into solar data 
     df = pd.merge(solar_data, clouds, how='left', left_on=['dateTime'], right_on=['dateTime'])    
 
     # select planing period
