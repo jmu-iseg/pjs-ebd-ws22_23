@@ -117,7 +117,7 @@ def home():
     termin_daten_future = termin_daten.copy()
     today = date.today()  
     for termin in list(termin_daten_future.keys()):
-       if termin_daten_future[termin]['dateTime'].date() < today:
+       if termin_daten_future[termin]['dateTime'] + timedelta(hours=termin_daten_future[termin]['duration']) < datetime.now():
             del termin_daten_future[termin]
 
     # next 2 appointments 
