@@ -1,12 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, FileField, HiddenField, TextAreaField, DateField, FieldList, SelectMultipleField, IntegerField, FormField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms.validators import InputRequired, Length, ValidationError, NumberRange
 from app.models import User
 from app import bcrypt, get_graph_params, app, db
 from flask_login import login_user
 import flask_login
 import requests
 import re
+from datetime import date, datetime, timedelta
 
 """
 Register Form
@@ -373,7 +374,11 @@ class TerminOptimizationForm(FlaskForm):
 
     mitarbeiter = SelectMultipleField(u'Mitarbeiter', choices=mitarbeiterlist, render_kw={'data-suggestions-threshold': '0','data-allow-clear':'true'})
 
-    duration = IntegerField(validators=[InputRequired()])
+    duration = IntegerField(validators=[InputRequired(), NumberRange(min=1, max=10)]) 
+
+    
+    
+
 
     delete = SubmitField('Entfernen')
 
@@ -385,6 +390,11 @@ class TerminOptimizationForm(FlaskForm):
             return False
         if len(self.data['mitarbeiter']) < 1:
             self.mitarbeiter.errors.append('Es muss mindestens ein Mitarbeiter ausgewählt werden')
+            return False
+        if type(self.duration.data) is not int:
+            self.duration.errors.append('Die Dauer des Termins kann nur ganze Stunde betragen')
+        if self.duration.data < 1: 
+            self.duration.errors.append('Der Termin muss mindestens eine Dauer von einer Stunde haben')
             return False
         return True
 
@@ -429,6 +439,12 @@ class OptimizationForm(FlaskForm):
             return False
         if self.startdate.data > self.enddate.data:
             self.enddate.errors.append('Das Enddatum darf nicht vor dem Startdatum liegen')
+            return False
+        if self.startdate.data < date.today(): 
+            self.startdate.errors.append('Das Startdatum muss in der Zukunft liegen')
+            return False
+        if self.enddate.data >= date.today() + timedelta(days=30):
+            self.enddate.errors.append('Der Planungshorizont umfasst maximal 30 Tage')
             return False
         for index, termin in enumerate(self.termine.entries):
             if not termin.validate(termin):
