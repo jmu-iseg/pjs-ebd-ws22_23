@@ -6,6 +6,7 @@
     <div class="card next-dates">
       <div class="card-header">Nächste Termine</div>
       <div class="card-body">
+        <a href="{{ url_for('calendar') }}" class="stretched-link"></a>
         <div class="row">
 
           <div class="col-12 col-md-4 pb-4 p-md-0">
@@ -53,6 +54,7 @@
     <div class="card">
       <div class="card-header">Wettervorhersage</div>
       <div class="card-body">
+        <a href="{{ url_for('weather') }}" class="stretched-link"></a>
         <div class="weather-preview">
           <div class="weather-facts">
             <div class="temperature">{{ informations['Temp'][0] }}&deg;</div>
@@ -150,6 +152,7 @@
     <div class="card">
       <div class="card-header">PV-Anlage</div>
       <div class="card-body">
+        <a href="{{ url_for('pv_anlage') }}" class="stretched-link"></a>
         <div class="pv-container row">
           <div class="pv-percentage col-12 col-md-6">
             Auslastung PV-Anlage:

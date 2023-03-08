@@ -412,15 +412,30 @@ def pv_anlage():
     co2_data_list = co2_data['cum_sum'].tail(7).to_list()
     co2_data_labels = co2_data['dateTime'].dt.strftime('%d.%m.%Y').tail(7).to_list()
     
+    # autarkie 
+    
+    #today
+    # termine last week --> sum (energy consumption) + sum (pv_energie)
+    autarkie_data = pd.DataFrame(termin_daten).T
+    autarkie_data = autarkie_data.sort_values(by='dateTime')
+    autarkie_data['datejust'] = autarkie_data['dateTime'].dt.date
+    autarkie_data = autarkie_data.groupby(by='datejust').sum().reset_index()
+    autarkie_data['datejust'] = pd.to_datetime(autarkie_data['datejust']).dt.date
+    # filter last 7 days
+    today = date.today()
+    start_date = today - timedelta(days=7)
+    autarkie_data_7 = autarkie_data[(autarkie_data['datejust'] >= start_date) & (autarkie_data['datejust'] <= today)]
+    # calculate autarkie last 7 days 
+    consumption_sum_7 = autarkie_data_7['energy_consumption'].sum()
+    pv_sum_7 = autarkie_data_7['pv_energy'].sum()
+    autarkie_7 = int((pv_sum_7 / consumption_sum_7) * 100) # percent 
+    # # calculate autarkie last 7 days 
+    consumption_sum_overall = autarkie_data['energy_consumption'].sum()
+    pv_sum_overall = autarkie_data['pv_energy'].sum()
+    autarkie_overall = int((pv_sum_overall / consumption_sum_overall) * 100) # percent 
 
-    print(co2_data_labels)
-    print(co2_data_list)
-
-
-
-
-    # return data to home 
-    return render_template("/pages/pv_anlage.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, pv_prediction_7=pv_prediction_7, pv_prediction_7_labels=pv_prediction_7_labels, clouds_7=clouds_7, consumption_data_14=consumption_data_14, co2_data_list=co2_data_list, co2_data_labels=co2_data_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, auslastung_pv=auslastung_pv, pv_prediction_sum=pv_prediction_sum)
+    # return data to pv_anlage 
+    return render_template("/pages/pv_anlage.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, pv_prediction_7=pv_prediction_7, pv_prediction_7_labels=pv_prediction_7_labels, autarkie_7=autarkie_7, autarkie_overall=autarkie_overall, consumption_data_14=consumption_data_14, co2_data_list=co2_data_list, co2_data_labels=co2_data_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, auslastung_pv=auslastung_pv, pv_prediction_sum=pv_prediction_sum)
 
 
 def allowed_file(filename):

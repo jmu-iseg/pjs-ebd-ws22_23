@@ -67,14 +67,14 @@
         <div class="pv-container row">
           <div class="pv-percentage col-12 col-md-6">
             Letzte Woche:
-            <div class="pv-percentage-value">83 %</div>
+            <div class="pv-percentage-value">{{ autarkie_7 }} %</div>
             <div class="chart-container">
               <canvas id="pv_auslastung_woche" style="margin: 0 auto;" width="200" height="200"></canvas>
             </div>
           </div>
           <div class="pv-percentage col-12 col-md-6">
             Gesamt:
-            <div class="pv-percentage-value">76 %</div>
+            <div class="pv-percentage-value">{{ autarkie_overall }} %</div>
             <div class="chart-container">
               <canvas id="pv_auslastung_gesamt" style="margin: 0 auto;" width="200" height="200"></canvas>
             </div>
@@ -270,7 +270,7 @@
 
 <script>
   var ctx1 = document.getElementById('pv_auslastung_woche').getContext('2d');
-  var auslastung_pv = 83;
+  var auslastung_pv = {{ autarkie_7 }};
   
   var percentage_chart = new Chart(ctx1, {
     type: 'doughnut',
@@ -301,7 +301,7 @@
 
 <script>
   var ctx1 = document.getElementById('pv_auslastung_gesamt').getContext('2d');
-  var auslastung_pv = 76;
+  var auslastung_pv = {{ autarkie_overall }};
   
   var percentage_chart = new Chart(ctx1, {
     type: 'doughnut',
