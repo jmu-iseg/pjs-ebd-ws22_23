@@ -3,6 +3,7 @@ from app import db
 from app.api import bp
 from app.api.auth import basic_auth, token_auth
 
+# Erstellen eines Tokens über die get_token Funktion eines Nutzers und speichern in der Datenbank
 @bp.route('/tokens', methods=['POST'])
 @basic_auth.login_required
 def get_token():
@@ -10,6 +11,7 @@ def get_token():
     db.session.commit()
     return jsonify({'token': token})
 
+# Löschen eines Tokens
 @bp.route('/tokens', methods=['DELETE'])
 @token_auth.login_required
 def revoke_token():
