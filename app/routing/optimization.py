@@ -55,7 +55,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     graph_start_date = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
     graph_end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
 
-    # input date range
+    # transform input date 
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
