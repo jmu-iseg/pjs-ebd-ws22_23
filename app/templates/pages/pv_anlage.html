@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+
+  <div class="col-12 col-xl-6 d-flex mb-3 align-items-stretch">
+    <div class="card next-dates">
+      <div class="card-header">Erwartete PV-Energie</div>
+      <div class="card-body">
+        <div class="pv-container row">
+          <div class="pv-percentage col-12 col-md-6">
+            Auslastung PV-Anlage:
+            <div class="pv-percentage-value">{{ auslastung_pv }} %</div>
+            <div class="chart-container">
+              <canvas id="pv_auslastung" style="margin: 0 auto;" width="200" height="200"></canvas>
+            </div>
+          </div>
+          <div class="pv-values col-12 col-md-6">
+            14 Tage Aussicht:
+            <div class="pv-kwh">{{ pv_prediction_sum }} kWh</div>
+            <div class="chart-container">
+              <canvas id="pv_prediction" style="margin: 0 auto;width:100%" height="220"></canvas>
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-6 mb-3 align-items-stretch">
+    <div class="card">
+      <div class="card-header">Erzeuger & Verbraucher</div>
+      <div class="card-body">
+        <div class="pv-container row">
+          <div class="pv-values col-12 col-md-12">
+           14 Tage Aussicht:
+            <div class="chart-container">
+              <canvas id="pv_prediction_clouds" style="margin: 0 auto;width:100%" height="250"></canvas>
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 col-xl-6 mb-3 d-flex align-items-stretch">
+    <div class="card">
+      <div class="card-header"><img src="{{ url_for('static', filename='img/leaf.svg') }}"> Summe CO2-Ersparnis</div>
+      <div class="card-body">
+        <div class="pv-container row">
+        <div class="pv-values col-12 col-md-12">
+          Wochenrückblick:
+          <div class="chart-container col-12 col-md-12">
+            <canvas id="co2_saved" style="margin: 0 auto; width:100%" height="250"></canvas>
+          </div>
+         </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-6 mb-3 d-flex align-items-stretch">
+    <div class="card">
+      <div class="card-header">Autarkie</div>
+      <div class="card-body">
+        <div class="pv-container row">
+          <div class="pv-percentage col-12 col-md-6">
+            Letzte Woche:
+            <div class="pv-percentage-value">{{ autarkie_7 }} %</div>
+            <div class="chart-container">
+              <canvas id="pv_auslastung_woche" style="margin: 0 auto;" width="200" height="200"></canvas>
+            </div>
+          </div>
+          <div class="pv-percentage col-12 col-md-6">
+            Gesamt:
+            <div class="pv-percentage-value">{{ autarkie_overall }} %</div>
+            <div class="chart-container">
+              <canvas id="pv_auslastung_gesamt" style="margin: 0 auto;" width="200" height="200"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var ctx1 = document.getElementById('pv_prediction').getContext('2d');
+  var pv_prediction = {{ pv_prediction }};
+  var pv_prediction_labels = {{ pv_prediction_labels | safe }};
+
+  var netzbezug_chart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: pv_prediction_labels,
+      datasets: [{
+        label: 'PV-Erzeugung',
+        data: pv_prediction,
+        borderColor: 'rgb(138, 179, 51, 1)',
+        backgroundColor: 'rgb(138, 179, 51, 1)',
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+      animation: {
+        duration: 2000
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            afterLabel: function (context) {
+              return 'kWh';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'kWh'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  var ctx1 = document.getElementById('pv_prediction_clouds').getContext('2d');
+  var pv_prediction = {{ pv_prediction }};
+  var pv_prediction_labels = {{ pv_prediction_labels | safe }};
+  var consumption_data = {{ consumption_data_14 }};
+  
+  var netzbezug_chart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: pv_prediction_labels,
+      datasets: [
+          {borderColor: 'rgb(138, 179, 51, 1)',
+          backgroundColor: 'rgb(138, 179, 51, 1)',
+           data: pv_prediction,
+           label: "PV-Erzeugung"
+          },
+          {borderColor: 'rgb(118, 114, 116, 1)',
+          backgroundColor: 'rgb(118, 114, 116, 1)',
+           data: consumption_data,
+           label: "Verbrauch"
+          }
+      ]},
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+      animation: {
+        duration: 2000
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            afterLabel: function (context) {
+              return 'kWh';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'kWh'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  var ctx1 = document.getElementById('co2_saved').getContext('2d');  
+  var data = {{ co2_data_list | safe }};
+  var labels = {{ co2_data_labels | safe }};
+  
+  var netzbezug_chart = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'CO2-Einsparung',
+        data: data,
+        backgroundColor: 'rgb(138 179 51/ 100%)'
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      legend: {
+        display: false
+      },
+      animation: {
+        duration: 2000
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            afterLabel: function (context) {
+              return 'kg';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'kg'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  var ctx1 = document.getElementById('pv_auslastung').getContext('2d');
+  var auslastung_pv = {{ auslastung_pv }};
+  
+  var percentage_chart = new Chart(ctx1, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [auslastung_pv, 100-auslastung_pv],
+        backgroundColor: [
+          'rgba(138, 179, 51, 1)',
+          'rgba(241, 241, 244, 1)'
+        ]
+      }]
+    },
+    options: {
+      rotation: -90,
+      circumference: 180,
+      legend: {
+        display: false,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        }
+    }
+  }
+  });
+  
+</script>
+
+<script>
+  var ctx1 = document.getElementById('pv_auslastung_woche').getContext('2d');
+  var auslastung_pv = {{ autarkie_7 }};
+  
+  var percentage_chart = new Chart(ctx1, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [auslastung_pv, 100-auslastung_pv],
+        backgroundColor: [
+          'rgba(138, 179, 51, 1)',
+          'rgba(241, 241, 244, 1)'
+        ]
+      }]
+    },
+    options: {
+      rotation: -90,
+      circumference: 180,
+      legend: {
+        display: false,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        }
+    }
+  }
+  });
+  
+</script>
+
+<script>
+  var ctx1 = document.getElementById('pv_auslastung_gesamt').getContext('2d');
+  var auslastung_pv = {{ autarkie_overall }};
+  
+  var percentage_chart = new Chart(ctx1, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [auslastung_pv, 100-auslastung_pv],
+        backgroundColor: [
+          'rgba(138, 179, 51, 1)',
+          'rgba(241, 241, 244, 1)'
+        ]
+      }]
+    },
+    options: {
+      rotation: -90,
+      circumference: 180,
+      legend: {
+        display: false,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        }
+    }
+  }
+  });
+  
+</script>
+
+
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+
+{% endblock %}
