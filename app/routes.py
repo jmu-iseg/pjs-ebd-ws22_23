@@ -1,6 +1,4 @@
-import string
-from pytz import utc
-from app import app, create_file_object, flash_errors
+from app import app, create_file_object
 from flask import render_template, request, redirect, send_file
 from app.models import *
 from app.forms import *
@@ -12,7 +10,6 @@ from app.routing.calendar import *
 from app.routing.weather import *
 import subprocess
 import pandas as pd
-import mysql.connector as sql
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from datetime import datetime, timedelta, date

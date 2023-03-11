@@ -7,7 +7,7 @@ from flask_login import login_user
 import flask_login
 import requests
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 """
 Register Form
