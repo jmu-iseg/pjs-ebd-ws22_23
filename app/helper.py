@@ -8,11 +8,13 @@ from icalendar import Calendar, Event, vCalAddress, vText
 import io
 from asyncua import Client
 
+# helper function to get config values
 def get_config(root_path):
     config = configparser.ConfigParser()
     config.read(os.path.join(root_path,'settings.cfg'), encoding='utf-8')
     return config
 
+# helper function to get config values
 def write_config(root_path, config):
     with open(os.path.join(root_path,'settings.cfg'), 'w', encoding='utf-8') as configfile:
         config.write(configfile)
@@ -95,7 +97,7 @@ def opc_ua_sender(machineIDs, state, root_path, terminDateTime):
     # empty string
     return_notification = []
 
-    """ Check for every given machine """
+    # check for every given machine
     for machine in machineIDs:
         # what type of machine?
         if machine == "Wellenlöt":
