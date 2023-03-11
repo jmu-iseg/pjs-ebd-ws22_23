@@ -8,17 +8,18 @@ from icalendar import Calendar, Event, vCalAddress, vText
 import io
 from asyncua import Client
 
-# helper function to get config values
+# Helper function to get config values
 def get_config(root_path):
     config = configparser.ConfigParser()
     config.read(os.path.join(root_path,'settings.cfg'), encoding='utf-8')
     return config
 
-# helper function to get config values
+# Helper function to get config values
 def write_config(root_path, config):
     with open(os.path.join(root_path,'settings.cfg'), 'w', encoding='utf-8') as configfile:
         config.write(configfile)
 
+# Flash all available errors for every given form
 def flash_errors(form):
     """Flashes form errors"""
     for field, errors in form.errors.items():
@@ -28,6 +29,7 @@ def flash_errors(form):
                 error
             ), 'error')
 
+# Return the day abbreviations for every day-int
 def get_weekday(day):
     if day == '0':
         return "So"
@@ -86,18 +88,25 @@ def create_file_object(start, end, summary):
     buf.seek(0)
     return buf
 
+"""
+OPC UA Sender
+    Start the given machine via OPC UA when the time is right
+    Validations:
+        right time
+        connection test
+"""
 def opc_ua_sender(machineIDs, state, root_path, terminDateTime):
-    # read settings
+    # Read settings
     config = get_config(root_path)
 
-    # get terminDateTime and nowtime
+    # Get terminDateTime and nowtime
     termin_date_time = datetime(terminDateTime)
     now_time = datetime.now()
 
-    # empty string
+    # Empty string
     return_notification = []
 
-    # check for every given machine
+    # Check for every given machine
     for machine in machineIDs:
         # what type of machine?
         if machine == "Wellenlöt":
@@ -107,24 +116,23 @@ def opc_ua_sender(machineIDs, state, root_path, terminDateTime):
         elif machine == "Lötbad5":
             machineType = 3
 
-        # specify the OPC-UA config
+        # Specify the OPC-UA config
         value_on = config['opcua']['value_on']
         value_off = config['opcua']['value_off']
         client_url = config['opcua']['url' + machineType]
         object_var = config['opcua']['var' + machineType]
         machine_offset = config['opcua']['offset' + machineType]
 
-        # get the timedelta
+        # Get the timedelta
         time_diff = now_time - termin_date_time - machine_offset
         time_diff_mins = time_diff.total_minutes()
 
         # Is it time to start/stop the machine?
         if time_diff_mins <= 0:
-            """ Check the OPC-UA status """
             # Connect to the OPC-UA server
             client = Client(client_url)
 
-            # Check connection to client 1
+            # Check connection to client
             try:
                 # Connect to the OPC UA server
                 client.connect()
