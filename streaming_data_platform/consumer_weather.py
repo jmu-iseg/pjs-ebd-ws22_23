@@ -4,27 +4,29 @@ import sys
 sys.path.append('..')
 from app import app, get_config
 
-# create empty dataframe
+# Create empty dataframe
 df = pd.DataFrame()
 
-# get config values
+# Get config values
 config = get_config(app.root_path)
+
+# Get the kafka config values
 kafka_url = config['kafka']['kafka_url']
 kafka_port = config['kafka']['kafka_port']
 
-""" Consumer """
+# Create a kafka consumer
 consumer = KafkaConsumer('weather_data',
                          auto_offset_reset='earliest',
                          group_id='weather-consumer',
                          bootstrap_servers=[kafka_url+':'+kafka_port])
 
-# get topic data
+# Get topic data
 print('polling...')
 records = consumer.poll(timeout_ms=1000)
 print(records)
 
 try:
-    #read items
+    # Read items
     for _, consumer_records in records.items():
         # Parse records
         for consumer_record in consumer_records:
