@@ -16,7 +16,6 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.utils import formataddr
 from datetime import datetime, timedelta
-import openai
 import pandas as pd
 import mysql.connector as sql
 import gurobipy as gp
