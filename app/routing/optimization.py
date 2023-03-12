@@ -93,7 +93,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     # select planing period
     df = df[(df['dateTime'] >= start_date) & (df['dateTime'] <= end_date)]
 
-    # neue Spalte mit Formel pv output = ((MAX-MIN)*sun) + MIN
+    # new column with equation pv_output = ((MAX-MIN)*sun) + MIN
     df['output_prediction'] = ((df['max'] - df['min']) * df['sun']) + df['min']
 
     # get energy consumption of planned appointments 
@@ -114,7 +114,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     df = pd.merge(df, termin_data_df, how='left', left_on=['dateTime'], right_on=['dateTime'])
     df['appointment_energy'] = df['appointment_energy'].fillna(0) 
 
-    # calculate netzbezug
+    # calculate grid energy
     basicConsumption = float(config['machines']['basicConsumption']) # hourly in kWh
     df['balance'] = (basicConsumption + df['appointment_energy']) - df['output_prediction']
     netzbezug = df.drop(['appointment_energy'], axis=1)
@@ -128,7 +128,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     termine_df_neu = pd.DataFrame.from_dict(termine, orient='index', columns=['bezeichnung', 'dauer', 'maschinen', 'complexity', 'mitarbeiter', 'energieverbrauch', 'complexity_percent'])
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id'})
 
-    # API call
+    # API call for calendar data 
     params = get_graph_params(app.root_path)
     head = {
         'Authorization': params['token']
@@ -149,7 +149,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             machines_string += displayName + ", "
     termine_df_neu['maschinen_string'] = machines_string
 
-    # transform mitarbeiter for output
+    # transform employees for output
     mitarbeiter_string = ""
     for mitarbeiter in termine_df_neu['mitarbeiter'].to_list()[0]:
         displayName = ''
@@ -176,14 +176,14 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
         machine_types_dict[machine] = vorname
     termine_df_neu['machine_types'] = [machine_types]    
 
-    # define energy consumption per machine 
+    # define energy consumption per machine based on config file 
     machine_consumption = {
         config['machines']['typ_m1']: float(config['machines']['consumption_m1']), 
         config['machines']['typ_m2']: float(config['machines']['consumption_m2']), 
         config['machines']['typ_m3']: float(config['machines']['consumption_m3'])
         }
     
-    # define heating energy consumption per machine 
+    # define heating energy consumption per machine based on config file
     machine_heating = {
         config['machines']['typ_m1']: float(config['machines']['heating_m1']), 
         config['machines']['typ_m2']: float(config['machines']['heating_m2']), 
@@ -205,7 +205,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
         energie += machine_consumption[maschine] * complexity * float(termine_df_neu['dauer'])
     termine_df_neu['energieverbrauch'] = energie
 
-    # Verfügbarkeitsdaten der Maschinen & Mitarbeiter ziehen
+    # get availability of machines via calendar access
     machine_appointments = {}
     mitarbeiter_appointments = {}
     for machine in termine_df_neu['maschinen'].to_list()[0]:
@@ -223,6 +223,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             })
         machine_appointments[machine] = appointments
 
+    # get availability of employees via calendar access
     for mitarbeiter in termine_df_neu['mitarbeiter'].to_list()[0]:
         cal_url = f"https://graph.microsoft.com/v1.0/users/{mitarbeiter}/calendarView?startDateTime={graph_start_date}&endDateTime={graph_end_date}&$select=start,end"
         resp = requests.get(cal_url, headers=head).json()
@@ -238,13 +239,13 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             })
         mitarbeiter_appointments[mitarbeiter] = appointments
     
-    # set anzahl von terminvorschlägen
+    # set amount of appointment suggestions via config file 
     app_amount = int(config['machines']['appointment_amount'])
     termine_df_neu = pd.concat([termine_df_neu] * app_amount,ignore_index=True)
     termine_df_neu = termine_df_neu.reset_index().rename(columns={'index': 'termin_id', 'termin_id': 'del'}).drop('del',axis=1)
     termine_df_neu['termin_id'] = termine_df_neu['termin_id'] + 1
     
-    # generate dicts of termin data 
+    # generate dicts of appointment data 
     termine_energy = dict(termine_df_neu[['termin_id','energieverbrauch']].values) 
     termine_machines = dict(termine_df_neu[['termin_id','maschinen']].values) 
     termine_length = dict(termine_df_neu[['termin_id','dauer']].values)
@@ -269,27 +270,27 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
             flash("Es konnte kein möglicher Terminvorschlag im Planungshorizont gefunden werden.")
             return redirect(url_for("optimization"))
 
-        # versuche termin mit 1 vorschlag weniger zu optimieren
+        # try to optimize the appointment with 1 suggestion less 
         if 1 < i < app_amount+1:
             termine_energy.popitem()
             termine_length.popitem()
 
-        # function for testing, if machine is used in appointment before on this datetime
+        # function for testing if machine is used in appointment before on this datetime
         def machine_used_before(dateTime, machine):
            # filter on dateTime (if start == same date like 'dateTime')
             for termin in machine_appointments[machine]:
                 date1 = pd.to_datetime(termin['end'])
                 date2 = pd.to_datetime(dateTime)
-                # maschine wird am gleichen Tag vorher genutzt
+                # machine is used on the same day 
                 if (date1.date() == date2.date()) & (date1.time() <= date2.time()):
                     return True
-                # maschine wird einen Tag vorher genutzt
+                # machine was used one day before 
                 if date1.date() == date2.date()+timedelta(days=-1):
                     return True
             
             return False
 
-        # gurobi model
+        # init gurobi model
         with gp.Env(empty=True) as env:
             env.start()
             
@@ -314,7 +315,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 # save end hour as numerical value 
                 end_hour = model.addVars(termine_energy,vtype=GRB.CONTINUOUS,name="end_hour")
 
-                # calculate netzbezug of appointment
+                # calculate possible grid energy of appointment
                 for termin in termine_energy:
                     for dateTime in df['dateTime']:
                         if dateTime.hour < 24-termine_length[termin]:
@@ -332,11 +333,10 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                                         machine_type = machine_types_dict[machine]
                                         consumption[dateTime,termin] += machine_heating[machine_type]
 
-                # minimize netzbezug
+                # define objective function: minimize grid energy
                 obj = sum((consumption[dateTime,termin]*start[dateTime,termin])
                             for dateTime in df['dateTime'] for termin in termine_energy)
 
-                # objective 
                 model.setObjective(obj, GRB.MINIMIZE)
 
                 # constraints 
@@ -389,7 +389,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
 
                 duration = int(termine_length[1])
 
-                # machines verfügbarkeit constraint
+                # machines availability constraint
                 for prohibited_time in prohibited_times_machines:
                     start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
                     end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
@@ -398,13 +398,13 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                             if start_time < dateTime < end_time:
                                 model.addConstr((start[dateTime,termin])==0)
     
-                # get list of all appointments of involved mitarbeiter
+                # get list of all appointments of involved employees
                 prohibited_times_mitarbeiter = []
                 for mitarbeiter in mitarbeiter_appointments:
                     for termin in mitarbeiter_appointments[mitarbeiter]:
                         prohibited_times_mitarbeiter.append(termin)
 
-                # mitarbeiter verfügbarkeit constraint
+                # employees availability constraint
                 for prohibited_time in prohibited_times_mitarbeiter:
                     start_time = datetime.strptime(prohibited_time['start'], '%Y-%m-%d %H:%M:%S') - timedelta(hours=duration)
                     end_time = datetime.strptime(prohibited_time['end'], '%Y-%m-%d %H:%M:%S')
@@ -436,18 +436,18 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 appointments[['Date', 'Time']] = appointments['DateTime'].str.split(' ', 1, expand=True)
                 appointments['TerminID'] = appointments['TerminID'].astype(int)
 
-                # calculate netzbezug (objective value) for every appointment
+                # calculate grid energy (objective value) for every appointment
                 appointments['netzbezug'] = 0
                 for i in range(0,len(appointments)):
                     date = pd.to_datetime(appointments['DateTime'][i])
                     termin_id = int(appointments['TerminID'][i])
                     appointments['netzbezug'][i] = round(consumption_without_heating[date,termin_id].getValue(),1)
 
-                # change negative netzbezug of appointments to 0 
+                # change negative grid energy of appointments to 0 
                 appointments['netzbezug'][appointments['netzbezug'] < 0] = 0 
                 appointments['netzbezug'] = appointments['netzbezug'].round(1)
                 
-                # generate new termin id based on ordered netzbezug
+                # generate new appointment id based on ordered grid energy
                 appointments = appointments.rename(columns={'level_0': 'del'})
                 appointments = appointments.sort_values(by="netzbezug")
                 appointments = appointments.reset_index().reset_index()
@@ -486,16 +486,15 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 energy_consumption_list = termine_df_neu['energieverbrauch'].tolist()
                 termin_list = termine_df_neu['termin_id'].astype(int).tolist()
 
-                # percent of renewable energy for best terminvorschlag
+                # percent of renewable energy for best appointment suggestion
                 renewable_percent = (1-(appointments['netzbezug'].min()/energy_consumption)) * 100
 
                 # round output data
                 renewable_percent = int(round(renewable_percent, 2))
                 obj_value = round(obj_value, 2)
 
-                # netzbezug für jeden einzelnen termin 
+                # grid energy for every appointment suggestion
                 netzbezug_termine = appointments['netzbezug'].to_list()
-            
                 appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
                 appointments['percent'] = appointments['percent'] * 100
                 appointments['percent'] = appointments['percent'].astype(float)
@@ -503,10 +502,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 appointments['pv_consumption'] = (appointments['percent'] / 100) * energy_consumption
                 appointments = appointments.sort_values(by="percent",ascending=False)
                 appointments['saved_co2'] = round(((appointments['pv_consumption'] + appointments['netzbezug']) - appointments['netzbezug']) * 0.412,1)
-                
-                #'saved_co2': round((termin.energyconsumption - termin.gridenergy) * 0.412,1) # kg co2 pro kWh
                 netzbezug_termine_percent = appointments.to_dict('records')
-                print(netzbezug_termine_percent)
 
                 # output prediction visualization 
                 output_prediction = netzbezug.set_index('dateTime')
@@ -517,7 +513,8 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 output_prediction_sum = int(sum(output_prediction['output_prediction'].to_list()))
 
                 break
-
+    
+    # optimization via api 
     if api:
         optimierungszeitpunkt = (datetime.utcnow()+ timedelta(hours=1)).strftime("%d.%m.%Y %H:%M")
         session[sessiontoken] = appointments_dict
@@ -542,7 +539,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
 
         return redirect(url_for('appointment_list'))
 
-
+# return of all appointment data after optimization
 @app.route('/appointments', methods=['GET', 'POST'])
 @login_required
 def appointment_list():
@@ -561,6 +558,7 @@ def appointment_list():
     output_prediction_dates = session.get(user_id).get('output_prediction_dates')
     output_prediction_sum = session.get(user_id).get('output_prediction_sum')
 
+    # implementation of mail functionality to send optimized appointments
     sendMailForm = SendMailForm()
     if sendMailForm.validate_on_submit() and 'sendMailForm' in request.form:
         receiver = sendMailForm.mailAddress.data
@@ -581,7 +579,7 @@ def appointment_list():
         user = config['mail']['mail_user']
         password = config['mail']['mail_pw']
         
-        # Set up connection to the SMTP server
+        # set up connection to the SMTP server
         with smtplib.SMTP(config['mail']['mail_server'], config['mail']['mail_port']) as server:
             server.login(user, password)
             server.sendmail(sender, receiver, msg.as_string())
@@ -596,6 +594,7 @@ def appointment_list():
 
     return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
 
+# route to save selected appointment in database 
 @app.route('/save-optimization', methods=['GET'])
 @login_required
 def save_termin():
@@ -606,6 +605,7 @@ def save_termin():
         return redirect(url_for('optimization'))
     return save_to_calendar(terminId=terminId)
 
+# function to save selected appointment in outlook calendar and database
 def save_to_calendar(terminId, api=False, sessiontoken=None, flashmessage=True):
     if api:
         appointments_dict = session.get(sessiontoken)
