@@ -1,4 +1,3 @@
-from re import A
 from app import app, flash_errors, create_file_object, get_config, get_graph_params, db
 from app.models import Termin
 from app.api.errors import bad_request
@@ -16,9 +15,7 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.utils import formataddr
 from datetime import datetime, timedelta
-import openai
 import pandas as pd
-import mysql.connector as sql
 import gurobipy as gp
 from gurobipy import GRB
 import requests

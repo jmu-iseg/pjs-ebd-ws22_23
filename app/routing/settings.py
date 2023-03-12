@@ -4,7 +4,7 @@ from flask_login import login_required
 from app.forms import WeatherForm, MachineForm, MailForm, RegisterForm, KafkaForm, OpcForm
 from app.models import User
 from flask import redirect, render_template, request
-from kafka import KafkaConsumer, KafkaProducer
+from kafka import KafkaConsumer
 from asyncua import Client
 
 # read settings
