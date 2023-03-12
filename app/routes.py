@@ -68,7 +68,7 @@ def home():
     # date & time 
     tag = date.today()   
     tag = tag.strftime("%d.%m.%Y")
-    uhrzeit = datetime.now().astimezone()
+    uhrzeit = datetime.now() + timedelta(hours=1)
     uhrzeit = uhrzeit.strftime("%H:%M")
 
     # calculate the ratio of actual pv energy and maximum possible pv energy
