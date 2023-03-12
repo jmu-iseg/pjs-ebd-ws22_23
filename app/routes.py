@@ -13,6 +13,7 @@ import pandas as pd
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from datetime import datetime, timedelta, date
+from dateutil import tz
 import subprocess
 from flask_login import login_required
 
@@ -68,7 +69,17 @@ def home():
     # date & time 
     tag = date.today()   
     tag = tag.strftime("%d.%m.%Y")
-    uhrzeit = datetime.now() + timedelta(hours=1)
+
+    # change time zone
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('Europe/Berlin')
+    utc = datetime.utcnow()
+
+    # Tell the datetime object that it's in UTC time zone since datetime objects are 'naive' by default
+    utc = utc.replace(tzinfo=from_zone)
+
+    # Convert time zone
+    uhrzeit = utc.astimezone(to_zone)
     uhrzeit = uhrzeit.strftime("%H:%M")
 
     # calculate the ratio of actual pv energy and maximum possible pv energy
