@@ -2,7 +2,7 @@ from app import app, create_file_object
 from flask import render_template, request, redirect, send_file
 from app.models import *
 from app.forms import *
-# importieren aller Sub-Routen
+# import all sub routes from the routing-directory
 from app.routing.auth import *
 from app.routing.optimization import *
 from app.routing.settings import *
@@ -435,19 +435,21 @@ def pv_anlage():
     return render_template("/pages/pv_anlage.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, pv_prediction_7=pv_prediction_7, pv_prediction_7_labels=pv_prediction_7_labels, autarkie_7=autarkie_7, autarkie_overall=autarkie_overall, consumption_data_14=consumption_data_14, co2_data_list=co2_data_list, co2_data_labels=co2_data_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, auslastung_pv=auslastung_pv, pv_prediction_sum=pv_prediction_sum)
 
 
+"""
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in {'png', 'jpg'}
+"""
 
 # reload route
 @app.route('/reload_webapp')
 @login_required
 def reload():
-    """Führt auf der Maschine ein Skript aus, um den neuesten Stand vom Github zu laden
-    und den Apache-Webserver neuzustarten.
+    """Executes a script on the linux machine running the application. Script update_files pulls the newest version from the github directory
+    and restarts the webserver.
 
     Returns:
-        redirect('/'): Nachdem erfolgreich neu geladen wurde, wird auf die Home-Seite verwiesen
+        redirect('/'): loads the landing page in the end
     """
     subprocess.run('sudo chmod 777 update_files.sh', shell=True, check=True, text=True, cwd=app.root_path)
     subprocess.run('./update_files.sh', shell=True, check=True, text=True, cwd=app.root_path)
@@ -456,11 +458,15 @@ def reload():
 @app.route('/return-files')
 @login_required
 def return_files_calendar():
+    # get the parameters for the file from the request arguments
     starttime = "{} {}".format(request.args.get('datum'), request.args.get('uhrzeit'))
     starttime_formatted = datetime.strptime(starttime, '%d.%m.%Y %H:%M')
     endtime_formatted = starttime_formatted + timedelta(hours=float(request.args.get('dauer')))
     filename = "Termineinladung {}.ics".format(request.args.get('id'))
+    # create file object
     buf = create_file_object(starttime_formatted, endtime_formatted, request.args.get('bezeichnung'))
+    # save the appointment to calendar
     save_to_calendar(request.args.get('id'), flashmessage=False)
+    # download the file
     return send_file(buf, download_name=filename)
 

@@ -10,6 +10,8 @@ import pandas as pd
 @app.route('/calendar')
 @login_required
 def calendar():
+    # old part when microsoft graph was still used for the calendar events
+    """
     params = get_graph_params(app.root_path)
     head = {
         'Authorization': params['token']
@@ -30,11 +32,12 @@ def calendar():
                 'title': user['jobTitle'],
                 'mail': user['mail']
                 }
-
-     # gespeicherte historische termine abfragen
+    """
+     # get all saved appointments from the database
     termine = Termin.query.all()
     termin_daten = {}
     wochentage_kuerzel = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+    # save information for each appointment in a dictionary
     for termin in termine: 
         endtime = termin.dateTime + timedelta(hours=termin.duration)
         termin_daten[termin.id] = {
@@ -63,22 +66,25 @@ def calendar():
     # reset id/index
     termin_daten = {i: v for i, v in enumerate(termin_daten.values())}
     
-    # filter zukünftige termine 
+    # filter by appointments that are in the future
     today = date.today()  
     for termin in list(termin_daten.keys()):
        if termin_daten[termin]['dateTime'].date() < today:
             del termin_daten[termin]
 
-    # for schleife über termin_daten 
+    # loop termin_daten and pass it to the template render function
     if len(termin_daten) < 1: 
-        return render_template('/pages/calendar.html', users=users, machines=machines, termin_daten={})
+        return render_template('/pages/calendar.html', termin_daten={})
     else:
         for termin in range(list(termin_daten.keys())[0],list(termin_daten.keys())[-1]): 
+            # check if two appointments are at the same date, in order to display them together
             if termin_daten[termin]['date'] == termin_daten[termin+1]['date']: 
                 termin_daten[termin]['after'] = 1
                 termin_daten[termin+1]['before'] = 1
-        return render_template('/pages/calendar.html', users=users, machines=machines, termin_daten=termin_daten)
+        return render_template('/pages/calendar.html', termin_daten=termin_daten)
 
+# old function when microsoft graph was still used for the calendar route
+"""
 @app.route('/calendar/<id>')
 @login_required
 def show_calendar(id):
@@ -109,3 +115,4 @@ def show_calendar(id):
 
 
     return render_template('/pages/display_calendar.html', events=events)
+"""

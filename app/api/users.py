@@ -5,13 +5,13 @@ from app.api.auth import token_auth
 from app.api.errors import bad_request
 from app import db
 
-# Zurückgeben eines 404-Errors oder der Dict-Repräsentation eines Nutzeraccounts
+# return an error 404 or the dict-representation of a user
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_user(id):
     return jsonify(User.query.get_or_404(id).to_dict())
 
-# Rückgeben aller Nutzer als Liste in einem JSON
+# return all users in a json list
 @bp.route('/users', methods=['GET'])
 @token_auth.login_required
 def get_users():
@@ -23,18 +23,18 @@ def get_users():
         data['users'].append(user.to_dict())
     return jsonify(data)
 
-# Anlegen eines Users
+# create a user
 @bp.route('/users', methods=['POST'])
 @token_auth.login_required
 def create_user():
-    # den Body der API Anfrage auslesen und checken, ob alle benötigten Informationen darin enthalten sind
+    # Read the body of the API request and check if it contains all the required information
     data = request.get_json() or {}
     if 'username' not in data or 'role' not in data or 'password' not in data:
         return bad_request('Muss den Benutzernamen, Rolle und Passwort enthalten')
-    # Überprüfen, ob der Nutzer bereits existiert
+    # check if the user already exists
     if User.query.filter_by(username=data['username']).first():
         return bad_request('Der Benutzername existiert bereits')
-    # Anlegen eines neuen Users
+    # create a new user
     user = User()
     user.from_dict(data, new_user=True)
     db.session.add(user)

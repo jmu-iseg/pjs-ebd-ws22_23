@@ -7,27 +7,27 @@ import flask_login
 from flask_bcrypt import Bcrypt
 from app.helper import *
 
-# Eigentliche Applikation mit Config (Datenhaltung)
+# create application and import config
 app = Flask(__name__)
 app.config.from_object(Config)
-# Datenbankverbindung
+# database connection
 db = SQLAlchemy(app)
-# Datenbankmigrationen
+# database migrations
 migrate = Migrate(app, db)
-# Login-Konzept
+# Login
 login = LoginManager(app)
 login.init_app(app)
 login.login_view = 'login'
-# Passwortverschlüsselung
+# password encryption
 bcrypt = Bcrypt(app)
 
 @app.context_processor
 def inject_userdata():
-    """Nutzerdaten global als Context_processor bereitstellen,
-    damit diese auf jeder HTML Seite genutzt werden können.
+    """Provide user data globally as a context_processor,
+    so that these can be used on every HTML page.
 
     Returns:
-        values: Dictionary mit Nutzername, Rolle, ID und Profilbild
+        values: Dictionary with username, userrole, userid and profilepic
     """
     values = {}
     if flask_login.current_user.is_authenticated != True:
@@ -46,9 +46,9 @@ def inject_userdata():
             values['profilepic'] = flask_login.current_user.profilepic
         return values
 
-# importieren von API als Blueprint, da abgeschottete Funktionalität
+# import api as blueprint
 from app.api import bp as api_bp
 app.register_blueprint(api_bp, url_prefix='/api')
 
-# importieren von Routen, Models und Errors
+# import all other routes, models and errors
 from app import routes, models, errors
