@@ -388,10 +388,13 @@ def pv_anlage():
 
     # get 14 days consumption data of appointments
     consumption_data = pd.DataFrame(termin_daten).T
-    consumption_data = consumption_data.sort_values(by='dateTime')
-    consumption_data = consumption_data.set_index('dateTime')
-    consumption_data = consumption_data.resample("D").sum().reset_index()
-    consumption_data_14 = consumption_data['energy_consumption'].head(15).to_list()
+    if len(consumption_data) < 1: 
+        consumption_data_14 = []
+    else:
+        consumption_data = consumption_data.sort_values(by='dateTime')
+        consumption_data = consumption_data.set_index('dateTime')
+        consumption_data = consumption_data.resample("D").sum().reset_index()
+        consumption_data_14 = consumption_data['energy_consumption'].head(15).to_list()
 
     # calculate timeseries data of co2 savings 
     co2_data = pd.DataFrame(termin_daten).T
