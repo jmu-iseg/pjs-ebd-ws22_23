@@ -13,6 +13,7 @@ import pandas as pd
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from datetime import datetime, timedelta, date
+from dateutil import tz
 import subprocess
 from flask_login import login_required
 
@@ -68,7 +69,17 @@ def home():
     # date & time 
     tag = date.today()   
     tag = tag.strftime("%d.%m.%Y")
-    uhrzeit = datetime.now()
+
+    # change time zone
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('Europe/Berlin')
+    utc = datetime.utcnow()
+
+    # Tell the datetime object that it's in UTC time zone since datetime objects are 'naive' by default
+    utc = utc.replace(tzinfo=from_zone)
+
+    # Convert time zone
+    uhrzeit = utc.astimezone(to_zone)
     uhrzeit = uhrzeit.strftime("%H:%M")
 
     # calculate the ratio of actual pv energy and maximum possible pv energy
@@ -155,14 +166,17 @@ def home():
 
     # appointment data for co2 visualisation 
     temp_df = pd.DataFrame(termin_daten).T
-    temp_df = temp_df.sort_values(by='dateTime')
-    temp_df['day'] = temp_df['dateTime'].dt.date
-    temp_df = temp_df.groupby('day', as_index=False).sum()    
-    temp_df = temp_df[['day', 'saved_co2']]
-    temp_df['saved_co2'] = round(temp_df['saved_co2'],1)
-    temp_df['day'] = pd.to_datetime(temp_df['day'])
-    temp_df['day'] = temp_df['day'].dt.strftime("%d.%m.%Y")
-    co2_termine = temp_df.to_dict()    
+    if len(temp_df) < 1: 
+        co2_termine = {}
+    else:
+        temp_df = temp_df.sort_values(by='dateTime')
+        temp_df['day'] = temp_df['dateTime'].dt.date
+        temp_df = temp_df.groupby('day', as_index=False).sum()    
+        temp_df = temp_df[['day', 'saved_co2']]
+        temp_df['saved_co2'] = round(temp_df['saved_co2'],1)
+        temp_df['day'] = pd.to_datetime(temp_df['day'])
+        temp_df['day'] = temp_df['day'].dt.strftime("%d.%m.%Y")
+        co2_termine = temp_df.to_dict()    
 
     # sum of predicted pv energy in next 2 weeks
     pv_prediction_sum = int(sum(pv_prediction))
@@ -271,7 +285,7 @@ def pv_anlage():
     pv_prediction_df = df.set_index('dateTime')
     pv_prediction_df = pv_prediction_df.resample("D").sum().reset_index()
 
-    # 14 days
+    # generate ouput of pv_prediction for visualisation
     pv_prediction_labels = pv_prediction_df['dateTime'].dt.strftime("%d.%m.%Y").to_list()
     pv_prediction_df['output_prediction'] = round(pv_prediction_df['output_prediction'],1)
     pv_prediction = pv_prediction_df['output_prediction'].to_list()
@@ -323,7 +337,7 @@ def pv_anlage():
        if termin_daten_future[termin]['dateTime'] + timedelta(hours=termin_daten_future[termin]['duration']) < datetime.now():
             del termin_daten_future[termin]
 
-    # next 2 appointments 
+    # filter next 2 appointments 
     termin_daten_list = {k: termin_daten_future[k] for k in list(termin_daten_future.keys())[:2]}
 
     # sum of predicted pv energy in next 2 weeks
@@ -383,56 +397,61 @@ def pv_anlage():
         'Wochentag': wochentag
     }
 
-    # 7 days prediction & clouds
-    pv_prediction_7 = pv_prediction_df.head(7)
-    pv_prediction_7_labels = pv_prediction_7['dateTime'].dt.strftime("%d.%m.%Y").to_list()
-    pv_prediction_7['output_prediction'] = round(pv_prediction_7['output_prediction'],1)
-    pv_prediction_7['clouds'] = informations['Wolken'][:7]
-    clouds_7 = pv_prediction_7['clouds'].to_list()
-    pv_prediction_7 = pv_prediction_7['output_prediction'].to_list()
-    
-    # consumption
+    # get 14 days consumption data of appointments
     consumption_data = pd.DataFrame(termin_daten).T
-    consumption_data = consumption_data.sort_values(by='dateTime')
-    consumption_data = consumption_data.set_index('dateTime')
-    consumption_data = consumption_data.resample("D").sum().reset_index()
-    consumption_data_14 = consumption_data['energy_consumption'].head(15).to_list()
+    if len(consumption_data) < 1: 
+        consumption_data_14 = []
+    else:
+        consumption_data = consumption_data.sort_values(by='dateTime')
+        consumption_data = consumption_data.set_index('dateTime')
+        consumption_data = consumption_data.resample("D").sum().reset_index()
+        consumption_data_14 = consumption_data['energy_consumption'].head(15).to_list()
 
-    # co2 savings 
+    # calculate timeseries data of co2 savings 
     co2_data = pd.DataFrame(termin_daten).T
-    co2_data = co2_data.sort_values(by='dateTime')
-    co2_data = co2_data.set_index('dateTime')
-    co2_data = co2_data.resample("D").sum().reset_index()
-    co2_data['cum_sum'] = co2_data['saved_co2'].cumsum()
-    today = pd.to_datetime(datetime.utcnow())
-    co2_data = co2_data[co2_data['dateTime'] <= today.replace(hour=0)]
-    co2_data_list = co2_data['cum_sum'].tail(7).to_list()
-    co2_data_labels = co2_data['dateTime'].dt.strftime('%d.%m.%Y').tail(7).to_list()
+    if len(co2_data) < 1: 
+        co2_data_list = [0,0,0]
+        co2_data_labels = [0,1,2]
+    else:
+        co2_data = co2_data.sort_values(by='dateTime')
+        co2_data = co2_data.set_index('dateTime')
+        co2_data = co2_data.resample("D").sum().reset_index()
+        co2_data['cum_sum'] = co2_data['saved_co2'].cumsum()
+        today = pd.to_datetime(datetime.utcnow())
+        co2_data = co2_data[co2_data['dateTime'] <= today.replace(hour=0)]
+        co2_data_list = co2_data['cum_sum'].tail(7).to_list()
+        co2_data_labels = co2_data['dateTime'].dt.strftime('%d.%m.%Y').tail(7).to_list()
     
-    # autarkie 
-    
-    #today
-    # termine last week --> sum (energy consumption) + sum (pv_energie)
+    # calculate self-sufficiency
+    # today
+    # appointments last week --> sum (energy consumption) + sum (pv_energy)
     autarkie_data = pd.DataFrame(termin_daten).T
-    autarkie_data = autarkie_data.sort_values(by='dateTime')
-    autarkie_data['datejust'] = autarkie_data['dateTime'].dt.date
-    autarkie_data = autarkie_data.groupby(by='datejust').sum().reset_index()
-    autarkie_data['datejust'] = pd.to_datetime(autarkie_data['datejust']).dt.date
-    # filter last 7 days
-    today = date.today()
-    start_date = today - timedelta(days=7)
-    autarkie_data_7 = autarkie_data[(autarkie_data['datejust'] >= start_date) & (autarkie_data['datejust'] <= today)]
-    # calculate autarkie last 7 days 
-    consumption_sum_7 = autarkie_data_7['energy_consumption'].sum()
-    pv_sum_7 = autarkie_data_7['pv_energy'].sum()
-    autarkie_7 = int((pv_sum_7 / consumption_sum_7) * 100) # percent 
-    # # calculate autarkie last 7 days 
-    consumption_sum_overall = autarkie_data['energy_consumption'].sum()
-    pv_sum_overall = autarkie_data['pv_energy'].sum()
-    autarkie_overall = int((pv_sum_overall / consumption_sum_overall) * 100) # percent 
+    if len(autarkie_data) < 1: 
+        autarkie_7 = 0
+        autarkie_overall = 0 
+    else: 
+        autarkie_data = autarkie_data.sort_values(by='dateTime')
+        autarkie_data['datejust'] = autarkie_data['dateTime'].dt.date
+        autarkie_data = autarkie_data.groupby(by='datejust').sum().reset_index()
+        autarkie_data['datejust'] = pd.to_datetime(autarkie_data['datejust']).dt.date
+    
+        # filter last 7 days
+        today = date.today()
+        start_date = today - timedelta(days=7)
+        autarkie_data_7 = autarkie_data[(autarkie_data['datejust'] >= start_date) & (autarkie_data['datejust'] <= today)]
+        
+        # calculate self-sufficiency last 7 days 
+        consumption_sum_7 = autarkie_data_7['energy_consumption'].sum()
+        pv_sum_7 = autarkie_data_7['pv_energy'].sum()
+        autarkie_7 = int((pv_sum_7 / consumption_sum_7) * 100) # percent 
+    
+        # calculate self-sufficiency last 7 days 
+        consumption_sum_overall = autarkie_data['energy_consumption'].sum()
+        pv_sum_overall = autarkie_data['pv_energy'].sum()
+        autarkie_overall = int((pv_sum_overall / consumption_sum_overall) * 100) # percent 
 
     # return data to pv_anlage 
-    return render_template("/pages/pv_anlage.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, pv_prediction_7=pv_prediction_7, pv_prediction_7_labels=pv_prediction_7_labels, autarkie_7=autarkie_7, autarkie_overall=autarkie_overall, consumption_data_14=consumption_data_14, co2_data_list=co2_data_list, co2_data_labels=co2_data_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, auslastung_pv=auslastung_pv, pv_prediction_sum=pv_prediction_sum)
+    return render_template("/pages/pv_anlage.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, autarkie_7=autarkie_7, autarkie_overall=autarkie_overall, consumption_data_14=consumption_data_14, co2_data_list=co2_data_list, co2_data_labels=co2_data_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, auslastung_pv=auslastung_pv, pv_prediction_sum=pv_prediction_sum)
 
 
 """
@@ -441,7 +460,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in {'png', 'jpg'}
 """
 
-# reload route
+# reload route for developers
 @app.route('/reload_webapp')
 @login_required
 def reload():

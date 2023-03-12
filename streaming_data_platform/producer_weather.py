@@ -1,23 +1,18 @@
 from datetime import datetime
 from kafka import KafkaProducer
 import requests
-import configparser
-import os
-from pathlib import Path
-import time
-from kafka.errors import KafkaError
+import sys
+sys.path.append('..')
+from app import app, get_config
 
-# get config values
-config = configparser.ConfigParser()
-path = Path(os.curdir)
-config.read(os.path.join(os.path.abspath('..'),'app/settings.cfg'))
-print(os.path.join(os.path.abspath('..'),'app/settings.cfg'))
+# Get config values
+config = get_config(app.root_path)
 
-# specify the location
+# Specify the location
 lat = config['weather']['lat']
 lon = config['weather']['lon']
 
-# specify the api key
+# Specify the api key
 key = config['weather']['openweatherapikey']
 
 # Make the POST request
@@ -29,14 +24,14 @@ print(response.status_code) # should return 200
 # Print the content of the response
 response_content = response.json()
 
-# get the kafka config values
+# Get the kafka config values
 kafka_url = config['kafka']['kafka_url']
 kafka_port = config['kafka']['kafka_port']
 
 # Create a Kafka Producer
 producer = KafkaProducer(bootstrap_servers=[kafka_url+':'+kafka_port])
 
-# get Datetime
+# Get Datetime
 act_datetime = datetime.now()
 
 # Error logging
