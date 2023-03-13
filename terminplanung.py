@@ -1,8 +1,8 @@
-# Importieren der App aus app/__init__.py
+# import the app from app/__init__.py
 from app import app
 
-# Starten der Applikation mit app.run(). 
-# Option debug ist für lokale Entwicklung immer aktiviert, 
-# spielt auf dem Webserver allerdings keine Rolle.
+# start the application with app.run(). 
+# Option debug is enabled for local development,
+# not important for the webserver.
 if __name__ == "__main__":
     app.run(debug=True)

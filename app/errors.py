@@ -3,27 +3,27 @@ from app import app, db
 from app.api.errors import error_response as api_error_response
 
 def is_json_response():
-    """Prüfen, ob es sich bei der Anfrage um einen Browser oder einen API-Call handelt.
-    Falls der Header Accept bevorzugt 'application/json' enthält, handelt es sich um einen API-Call und es wird true zurückgegeben.
+    """Check whether the request is a browser or an API call.
+    If the Accept header preferably contains 'application/json', it is an API call and true is returned.
 
     Returns:
-        true: falls API-Call,
-        false: falls Brower
+        true: if API-Call,
+        false: if Brower
     """
     return request.accept_mimetypes['application/json'] >= \
         request.accept_mimetypes['text/html']
 
 @app.errorhandler(404)
 def not_found_error(error):
-    """Error-Handler, falls ein Endpunkt nicht gefunden wird.
-    Rendert entweder eine 404-HTML Seite oder wirft einen API-Error.
+    """Error handler if an endpoint is not found.
+    Renders either a 404 HTML page or throws an API error.
 
     Args:
-        error (str): Error-Nachricht
+        error (str): Error-Message
 
     Returns:
-        api_error_response(404): falls API-Call,
-        render_template('errors/404.html'), falls normaler Call
+        api_error_response(404): if API-Call,
+        render_template('errors/404.html'), if normaler Call
     """
     if is_json_response():
         return api_error_response(404)
@@ -31,16 +31,16 @@ def not_found_error(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    """Error-Handler, falls ein Endpunkt nicht gefunden wird.
-    Rendert entweder eine 500-HTML Seite oder wirft einen API-Error.
-    Zusätzlich wird ein Rollback auf mögliche Datenbankänderungen durchgeführt.
+    """Error handler if an endpoint is not found.
+    Renders either a 500-HTML page or throws an API error.
+    In addition, a rollback to possible database changes is performed.
 
     Args:
-        error (str): Error-Nachricht
+        error (str): Error-Message
 
     Returns:
-        api_error_response(500): falls API-Call,
-        render_template('errors/500.html'), falls normaler Call
+        api_error_response(500): if API-Call,
+        render_template('errors/500.html'), if normaler Call
     """
     db.session.rollback()
     if is_json_response():

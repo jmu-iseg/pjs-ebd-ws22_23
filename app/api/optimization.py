@@ -7,7 +7,7 @@ from app import get_graph_params, app
 import requests
 from datetime import datetime
 
-# Abfragen aller Maschinen mitsamt IDs von Graph
+# get all machines with ID from graph
 @bp.route('/maschinen', methods=['GET'])
 @token_auth.login_required
 def get_machines():
@@ -20,7 +20,7 @@ def get_machines():
         "Maschinen": []
     }
     
-    # Formattierung jeder Maschine
+    # format all machines
     for user in resp['value']:
         if user['jobTitle'] == 'pjs_machine':
             payload['Maschinen'].append({
@@ -29,7 +29,7 @@ def get_machines():
             })
     return jsonify(payload)
 
-# Abfragen aller Mitarbeiter mitsamt IDs von Graph
+# get all employees with ID from graph
 @bp.route('/mitarbeiter', methods=['GET'])
 @token_auth.login_required
 def get_mitarbeiter():
@@ -42,7 +42,7 @@ def get_mitarbeiter():
         "Mitarbeiter": []
     }
     
-    # Formattierung jedes Mitarbeiters
+    # format all emplyees
     for user in resp['value']:
         if not user['jobTitle'] == 'pjs_machine':
             payload['Mitarbeiter'].append({
@@ -51,7 +51,7 @@ def get_mitarbeiter():
             })
     return jsonify(payload)
 
-# Optimierungsfunktion
+# optimization function
 @bp.route('/optimization', methods=['POST'])
 @token_auth.login_required
 def optimize():
@@ -60,13 +60,13 @@ def optimize():
     head = {
         'Authorization': params['token']
     }
-    # Alle User abfragen
+    # request all users
     resp = requests.get('https://graph.microsoft.com/v1.0/users/', headers=head).json()
-    # Fehlerbehandlung
-    # Startdate, Enddate und Termine muss vorhanden sein
-    # Datetime muss richtig formatiert sein
-    # Jeder Termin muss Beschreibung, Dauer, Maschinen und Mitarbeiter enthalten
-    # Prüfen, ob die MaschinenIDs / MitarbeiterIDs vorhanden sind
+    # error handling:
+    # Startdate, Enddate and Termine has to be existing
+    # Datetime needs the right format
+    # each appointment needs Beschreibung, Dauer, Maschinen und Mitarbeiter
+    # check, if MaschinenIDs / MitarbeiterIDs are existing
     if 'startdate' not in data or 'enddate' not in data or 'termine' not in data:
         return bad_request('Muss das Startdatum, Enddatum und Termine enthalten')
     if len(data['termine']) != 1:
@@ -100,22 +100,22 @@ def optimize():
                     break
             if not valid:
                 return bad_request(f'Der Mitarbeiter mit der ID {mitarbeiter} existiert nicht')
-        # TerminArray befüllen
+        # fill appointment array
         termine.append({
             'bezeichnung': termin['description'],
             'dauer': termin['duration'],
             'maschinen': termin['machines'],
             'mitarbeiter': termin['employees']
         })
-        # Optimierungsfunktion mit API = True aufrufen
+        # call optimization function with api=True
     payload = optimization_table(start_date=startdate, end_date=enddate, termin=termine[0], api=True, sessiontoken=request.headers.get('Authorization'))
     return jsonify(payload)
 
-# API Route zum speichern von Terminen
+# api route to save appointments
 @bp.route('/save-appointment', methods=['GET'])
 @token_auth.login_required
 def save_termin():
-    #Testen, ob ein falscher Aufruf vorliegt
+    # check, if the call contains an id parameter
     if 'id' in request.args:
         try:
             id = int(request.args.get('id'))

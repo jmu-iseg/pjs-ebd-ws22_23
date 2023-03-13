@@ -1,7 +1,7 @@
 from flask import Blueprint
 
-# API Blueprint anlegen
+# create API Blueprint
 bp = Blueprint('api', __name__)
 
-#Komponenten in den Blueprint importieren
+# import components for API
 from app.api import users, optimization, errors, tokens, opcua

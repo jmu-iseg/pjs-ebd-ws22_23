@@ -21,7 +21,6 @@ def write_config(root_path, config):
 
 # Flash all available errors for every given form
 def flash_errors(form):
-    """Flashes form errors"""
     for field, errors in form.errors.items():
         for error in errors:
             flash(u"Fehler im Feld '%s' - %s" % (
@@ -48,10 +47,12 @@ def get_weekday(day):
     else:
         return "Error"
 
+# function to return the microsoft graph token from the graph_settings.json. if the token is no longer valid, a new token gets generated
 def get_graph_params(root_path):
     with open(os.path.join(root_path, 'graph_settings.json'), 'r') as openfile:
         params = json.load(openfile)
 
+    # retrieve new token, if no token existent or expired
     if not ('token' in params and 'expiry' in params and datetime.utcnow() < datetime.strptime(params['expiry'], "%m/%d/%Y, %H:%M:%S")):
         headers = {
             'Host': 'login.microsoftonline.com',
@@ -63,26 +64,32 @@ def get_graph_params(root_path):
             'client_secret': params['secret'],
             'grant_type': 'client_credentials'
         }
+        # send request
         resp = requests.post(f"https://login.microsoftonline.com/{params['tenant']}/oauth2/v2.0/token", headers=headers, data=body).json()
+        # save new token to the params dictionary
         params['token'] = f"Bearer {resp['access_token']}"
         params['expiry'] = (datetime.utcnow() + timedelta(seconds=(resp['expires_in']) - 120)).strftime("%m/%d/%Y, %H:%M:%S")
+        # overwrite the graph_settings.json
         with open(os.path.join(root_path, 'graph_settings.json'), 'w') as outfile:
             json.dump(params, outfile)
 
     return params
 
 def create_file_object(start, end, summary):
+    # create calendar object using icalendar python library
     cal = Calendar()
     event = Event()
+    # construct event
     event.add('summary', summary)
     event.add('dtstart', start)
     event.add('dtend', end)
     organizer = vCalAddress('MAILTO:termine@pjs-termine.de')
-    organizer.params['cn'] = vText('Hannes Metz')
-    organizer.params['role'] = vText('CEO of Uni Wuerzburg') # ein Macher
+    organizer.params['cn'] = vText('EBT-PJS')
+    organizer.params['role'] = vText('EBT-PJS TN')
     event['organizer'] = organizer
     event['location'] = vText('Würzburg, DE')
     cal.add_component(event)
+    # write calendar content in ICS Format to an io.BytesIO array. Has to bee io.BytesIO, because the flask send_file function uses this format.
     buf = io.BytesIO()
     buf.write(cal.to_ical())
     buf.seek(0)
