@@ -469,35 +469,21 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
                 # df to dict as output for render template 
                 appointments_dict = appointments_output.to_dict('records')
 
-                # save average objective value of model
-                obj_value = model.getAttr("ObjVal")
-
-                # change negative objective value to 0 (netzeinspeisung)
-                if obj_value < 0:
-                    obj_value = 0
-
                 # get energy consumption of appointment
                 energy_consumption = int(termine_df_neu['energieverbrauch'][0])
 
-                # list of energy consumption & termin id of appointments
-                energy_consumption_list = termine_df_neu['energieverbrauch'].tolist()
-                termin_list = termine_df_neu['termin_id'].astype(int).tolist()
-
-                # percent of renewable energy for best appointment suggestion
-                renewable_percent = (1-(appointments['netzbezug'].min()/energy_consumption)) * 100
-
-                # round output data
-                renewable_percent = int(round(renewable_percent, 2))
-                obj_value = round(obj_value, 2)
-
-                # grid energy for every appointment suggestion
+                # get list of grid energy of appointment suggestions
                 netzbezug_termine = appointments['netzbezug'].to_list()
+                
+                # calculate pv energy in percent for every appointment suggestion
                 appointments['percent'] = 1 - (appointments_output['netzbezug'] / appointments_output['energieverbrauch']) 
                 appointments['percent'] = appointments['percent'] * 100
                 appointments['percent'] = appointments['percent'].astype(float)
                 appointments['percent'] = appointments['percent'].round(2).astype(int)
                 appointments['pv_consumption'] = (appointments['percent'] / 100) * energy_consumption
                 appointments = appointments.sort_values(by="percent",ascending=False)
+
+                # calculate saved co2 per appointment suggestion
                 appointments['saved_co2'] = round(((appointments['pv_consumption'] + appointments['netzbezug']) - appointments['netzbezug']) * 0.412,1)
                 netzbezug_termine_percent = appointments.to_dict('records')
 
@@ -522,11 +508,7 @@ def optimization_table(start_date, end_date, termin, api=False, sessiontoken=Non
     else:
         session[str(flask_login.current_user.id)] = {
             'appointments_dict': appointments_dict,
-            'obj_value': obj_value,
-            'renewable_percent': renewable_percent,
             'energy_consumption': energy_consumption,
-            'energy_consumption_list': energy_consumption_list,
-            'termin_list': termin_list,
             'netzbezug_termine': netzbezug_termine,
             'netzbezug_termine_percent': netzbezug_termine_percent,
             'output_prediction_list': output_prediction['output_prediction'].round(1).to_list(),
@@ -544,11 +526,7 @@ def appointment_list():
     if session.get(user_id) is None:
         return redirect(url_for('optimization'))
     appointments_dict = session.get(user_id).get('appointments_dict')
-    obj_value = session.get(user_id).get('obj_value')
-    renewable_percent = session.get(user_id).get('renewable_percent')
     energy_consumption = session.get(user_id).get('energy_consumption')
-    energy_consumption_list = session.get(user_id).get('energy_consumption_list')
-    termin_list = session.get(user_id).get('termin_list')
     netzbezug_termine = session.get(user_id).get('netzbezug_termine')
     netzbezug_termine_percent = session.get(user_id).get('netzbezug_termine_percent')
     output_prediction_list = session.get(user_id).get('output_prediction_list')
@@ -587,9 +565,9 @@ def appointment_list():
  
     elif request.method == "POST" and 'sendMailForm' in request.form:
         flash_errors(sendMailForm)
-        return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
+        return render_template("/pages/optimization_table.html", my_list=appointments_dict, energy_consumption=energy_consumption, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
 
-    return render_template("/pages/optimization_table.html", my_list=appointments_dict, obj_value=obj_value, renewable_percent=renewable_percent, energy_consumption=energy_consumption, energy_consumption_list=energy_consumption_list, termin_list=termin_list, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
+    return render_template("/pages/optimization_table.html", my_list=appointments_dict, energy_consumption=energy_consumption, netzbezug_termine=netzbezug_termine, netzbezug_termine_percent=netzbezug_termine_percent, output_prediction_list=output_prediction_list, output_prediction_dates=output_prediction_dates, sendMailForm=sendMailForm, output_prediction_sum=output_prediction_sum)
 
 # route to save selected appointment in database 
 @app.route('/save-optimization', methods=['GET'])
