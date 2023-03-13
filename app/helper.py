@@ -143,13 +143,19 @@ def opc_ua_sender(machineIDs, state, root_path, terminDateTime):
 
                 # Write data to the node
                 if state == "on":
+                    # Start the machine
                     myvar.set_value(value_on)
+
+                    # Check if client is connected
+                    if client.is_connected():
+                        client_status = machineType + " started"
                 else:
+                    # Stop the machine
                     myvar.set_value(value_off)
 
-                # Check if client 1 is connected
-                if client.is_connected():
-                    client_status = machineType + " started "
+                    # Check if client is connected
+                    if client.is_connected():
+                        client_status = machineType + " stopped"
             except:
                 # Give the error code
                 client_status = "Connection refused from " + machineType
