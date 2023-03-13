@@ -313,8 +313,6 @@ class KafkaForm(FlaskForm):
 """
 OPC UA Form
     Settings Form to edit the config
-    Validation:
-        TO DO @NILS
 """
 class OpcForm(FlaskForm):
     value_on = StringField(validators=[
@@ -348,7 +346,9 @@ class OpcForm(FlaskForm):
 Termin Optimization Form
     Sub-Form of Termin Form to add multiple appointments
     Validation:
-        everything allowed so far
+        select at least one machine and one co-worker
+        duration has to be an integer
+        duration has to be at least 1 hour
 """
 class TerminOptimizationForm(FlaskForm):
 
@@ -376,10 +376,6 @@ class TerminOptimizationForm(FlaskForm):
 
     duration = IntegerField(validators=[InputRequired(), NumberRange(min=1, max=10)]) 
 
-    
-    
-
-
     delete = SubmitField('Entfernen')
 
     def validate(self):
@@ -406,13 +402,13 @@ Optimization Form Form
         exactly one termin in termine-list
         start date before end date
         generic validation for each termin in termine list
-    Update-self:
+    Update_self:
         add a new termin
-    delete-termin:
+    delete_termin:
         deletes a termin
 """
 class OptimizationForm(FlaskForm):
-    # see https://stackoverflow.com/questions/51817148/dynamically-add-new-wtforms-fieldlist-entries-from-user-interface
+    # see https://stackoverflow.com/questions/51817148/dynamically-add-new-wtforms-fieldlist-entries-from-user-interface for reference
 
     startdate = DateField(validators=[
         InputRequired()], label='Beginn')
