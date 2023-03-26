@@ -151,6 +151,9 @@ def settings():
     var2 = config['opcua']['var2']
     url3 = config['opcua']['url3']
     var3 = config['opcua']['var3']
+    offset1 = config['opcua']['offset1']
+    offset2 = config['opcua']['offset2']
+    offset3 = config['opcua']['offset3']
 
     # set the opcForm
     opcForm=OpcForm(value_on=value_on,value_off=value_off,url1=url1,var1=var1,url2=url2,var2=var2,url3=url3,var3=var3)
@@ -163,6 +166,9 @@ def settings():
         config['opcua']['var2'] = opcForm.var2.data
         config['opcua']['url3'] = opcForm.url3.data
         config['opcua']['var3'] = opcForm.var3.data
+        config['opcua']['offset1'] = opcForm.offset1.data
+        config['opcua']['offset2'] = opcForm.offset2.data
+        config['opcua']['offset3'] = opcForm.offset3.data
         write_config(app.root_path, config)
         return redirect('/settings')
     elif request.method == "POST" and 'opcForm' in request.form:
