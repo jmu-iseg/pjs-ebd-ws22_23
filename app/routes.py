@@ -441,14 +441,20 @@ def pv_anlage():
         autarkie_data_7 = autarkie_data[(autarkie_data['datejust'] >= start_date) & (autarkie_data['datejust'] <= today)]
         
         # calculate self-sufficiency last 7 days 
-        consumption_sum_7 = autarkie_data_7['energy_consumption'].sum()
-        pv_sum_7 = autarkie_data_7['pv_energy'].sum()
-        autarkie_7 = int((pv_sum_7 / consumption_sum_7) * 100) # percent 
+        try:
+            consumption_sum_7 = autarkie_data_7['energy_consumption'].sum()
+            pv_sum_7 = autarkie_data_7['pv_energy'].sum()
+            autarkie_7 = int((pv_sum_7 / consumption_sum_7) * 100) # percent 
+        except:
+            autarkie_7 = 0
     
         # calculate self-sufficiency last 7 days 
-        consumption_sum_overall = autarkie_data['energy_consumption'].sum()
-        pv_sum_overall = autarkie_data['pv_energy'].sum()
-        autarkie_overall = int((pv_sum_overall / consumption_sum_overall) * 100) # percent 
+        try:
+            consumption_sum_overall = autarkie_data['energy_consumption'].sum()
+            pv_sum_overall = autarkie_data['pv_energy'].sum()
+            autarkie_overall = int((pv_sum_overall / consumption_sum_overall) * 100) # percent 
+        except:
+            autarkie_overall = 0
 
     # return data to pv_anlage 
     return render_template("/pages/pv_anlage.html", pv_prediction=pv_prediction, pv_prediction_labels=pv_prediction_labels, autarkie_7=autarkie_7, autarkie_overall=autarkie_overall, consumption_data_14=consumption_data_14, co2_data_list=co2_data_list, co2_data_labels=co2_data_labels, termin_daten=termin_daten, termin_daten_list=termin_daten_list, records=records, informations=informations, cityname=name, auslastung_pv=auslastung_pv, pv_prediction_sum=pv_prediction_sum)
