@@ -327,17 +327,26 @@ class OpcForm(FlaskForm):
     var1 = StringField(validators=[
         InputRequired()], label='Maschine 1 Objekt')
 
+    offset1 = StringField(validators=[
+        InputRequired()], label='Maschine 1 Offset')
+
     url2 = StringField(validators=[
         InputRequired()], label='Maschine 2 URL')
 
     var2 = StringField(validators=[
         InputRequired()], label='Maschine 2 Objekt')
 
+    offset2 = StringField(validators=[
+        InputRequired()], label='Maschine 2 Offset')
+
     url3 = StringField(validators=[
         InputRequired()], label='Maschine 3 URL')
 
     var3 = StringField(validators=[
         InputRequired()], label='Maschine 3 Objekt')
+
+    offset3 = StringField(validators=[
+        InputRequired()], label='Maschine 3 Offset')
 
     submit = SubmitField('Aktualisieren', name='opcForm', id='submit')
 
