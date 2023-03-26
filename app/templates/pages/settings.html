@@ -177,6 +177,28 @@
               <div class="form-text">kWh</div>
             </div>
           </div>
+
+          <div class="row">
+            <div class="col">
+              {{ machineForm.complexity_high.label }}<br>
+              {{ machineForm.complexity_high(class_="form-control") }}
+            </div>
+            <div class="col">
+              {{ machineForm.complexity_medium.label }}<br>
+              {{ machineForm.complexity_medium(class_="form-control") }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              {{ machineForm.complexity_low.label }}<br>
+              {{ machineForm.complexity_low(class_="form-control") }}
+            </div>
+            <div class="col">
+              {{ machineForm.appointment_amount.label }}<br>
+              {{ machineForm.appointment_amount(class_="form-control") }}
+            </div>
+          </div>
           {{ machineForm.basicConsumption.label }}<br>
           {{ machineForm.basicConsumption(class_="form-control") }}
           <div class="form-text">kWh</div>

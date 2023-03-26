@@ -50,8 +50,14 @@ def settings():
     # specify basic consumption
     basicConsumption = config['machines']['basicConsumption']
 
+    # setting the complexity
+    complexity_high = config['machines']['complexity_high']
+    complexity_medium = config['machines']['complexity_medium']
+    complexity_low = config['machines']['complexity_low']
+    appointment_amount = config['machines']['appointment_amount']
+
     # set the machineForm
-    machineForm=MachineForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3,heating_m1=heating_m1,heating_m2=heating_m2,heating_m3=heating_m3, basicConsumption=basicConsumption)
+    machineForm=MachineForm(consumption_m1=consumption_m1,consumption_m2=consumption_m2,consumption_m3=consumption_m3,heating_m1=heating_m1,heating_m2=heating_m2,heating_m3=heating_m3,basicConsumption=basicConsumption,complexity_high=complexity_high,complexity_medium=complexity_medium,complexity_low=complexity_low,appointment_amount=appointment_amount)
     if machineForm.validate_on_submit() and 'machineForm' in request.form:
         config['machines']['consumption_m1'] = machineForm.consumption_m1.data
         config['machines']['consumption_m2'] = machineForm.consumption_m2.data
@@ -60,6 +66,10 @@ def settings():
         config['machines']['heating_m2'] = machineForm.heating_m2.data
         config['machines']['heating_m3'] = machineForm.heating_m3.data
         config['machines']['basicConsumption'] = machineForm.basicConsumption.data
+        config['machines']['complexity_high'] = machineForm.complexity_high.data
+        config['machines']['complexity_medium'] = machineForm.complexity_medium.data
+        config['machines']['complexity_low'] = machineForm.complexity_low.data
+        config['machines']['appointment_amount'] = machineForm.appointment_amount.data
         write_config(app.root_path, config)
         return redirect('/settings')
     elif request.method == "POST" and 'machineForm' in request.form:

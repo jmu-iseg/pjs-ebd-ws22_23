@@ -208,6 +208,18 @@ class MachineForm(FlaskForm):
     basicConsumption = StringField(validators=[
         InputRequired()], label='Grundlast der SEHO')
 
+    complexity_high = StringField(validators=[
+        InputRequired()], label='Lötkomplexität Hoch')
+
+    complexity_medium = StringField(validators=[
+        InputRequired()], label='Lötkomplexität Mittel')
+
+    complexity_low = StringField(validators=[
+        InputRequired()], label='Lötkomplexität Niedrig')
+    
+    appointment_amount = StringField(validators=[
+        InputRequired()], label='Anzahl der Terminvorschläge')
+
     submit = SubmitField('Aktualisieren', name='machineForm', id='submit')
 
     def validate(self):
