@@ -156,7 +156,7 @@ def settings():
     offset3 = config['opcua']['offset3']
 
     # set the opcForm
-    opcForm=OpcForm(value_on=value_on,value_off=value_off,url1=url1,var1=var1,url2=url2,var2=var2,url3=url3,var3=var3)
+    opcForm=OpcForm(value_on=value_on,value_off=value_off,url1=url1,var1=var1,url2=url2,var2=var2,url3=url3,var3=var3,offset1=offset1,offset2=offset2,offset3=offset3)
     if opcForm.validate_on_submit() and 'opcForm' in request.form:
         config['opcua']['value_on'] = opcForm.value_on.data
         config['opcua']['value_off'] = opcForm.value_off.data
