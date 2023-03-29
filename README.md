@@ -35,7 +35,7 @@ This is a student project repository for an energy-based appointment scheduling 
 Please check the tutorial [docs/Technische_Dokumentation.pdf](https://github.com/jmu-informationsystemsgroup/pjs-ebd-ws22_23/blob/main/docs/Technische_Dokumentation.pdf)
 
 ### Usage
-Please check the tutorial "docs/Anwenderdokumentation.pdf"
+Please check the tutorial [Anwenderdokumentation.pdf](https://github.com/jmu-informationsystemsgroup/pjs-ebd-ws22_23/blob/main/docs/Anwenderdokumentation.pdf)
 
 ## Contributing
 Contributions are welcome. Please create a pull request for any changes or bug fixes.
