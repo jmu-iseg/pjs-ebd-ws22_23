@@ -32,7 +32,7 @@ This is a student project repository for an energy-based appointment scheduling 
 - xgboost==1.7.3
 
 ### Installation
-Please check the tutorial "docs/Technische_Dokumentation.pdf"
+Please check the tutorial [docs/Technische_Dokumentation.pdf](https://github.com/jmu-informationsystemsgroup/pjs-ebd-ws22_23/blob/main/docs/Technische_Dokumentation.pdf)
 
 ### Usage
 Please check the tutorial "docs/Anwenderdokumentation.pdf"
