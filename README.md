@@ -26,10 +26,10 @@ This is a student project repository for an energy-based appointment scheduling 
 - xgboost==1.7.3
 
 ### Installation
-Please check the tutorial "Technische_Dokumentation.pdf"
+Please check the tutorial "docs/Technische_Dokumentation.pdf"
 
 ### Usage
-Please check the tutorial "Anwenderdokumentation.pdf"
+Please check the tutorial "docs/Anwenderdokumentation.pdf"
 
 ## Contributing
 ### Contributions are welcome. Please create a pull request for any changes or bug fixes.
