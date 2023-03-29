@@ -37,6 +37,7 @@ def calendar():
     termine = Termin.query.all()
     termin_daten = {}
     wochentage_kuerzel = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+    
     # save information for each appointment in a dictionary
     for termin in termine: 
         endtime = termin.dateTime + timedelta(hours=termin.duration)
